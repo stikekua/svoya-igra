@@ -13,6 +13,6 @@ namespace SvoyaIgra.Dal.Dto
         public ThemeDifficulty Difficulty { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public IEnumerable<Question> Questions { get; set; }
+        public IEnumerable<Question>? Questions { get; set; }
     }
 }
