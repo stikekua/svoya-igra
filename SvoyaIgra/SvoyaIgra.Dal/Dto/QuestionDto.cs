@@ -22,7 +22,7 @@ namespace SvoyaIgra.Dal.Dto
         public string Answer { get; set; }
     }
 
-    public class CreateQuestionDto
+    public class CreateQuestionRequestDto
     {
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public QuestionType Type { get; set; }
@@ -39,7 +39,7 @@ namespace SvoyaIgra.Dal.Dto
         public string Answer { get; set; }
     }
 
-    public class UpdateQuestionDto
+    public class UpdateQuestionRequestDto
     {
         public int Id { get; set; }
 

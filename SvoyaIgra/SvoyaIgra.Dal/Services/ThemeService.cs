@@ -28,25 +28,16 @@ public class ThemeService<TContext> : IThemeService where TContext : DbContext
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == id);
 
-        if (theme == null)
-        {
-            return null;
-        }
-        return theme.ToDto();
+        return theme?.ToDto();
     }
 
-    public async Task<IEnumerable<QuestionDto>?> GetThemeQuestionsAsync(int id)
+    public async Task<IEnumerable<QuestionDto>?> GetThemeQuestionsAsync(int themeId)
     {
-        var theme = await _dbContext.Set<Theme>()
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Id == id);
+        var questions = _dbContext.Set<Question>()
+            .Where(q => q.ThemeId == themeId)
+            .AsNoTracking();
 
-        if (theme == null)
-        {
-            return null;
-        }
-
-        return theme.Questions.Select(q => q.ToDto());
+        return questions.Select(q => q.ToDto());
     }
     public async Task<ThemeDto?> CreateThemeAsync(string name, ThemeDifficulty difficulty)
     {
@@ -56,7 +47,7 @@ public class ThemeService<TContext> : IThemeService where TContext : DbContext
             Difficulty = difficulty
         };
         _dbContext.Set<Theme>().Add(theme);
-        
+        await _dbContext.SaveChangesAsync();
         return theme.ToDto();
     }
     

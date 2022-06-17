@@ -7,5 +7,6 @@
         Level3 = 3,
         Level4 = 4,
         Level5 = 5,
+        LevelFinal = 6,
     }
 }
