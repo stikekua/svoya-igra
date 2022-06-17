@@ -11,7 +11,7 @@ using SvoyaIgra.DbMigrations.DbContexts;
 namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
 {
     [DbContext(typeof(SvoyaIgraDbMigrationContext))]
-    [Migration("20220615182447_Initial")]
+    [Migration("20220617214648_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,7 +48,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ThemeId")
+                    b.Property<int>("TopicId")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -56,7 +56,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThemeId");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Question", "SvoyaIgra");
 
@@ -68,12 +68,12 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                             Difficulty = 1,
                             MultimediaId = "00000000-0000-0000-0000-000000000000",
                             Text = "Question?",
-                            ThemeId = 1,
+                            TopicId = 1,
                             Type = 1
                         });
                 });
 
-            modelBuilder.Entity("SvoyaIgra.Dal.Bo.Theme", b =>
+            modelBuilder.Entity("SvoyaIgra.Dal.Bo.Topic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,7 +91,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
 
                     b.HasKey("Id");
 
-                    b.ToTable("Theme", "SvoyaIgra");
+                    b.ToTable("Topic", "SvoyaIgra");
 
                     b.HasData(
                         new
@@ -110,16 +110,16 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
 
             modelBuilder.Entity("SvoyaIgra.Dal.Bo.Question", b =>
                 {
-                    b.HasOne("SvoyaIgra.Dal.Bo.Theme", "Theme")
+                    b.HasOne("SvoyaIgra.Dal.Bo.Topic", "Topic")
                         .WithMany("Questions")
-                        .HasForeignKey("ThemeId")
+                        .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Theme");
+                    b.Navigation("Topic");
                 });
 
-            modelBuilder.Entity("SvoyaIgra.Dal.Bo.Theme", b =>
+            modelBuilder.Entity("SvoyaIgra.Dal.Bo.Topic", b =>
                 {
                     b.Navigation("Questions");
                 });

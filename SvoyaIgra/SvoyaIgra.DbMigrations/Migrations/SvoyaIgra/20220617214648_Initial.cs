@@ -12,7 +12,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                 name: "SvoyaIgra");
 
             migrationBuilder.CreateTable(
-                name: "Theme",
+                name: "Topic",
                 schema: "SvoyaIgra",
                 columns: table => new
                 {
@@ -23,7 +23,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Theme", x => x.Id);
+                    table.PrimaryKey("PK_Topic", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,7 +35,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Difficulty = table.Column<int>(type: "int", nullable: false),
-                    ThemeId = table.Column<int>(type: "int", nullable: false),
+                    TopicId = table.Column<int>(type: "int", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MultimediaId = table.Column<string>(type: "nchar(36)", fixedLength: true, maxLength: 36, nullable: false),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -44,37 +44,37 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                 {
                     table.PrimaryKey("PK_Question", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Question_Theme_ThemeId",
-                        column: x => x.ThemeId,
+                        name: "FK_Question_Topic_TopicId",
+                        column: x => x.TopicId,
                         principalSchema: "SvoyaIgra",
-                        principalTable: "Theme",
+                        principalTable: "Topic",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 schema: "SvoyaIgra",
-                table: "Theme",
+                table: "Topic",
                 columns: new[] { "Id", "Difficulty", "Name" },
                 values: new object[] { 1, 1, "Tema1" });
 
             migrationBuilder.InsertData(
                 schema: "SvoyaIgra",
-                table: "Theme",
+                table: "Topic",
                 columns: new[] { "Id", "Difficulty", "Name" },
                 values: new object[] { 2, 2, "Tema2" });
 
             migrationBuilder.InsertData(
                 schema: "SvoyaIgra",
                 table: "Question",
-                columns: new[] { "Id", "Answer", "Difficulty", "MultimediaId", "Text", "ThemeId", "Type" },
+                columns: new[] { "Id", "Answer", "Difficulty", "MultimediaId", "Text", "TopicId", "Type" },
                 values: new object[] { 1, "Answer!", 1, "00000000-0000-0000-0000-000000000000", "Question?", 1, 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Question_ThemeId",
+                name: "IX_Question_TopicId",
                 schema: "SvoyaIgra",
                 table: "Question",
-                column: "ThemeId");
+                column: "TopicId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -84,7 +84,7 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                 schema: "SvoyaIgra");
 
             migrationBuilder.DropTable(
-                name: "Theme",
+                name: "Topic",
                 schema: "SvoyaIgra");
         }
     }

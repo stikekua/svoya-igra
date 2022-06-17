@@ -4,11 +4,11 @@ namespace SvoyaIgra.TestClient.Question;
 
 public class QuestionActions: IQuestionActions
 {
-    private readonly IQuestionService _themeService;
+    private readonly IQuestionService _questionService;
 
     public QuestionActions(IQuestionService questionService)
     {
-        _themeService = questionService;
+        _questionService = questionService;
     }
 
     public void PerformQuestionAction()

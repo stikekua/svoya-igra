@@ -7,18 +7,18 @@ namespace SvoyaIgra.DbMigrations.Data
     {
         public static void CreateInitialData(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Theme>().HasData(
-                new Theme
+            modelBuilder.Entity<Topic>().HasData(
+                new Topic
                 {
                     Id = 1,
                     Name = "Tema1",
-                    Difficulty = ThemeDifficulty.Round1
+                    Difficulty = TopicDifficulty.Round1
                 },
-                new Theme
+                new Topic
                 {
                     Id = 2,
                     Name = "Tema2",
-                    Difficulty = ThemeDifficulty.Round2
+                    Difficulty = TopicDifficulty.Round2
                 }
             );
 
@@ -28,7 +28,7 @@ namespace SvoyaIgra.DbMigrations.Data
                     Id = 1,
                     Type = QuestionType.Text,
                     Difficulty = QuestionDifficulty.Level1,
-                    ThemeId = 1,
+                    TopicId = 1,
                     Text = "Question?",
                     MultimediaId = "00000000-0000-0000-0000-000000000000",
                     Answer = "Answer!"

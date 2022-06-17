@@ -1,6 +1,6 @@
 ﻿namespace SvoyaIgra.Dal.Bo
 {
-    public enum ThemeDifficulty
+    public enum TopicDifficulty
     {
         Round1 = 1,
         Round2 = 2,

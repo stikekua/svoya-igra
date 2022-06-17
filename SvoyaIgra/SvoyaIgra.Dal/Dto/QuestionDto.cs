@@ -13,7 +13,7 @@ namespace SvoyaIgra.Dal.Dto
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public QuestionDifficulty Difficulty { get; set; }
 
-        public int ThemeId { get; set; }
+        public int TopicId { get; set; }
 
         public string Text { get; set; }
 
@@ -30,7 +30,7 @@ namespace SvoyaIgra.Dal.Dto
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public QuestionDifficulty Difficulty { get; set; }
 
-        public int ThemeId { get; set; }
+        public int TopicId { get; set; }
 
         public string Text { get; set; }
 
@@ -49,7 +49,7 @@ namespace SvoyaIgra.Dal.Dto
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public QuestionDifficulty Difficulty { get; set; }
 
-        public int ThemeId { get; set; }
+        public int TopicId { get; set; }
 
         public string Text { get; set; }
 

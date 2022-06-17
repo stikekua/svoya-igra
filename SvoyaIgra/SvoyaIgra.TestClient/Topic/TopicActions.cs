@@ -1,34 +1,34 @@
 ﻿using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Services;
 
-namespace SvoyaIgra.TestClient.Theme;
+namespace SvoyaIgra.TestClient.Topic;
 
-public class ThemeActions : IThemeActions
+public class TopicActions : ITopicActions
 {
-    private readonly IThemeService _themeService;
+    private readonly ITopicService _topicService;
 
-    public ThemeActions(IThemeService themeService)
+    public TopicActions(ITopicService topicService)
     {
-        _themeService = themeService;
+        _topicService = topicService;
     }
 
-    public void PerformThemeAction()
+    public void PerformTopicAction()
     {
         do
         {
-            var index = ThemeMenu();
+            var index = TopicMenu();
             switch (index)
             {
                 case 0:
                     return;
                 case 1:
-                    ListThemesAsync().Wait();
+                    ListTopicsAsync().Wait();
                     break;
                 case 2:
-                    ListThemeByIdAsync().Wait();
+                    ListTopicByIdAsync().Wait();
                     break;
                 case 3:
-                    CreateThemeAsync().Wait();
+                    CreateTopicAsync().Wait();
                     break;
                 case 4:
                     //SetUserStatusAsync(true).Wait();
@@ -42,13 +42,13 @@ public class ThemeActions : IThemeActions
         } while (true);
     }
 
-    private static int ThemeMenu()
+    private static int TopicMenu()
     {
         Ui.Clear();
-        Ui.Write("Theme");
+        Ui.Write("Topic");
         Ui.Write("Select action:");
-        Ui.Write(" 1. List all themes");
-        Ui.Write(" 2. List theme");
+        Ui.Write(" 1. List all topics");
+        Ui.Write(" 2. List topic");
         Ui.Write(" 3. Create");
         Ui.Write(" 4. ");
         Ui.Write(" 5. ");
@@ -56,42 +56,42 @@ public class ThemeActions : IThemeActions
         return Ui.Choice(5);
     }
 
-    private async Task ListThemesAsync()
+    private async Task ListTopicsAsync()
     {
         Ui.Clear();
-        Ui.Write("Theme -> List all themes");
-        var themes = await _themeService.GetAllThemesAsync();
-        Ui.Write(FormatTheme("Name", "Difficulty"));
-        foreach (var theme in themes)
+        Ui.Write("Topic -> List all topics");
+        var topics = await _topicService.GetAllTopicsAsync();
+        Ui.Write(FormatTopic("Name", "Difficulty"));
+        foreach (var topic in topics)
         {
-            Ui.Write(FormatTheme(theme.Name, theme.Difficulty.ToString()));
+            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
         }
         Ui.Write();
         Ui.PressKey();
     }
 
-    private string FormatTheme(string name, string difficulty)
+    private string FormatTopic(string name, string difficulty)
     {
         return $"{name,-20} {difficulty,-20}";
     }
 
-    private async Task ListThemeByIdAsync()
+    private async Task ListTopicByIdAsync()
     {
         Ui.Clear();
-        Ui.Write("Theme -> Show theme details");
-        var themeId = Ui.ReadInt("  ThemeId");
-        var theme = await _themeService.GetThemeAsync(themeId);
-        if (theme == null)
+        Ui.Write("Topic -> Show topic details");
+        var topicId = Ui.ReadInt("  TopicId");
+        var topic = await _topicService.GetTopicAsync(topicId);
+        if (topic == null)
         {
             return;
         }
         Ui.Write();
-        Ui.Write(FormatTheme("Name", "Difficulty"));
-        Ui.Write(FormatTheme(theme.Name, theme.Difficulty.ToString()));
+        Ui.Write(FormatTopic("Name", "Difficulty"));
+        Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
         Ui.Write();
 
-        var questions = await _themeService.GetThemeQuestionsAsync(themeId);
-        Ui.Write("Questions of the theme:");
+        var questions = await _topicService.GetTopicQuestionsAsync(topicId);
+        Ui.Write("Questions of the topic:");
         if (questions == null || !questions.Any())
         {
             Ui.WriteWarning("\tNo questions found");
@@ -113,21 +113,21 @@ public class ThemeActions : IThemeActions
         return $"{type,-20} {difficulty,-20} {text,-20}";
     }
 
-    private async Task CreateThemeAsync()
+    private async Task CreateTopicAsync()
     {
         Ui.Clear();
-        Ui.Write("Theme -> Create theme");
+        Ui.Write("Topic -> Create topic");
         var name = Ui.Read("Name");
-        var allowedValues = ((ThemeDifficulty[])Enum.GetValues(typeof(ThemeDifficulty))).Select(c => (int)c).ToArray();
+        var allowedValues = ((TopicDifficulty[])Enum.GetValues(typeof(TopicDifficulty))).Select(c => (int)c).ToArray();
         var difficulty = Ui.ReadInt("Difficulty", allowedValues);
 
-        var resp = await _themeService.CreateThemeAsync(name, (ThemeDifficulty)difficulty);
+        var resp = await _topicService.CreateTopicAsync(name, (TopicDifficulty)difficulty);
         if (resp == null)
         {
             return;
         }
         Ui.Write();
-        Ui.Write("Theme successfully created");
+        Ui.Write("Topic successfully created");
         Ui.Write($"Name: {resp.Name}\t\tDifficulty: {resp.Difficulty}");
         Ui.PressKey();
     }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SvoyaIgra.TestClient.Data;
 using SvoyaIgra.TestClient.Question;
-using SvoyaIgra.TestClient.Theme;
+using SvoyaIgra.TestClient.Topic;
 
 namespace SvoyaIgra.TestClient;
 
@@ -42,8 +42,8 @@ class Program
                 case 0:
                     return;
                 case 1:
-                    var themeActions = _serviceProvider.GetService<IThemeActions>();
-                    themeActions.PerformThemeAction();
+                    var topicActions = _serviceProvider.GetService<ITopicActions>();
+                    topicActions.PerformTopicAction();
                     break;
                 case 2:
                     var questionActions = _serviceProvider.GetService<IQuestionActions>();
@@ -60,7 +60,7 @@ class Program
     {
         Ui.Clear();
         Ui.Write("Select action:");
-        Ui.Write("  1. Theme");
+        Ui.Write("  1. Topic");
         Ui.Write("  2. Question");
         Ui.Write("  0. <- EXIT");
         return Ui.Choice(2);

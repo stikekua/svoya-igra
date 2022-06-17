@@ -3,14 +3,14 @@ using System.Text.Json.Serialization;
 
 namespace SvoyaIgra.Dal.Dto
 {
-    public class ThemeDto
+    public class TopicDto
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public ThemeDifficulty Difficulty { get; set; }
+        public TopicDifficulty Difficulty { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public IEnumerable<Question>? Questions { get; set; }

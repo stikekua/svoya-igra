@@ -5,22 +5,22 @@ namespace SvoyaIgra.Dal.Services
     public interface IGameService
     {
         /// <summary>
-        /// returns randomly 18 themes (6 per each round)
+        /// returns randomly 18 topics (6 per each round)
         /// </summary>
         /// <returns></returns>
-        public Task<IEnumerable<ThemeDto>> GetThemesAsync();
+        public Task<IEnumerable<TopicDto>> GetTopicsAsync();
 
         /// <summary>
-        /// returns randomly 18 themes with the specified themes included
+        /// returns randomly 18 topics with the specified topics included
         /// </summary>
-        /// <param name="themeNames">specified themes names</param>
+        /// <param name="topicNames">specified topics names</param>
         /// <returns></returns>
-        public Task<IEnumerable<ThemeDto>> GetThemesAsync(string[] themeNames);
+        public Task<IEnumerable<TopicDto>> GetTopicsAsync(string[] topicNames);
 
         /// <summary>
-        /// returns randomly 7 themes for final round
+        /// returns randomly 7 topics for final round
         /// </summary>
         /// <returns></returns>
-        public Task<IEnumerable<ThemeDto>> GetThemesFinalAsync();
+        public Task<IEnumerable<TopicDto>> GetTopicsFinalAsync();
     }
 }

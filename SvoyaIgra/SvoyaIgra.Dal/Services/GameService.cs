@@ -4,17 +4,17 @@ namespace SvoyaIgra.Dal.Services;
 
 public class GameService : IGameService
 {
-    public Task<IEnumerable<ThemeDto>> GetThemesAsync()
+    public Task<IEnumerable<TopicDto>> GetTopicsAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<ThemeDto>> GetThemesAsync(string[] themeNames)
+    public Task<IEnumerable<TopicDto>> GetTopicsAsync(string[] topicNames)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<ThemeDto>> GetThemesFinalAsync()
+    public Task<IEnumerable<TopicDto>> GetTopicsFinalAsync()
     {
         throw new NotImplementedException();
     }

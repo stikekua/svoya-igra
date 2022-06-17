@@ -11,7 +11,7 @@ namespace SvoyaIgra.Dal.Dto
                 Id = question.Id,
                 Type = question.Type,
                 Difficulty = question.Difficulty,
-                ThemeId = question.ThemeId,
+                TopicId = question.TopicId,
                 Text = question.Text,
                 MultimediaId = question.MultimediaId == Guid.Empty.ToString() ? null : question.MultimediaId,
                 Answer = question.Answer
