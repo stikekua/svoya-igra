@@ -1,5 +1,5 @@
-﻿using SvoyaIgra.Dal.Bo;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using SvoyaIgra.Dal.Bo;
 
 namespace SvoyaIgra.Dal.Dto
 {
@@ -13,6 +13,6 @@ namespace SvoyaIgra.Dal.Dto
         public TopicDifficulty Difficulty { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public IEnumerable<Question>? Questions { get; set; }
+        public IEnumerable<QuestionDto>? Questions { get; set; }
     }
 }
