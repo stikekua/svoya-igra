@@ -94,6 +94,20 @@ namespace SvoyaIgra.TestClient
                 }
             } while (true);
         }
+
+        public static string ReadString(string text, string[] allowedValues)
+        {
+            do
+            {
+                Console.Write($"{text}: ");
+                var str = Console.ReadLine();
+                if (allowedValues.Contains(str)) 
+                    return str;
+                else 
+                    WriteWarning($"Invalid file name. Try again.");
+            } while (true);
+        }
+
         public static void Error(string text)
         {
             WriteError(text);

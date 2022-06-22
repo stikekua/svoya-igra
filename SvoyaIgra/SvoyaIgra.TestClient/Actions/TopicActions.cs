@@ -1,7 +1,7 @@
 ﻿using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Services;
 
-namespace SvoyaIgra.TestClient.Topic;
+namespace SvoyaIgra.TestClient.Actions;
 
 public class TopicActions : ITopicActions
 {

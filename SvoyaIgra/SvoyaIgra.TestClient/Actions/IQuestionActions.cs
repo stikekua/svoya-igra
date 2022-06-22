@@ -1,4 +1,4 @@
-﻿namespace SvoyaIgra.TestClient.Question;
+﻿namespace SvoyaIgra.TestClient.Actions;
 
 public interface IQuestionActions
 {

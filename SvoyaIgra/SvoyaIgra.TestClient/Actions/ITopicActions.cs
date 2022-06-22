@@ -1,4 +1,4 @@
-﻿namespace SvoyaIgra.TestClient.Topic;
+﻿namespace SvoyaIgra.TestClient.Actions;
 
 public interface ITopicActions
 {

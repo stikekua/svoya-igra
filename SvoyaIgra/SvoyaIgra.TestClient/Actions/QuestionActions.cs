@@ -1,6 +1,6 @@
 ﻿using SvoyaIgra.Dal.Services;
 
-namespace SvoyaIgra.TestClient.Question;
+namespace SvoyaIgra.TestClient.Actions;
 
 public class QuestionActions: IQuestionActions
 {

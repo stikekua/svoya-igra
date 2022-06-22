@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{CFE1024D-7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.TestClient", "SvoyaIgra.TestClient\SvoyaIgra.TestClient.csproj", "{64DDFE0C-AEE5-4876-B886-F6B3DC810E40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.ImportCSV", "SvoyaIgra.ImportCSV\SvoyaIgra.ImportCSV.csproj", "{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{64DDFE0C-AEE5-4876-B886-F6B3DC810E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64DDFE0C-AEE5-4876-B886-F6B3DC810E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64DDFE0C-AEE5-4876-B886-F6B3DC810E40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

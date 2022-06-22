@@ -15,16 +15,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SvoyaIgra.Dal\SvoyaIgra.Dal.csproj" />
+    <ProjectReference Include="..\SvoyaIgra.ImportCSV\SvoyaIgra.ImportCSV.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Question\" />
   </ItemGroup>
 
 </Project>

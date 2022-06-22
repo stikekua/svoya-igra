@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SvoyaIgra.ImportCSV.Services;
+using SvoyaIgra.TestClient.Actions;
 using SvoyaIgra.TestClient.Data;
-using SvoyaIgra.TestClient.Question;
-using SvoyaIgra.TestClient.Topic;
 
 namespace SvoyaIgra.TestClient;
 
@@ -14,7 +14,7 @@ class Program
 
     static void Main()
     {
-        Ui.Write("Hello, World!");
+        Ui.Write("Hello!");
 
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -49,6 +49,10 @@ class Program
                     var questionActions = _serviceProvider.GetService<IQuestionActions>();
                     questionActions.PerformQuestionAction();
                     break;
+                case 3:
+                    var importActions = _serviceProvider.GetService<IImportActions>();
+                    importActions.PerformImportAction();
+                    break;
                 default:
                     continue;
             }
@@ -62,8 +66,9 @@ class Program
         Ui.Write("Select action:");
         Ui.Write("  1. Topic");
         Ui.Write("  2. Question");
+        Ui.Write("  3. Import");
         Ui.Write("  0. <- EXIT");
-        return Ui.Choice(2);
+        return Ui.Choice(3);
     }
 }
 
