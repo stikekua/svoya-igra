@@ -2,20 +2,15 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using SvoyaIgra.DbMigrations.DbContexts;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.DbMigrations.ContextFactories
 {
-    public class SvoyaIgraMigrationDbContextFactory : IDesignTimeDbContextFactory<SvoyaIgraDbMigrationContext>
+    public class QBankMigrationDbContextFactory : IDesignTimeDbContextFactory<QBankDbMigrationContext>
     {
-        public SvoyaIgraDbMigrationContext CreateDbContext(string[] args)
+        public QBankDbMigrationContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<SvoyaIgraDbMigrationContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<QBankDbMigrationContext>();
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -24,10 +19,10 @@ namespace SvoyaIgra.DbMigrations.ContextFactories
             var connectionString = config.GetConnectionString("SvoyaIgraDbContext");
             optionsBuilder.UseSqlServer(connectionString, options =>
             {
-                options.MigrationsHistoryTable("__EFMigrationsHistory", DbConstants.SchemaSvoyaIgra);
+                options.MigrationsHistoryTable("__EFMigrationsHistory", DbConstants.SchemaQBank);
             });
 
-            return new SvoyaIgraDbMigrationContext(optionsBuilder.Options);
+            return new QBankDbMigrationContext(optionsBuilder.Options);
         }
     }
 }

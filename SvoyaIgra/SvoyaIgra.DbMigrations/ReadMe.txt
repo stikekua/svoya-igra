@@ -6,8 +6,8 @@ Microsoft.EntityFrameworkCore.Tools
 
 
 ------------------------------------------------------
-Add-Migration <migration_name> -Context SvoyaIgraDbMigrationContext -Output Migrations/SvoyaIgra
+Add-Migration <migration_name> -Context QBankDbMigrationContext -Output Migrations/QBank
 
-Update-Database -Context SvoyaIgraDbMigrationContext
+Update-Database -Context QBankDbMigrationContext
 
-Script-Migration -Context SvoyaIgraDbMigrationContext -Output SvotaIgra.DbMigrations/Scripts/Db/<script_name>.sql
+Script-Migration -Context QBankDbMigrationContext -Output SvotaIgra.DbMigrations/Scripts/Db/<script_name>.sql

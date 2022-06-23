@@ -8,7 +8,7 @@
 
         public const int GuidLength = 36;
 
-        public const string SchemaSvoyaIgra = "SvoyaIgra";
+        public const string SchemaQBank = "QBank";
 
     }
 }

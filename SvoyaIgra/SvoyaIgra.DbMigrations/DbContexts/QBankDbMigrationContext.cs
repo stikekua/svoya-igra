@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace SvoyaIgra.DbMigrations.DbContexts
 {
-    public class SvoyaIgraDbMigrationContext: DbContext
+    public class QBankDbMigrationContext: DbContext
     {
-        public SvoyaIgraDbMigrationContext(DbContextOptions<SvoyaIgraDbMigrationContext> options) : base(options) { }
+        public QBankDbMigrationContext(DbContextOptions<QBankDbMigrationContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -20,7 +20,7 @@ namespace SvoyaIgra.DbMigrations.DbContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.AddSvoyaIgraModel();
+            modelBuilder.AddQBankModel();
 
             Data.InitialData.CreateInitialData(modelBuilder);
         }

@@ -2,33 +2,55 @@
 
 #nullable disable
 
-namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
+namespace SvoyaIgra.DbMigrations.Migrations.QBank
 {
-    public partial class Initial : Migration
+    public partial class CreateTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "SvoyaIgra");
+                name: "QBank");
 
             migrationBuilder.CreateTable(
-                name: "Topic",
-                schema: "SvoyaIgra",
+                name: "Author",
+                schema: "QBank",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Author", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Topic",
+                schema: "QBank",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Difficulty = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Topic", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Topic_Author_AuthorId",
+                        column: x => x.AuthorId,
+                        principalSchema: "QBank",
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Question",
-                schema: "SvoyaIgra",
+                schema: "QBank",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -46,46 +68,38 @@ namespace SvoyaIgra.DbMigrations.Migrations.SvoyaIgra
                     table.ForeignKey(
                         name: "FK_Question_Topic_TopicId",
                         column: x => x.TopicId,
-                        principalSchema: "SvoyaIgra",
+                        principalSchema: "QBank",
                         principalTable: "Topic",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                schema: "SvoyaIgra",
-                table: "Topic",
-                columns: new[] { "Id", "Difficulty", "Name" },
-                values: new object[] { 1, 1, "Tema1" });
-
-            migrationBuilder.InsertData(
-                schema: "SvoyaIgra",
-                table: "Topic",
-                columns: new[] { "Id", "Difficulty", "Name" },
-                values: new object[] { 2, 2, "Tema2" });
-
-            migrationBuilder.InsertData(
-                schema: "SvoyaIgra",
-                table: "Question",
-                columns: new[] { "Id", "Answer", "Difficulty", "MultimediaId", "Text", "TopicId", "Type" },
-                values: new object[] { 1, "Answer!", 1, "00000000-0000-0000-0000-000000000000", "Question?", 1, 1 });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Question_TopicId",
-                schema: "SvoyaIgra",
+                schema: "QBank",
                 table: "Question",
                 column: "TopicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topic_AuthorId",
+                schema: "QBank",
+                table: "Topic",
+                column: "AuthorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Question",
-                schema: "SvoyaIgra");
+                schema: "QBank");
 
             migrationBuilder.DropTable(
                 name: "Topic",
-                schema: "SvoyaIgra");
+                schema: "QBank");
+
+            migrationBuilder.DropTable(
+                name: "Author",
+                schema: "QBank");
         }
     }
 }

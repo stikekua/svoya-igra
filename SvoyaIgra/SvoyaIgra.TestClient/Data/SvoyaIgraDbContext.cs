@@ -10,7 +10,7 @@ namespace SvoyaIgra.TestClient.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.AddSvoyaIgraModel();
+            modelBuilder.AddQBankModel();
         }
     }
 }
