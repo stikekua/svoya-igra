@@ -11,9 +11,11 @@ static class DiConfiguration
 {
     public static IServiceCollection AddDiRegistration(this IServiceCollection services, IConfiguration config)
     {
+        services.AddScoped<IAuthorService, AuthorService<SvoyaIgraDbContext>>();
         services.AddScoped<ITopicService, TopicService<SvoyaIgraDbContext>>();
-        services.AddScoped<IImportService, ImportService>();
         services.AddScoped<IQuestionService, QuestionService<SvoyaIgraDbContext>>();
+        services.AddScoped<IImportService, ImportService>();
+        services.AddTransient<IAuthorActions, AuthorActions>();
         services.AddTransient<ITopicActions, TopicActions>();
         services.AddTransient<IQuestionActions, QuestionActions>();
         services.AddTransient<IImportActions, ImportActions>();

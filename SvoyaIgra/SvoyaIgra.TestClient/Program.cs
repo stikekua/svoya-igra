@@ -42,14 +42,18 @@ class Program
                 case 0:
                     return;
                 case 1:
+                    var authorActions = _serviceProvider.GetService<IAuthorActions>();
+                    authorActions.PerformAuthorAction();
+                    break;
+                case 2:
                     var topicActions = _serviceProvider.GetService<ITopicActions>();
                     topicActions.PerformTopicAction();
                     break;
-                case 2:
+                case 3:
                     var questionActions = _serviceProvider.GetService<IQuestionActions>();
                     questionActions.PerformQuestionAction();
                     break;
-                case 3:
+                case 4:
                     var importActions = _serviceProvider.GetService<IImportActions>();
                     importActions.PerformImportAction();
                     break;
@@ -64,11 +68,12 @@ class Program
     {
         Ui.Clear();
         Ui.Write("Select action:");
-        Ui.Write("  1. Topic");
-        Ui.Write("  2. Question");
-        Ui.Write("  3. Import");
+        Ui.Write("  1. Author");
+        Ui.Write("  2. Topic");
+        Ui.Write("  3. Question");
+        Ui.Write("  4. Import");
         Ui.Write("  0. <- EXIT");
-        return Ui.Choice(3);
+        return Ui.Choice(4);
     }
 }
 
