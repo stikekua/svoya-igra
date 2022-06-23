@@ -6,10 +6,12 @@ namespace SvoyaIgra.TestClient.Actions;
 public class TopicActions : ITopicActions
 {
     private readonly ITopicService _topicService;
+    private readonly IQuestionService _questionService;
 
-    public TopicActions(ITopicService topicService)
+    public TopicActions(ITopicService topicService, IQuestionService questionService)
     {
         _topicService = topicService;
+        _questionService = questionService;
     }
 
     public void PerformTopicAction()
@@ -90,7 +92,7 @@ public class TopicActions : ITopicActions
         Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
         Ui.Write();
 
-        var questions = await _topicService.GetTopicQuestionsAsync(topicId);
+        var questions = await _questionService.GetQuestionsByTopicAsync(topicId);
         Ui.Write("Questions of the topic:");
         if (questions == null || !questions.Any())
         {

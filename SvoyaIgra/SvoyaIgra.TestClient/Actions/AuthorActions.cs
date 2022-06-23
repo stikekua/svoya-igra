@@ -6,10 +6,12 @@ namespace SvoyaIgra.TestClient.Actions;
 public class AuthorActions : IAuthorActions
 {
     private readonly IAuthorService _authorService;
+    private readonly IQuestionService _questionService;
 
-    public AuthorActions(IAuthorService authorService)
+    public AuthorActions(IAuthorService authorService, IQuestionService questionService)
     {
         _authorService = authorService;
+        _questionService = questionService;
     }
 
     public void PerformAuthorAction()
@@ -84,27 +86,27 @@ public class AuthorActions : IAuthorActions
         Ui.Write(FormatAuthor(author.Id.ToString(), author.Name));
         Ui.Write();
 
-        var topics = await _authorService.GetAuthorTopicsAsync(authorId);
+        var questions = await _questionService.GetQuestionsByAuthorAsync(authorId);
         Ui.Write("Author's topics:");
-        if (topics == null || !topics.Any())
+        if (questions == null || !questions.Any())
         {
             Ui.WriteWarning("\tNo topics found");
             Ui.Write();
             Ui.PressKey();
             return;
         }
-        Ui.Write(FormatTopic("Name", "Difficulty"));
-        foreach (var topic in topics)
+        Ui.Write(FormatQuestion("Type", "Difficulty", "Text"));
+        foreach (var question in questions)
         {
-            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+            Ui.Write(FormatQuestion(question.Type.ToString(), question.Difficulty.ToString(), question.Text));
         }
         Ui.Write();
         Ui.PressKey();
     }
 
-    private string FormatTopic(string name, string difficulty)
+    private string FormatQuestion(string type, string difficulty, string text)
     {
-        return $"{name,-20} {difficulty,-20}";
+        return $"{type,-20} {difficulty,-20} {text,-20}";
     }
 
     private async Task CreateAuthorAsync()

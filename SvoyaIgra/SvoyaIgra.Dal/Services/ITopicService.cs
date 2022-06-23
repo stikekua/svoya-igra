@@ -12,6 +12,4 @@ public interface ITopicService
     public Task<TopicDto?> DeleteTopicAsync(int id);
 
     public Task<IEnumerable<TopicDto>> GetAllTopicsAsync();
-    public Task<IEnumerable<QuestionDto>?> GetTopicQuestionsAsync(int topicId); 
-
 }

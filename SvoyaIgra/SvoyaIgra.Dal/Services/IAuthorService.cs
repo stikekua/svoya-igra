@@ -11,7 +11,4 @@ public interface IAuthorService
     public Task<AuthorDto?> CreateAuthorAsync(string name);
     public Task<AuthorDto?> UpdateAuthorAsync(int id, string name);
     public Task<AuthorDto?> DeleteAuthorAsync(int id);
-
-    public Task<IEnumerable<QuestionDto>?> GetAuthorQuestionsAsync(int authorId);
-    
 }

@@ -61,12 +61,4 @@ public class AuthorService<TContext> : IAuthorService where TContext : DbContext
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<QuestionDto>?> GetAuthorQuestionsAsync(int authorId)
-    {
-        var questions = _dbContext.Set<Question>()
-            .Where(q => q.AuthorId == authorId)
-            .AsNoTracking();
-
-        return questions.Select(q => q.ToDto());
-    }
 }

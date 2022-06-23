@@ -40,14 +40,6 @@ public class TopicService<TContext> : ITopicService where TContext : DbContext
         return topic?.ToDto();
     }
 
-    public async Task<IEnumerable<QuestionDto>?> GetTopicQuestionsAsync(int topicId)
-    {
-        var questions = _dbContext.Set<Question>()
-            .Where(q => q.TopicId == topicId)
-            .AsNoTracking();
-
-        return questions.Select(q => q.ToDto());
-    }
     public async Task<TopicDto?> CreateTopicAsync(string name, TopicDifficulty difficulty)
     {
         var topic = new Topic
