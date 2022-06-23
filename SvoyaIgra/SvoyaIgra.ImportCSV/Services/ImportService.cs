@@ -19,7 +19,7 @@ public class ImportService : IImportService
         return files.Select(f=>f.Name);
     }
 
-    public async Task<IEnumerable<TopicDto>> ParseCsvFile(string fileName)
+    public async Task<IEnumerable<TopicDto>?> ParseCsvFile(string fileName)
     {
         var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
@@ -28,27 +28,41 @@ public class ImportService : IImportService
         var topics = new List<TopicDto>();
 
         using (var reader = new StreamReader(Path.Combine(_appPath, _importFolder, fileName)))
-        using (var csv = new CsvReader(reader, configuration))
+        using (var csvReader = new CsvReader(reader, configuration))
         {
-            var records = csv.GetRecords<CsvQuestion>();
-            var gropedRecords = records.GroupBy(x => x.Topic);
-            foreach (var record in gropedRecords)
+            try
             {
-                topics.Add(new TopicDto
+                var records = csvReader.GetRecords<CsvQuestion>().ToList();
+                var gropedRecords = records.GroupBy(x => x.Topic);
+                foreach (var record in gropedRecords)
                 {
-                    Name = record.Key,
-                    Difficulty = (TopicDifficulty)record.FirstOrDefault()!.Round,
-                    Questions = record.Select(question => new QuestionDto
+                    topics.Add(new TopicDto
                     {
-                        Type = Enum.Parse<QuestionType>(question.QuestionType),
-                        Difficulty = (QuestionDifficulty)question.QuestionDifficulty,
-                        Text = question.Question,
-                        Answer = question.Answer
-                    })
-            });
+                        Name = record.Key,
+                        Difficulty = (TopicDifficulty)record.FirstOrDefault()!.Round,
+                        Questions = record.Select(question => new QuestionDto
+                        {
+                            Type = Enum.Parse<QuestionType>(question.QuestionType),
+                            Difficulty = (QuestionDifficulty)question.QuestionDifficulty,
+                            Text = question.Question,
+                            Answer = question.Answer
+                        })
+                    });
+                }
+            }
+            catch (CsvHelperException e)
+            {
+                //TODO rewrite to log
+                Console.WriteLine($"{e.Message} " + (e.InnerException == null ? string.Empty : e.InnerException.Message));
+                Console.WriteLine($"Row: {csvReader.Context.Parser.Row}; RawLine: {csvReader.Context.Parser.RawRecord}");
+                if (csvReader.Context.Reader.CurrentIndex >= 0 &&
+                    csvReader.Context.Reader.CurrentIndex < csvReader.Context.Reader.HeaderRecord.Length)
+                {
+                    Console.WriteLine($"Column: {csvReader.Context.Reader.CurrentIndex}; ColumnName: {csvReader.Context.Reader.HeaderRecord[csvReader.Context.Reader.CurrentIndex]}");
+                }
+                return null;
             }
         }
-
         return topics;
     }
 }

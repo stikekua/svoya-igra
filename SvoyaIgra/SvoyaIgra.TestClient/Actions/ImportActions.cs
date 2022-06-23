@@ -45,6 +45,14 @@ public class ImportActions:IImportActions
     private async Task ImportFile(string fileName)
     {
         var topics = await _importService.ParseCsvFile(fileName);
+        if (topics == null|| !topics.Any())
+        {
+            Ui.Error("Error during parse file");
+            return;
+        }
+        Ui.Write("File successfully parsed");
+        Ui.Write();
+        var name = Ui.Read("Author name");
 
         //TODO push to DB via services
     }
