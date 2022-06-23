@@ -19,7 +19,6 @@ namespace SvoyaIgra.DbMigrations.Data
                 new Topic
                 {
                     Id = 1,
-                    AuthorId = 1,
                     Name = "Tema1",
                     Difficulty = TopicDifficulty.Round1
                 }
@@ -32,6 +31,7 @@ namespace SvoyaIgra.DbMigrations.Data
                     Type = QuestionType.Text,
                     Difficulty = QuestionDifficulty.Level1,
                     TopicId = 1,
+                    AuthorId = 1,
                     Text = "Question1?",
                     MultimediaId = "00000000-0000-0000-0000-000000000000",
                     Answer = "Answer1!"
@@ -42,6 +42,7 @@ namespace SvoyaIgra.DbMigrations.Data
                     Type = QuestionType.Text,
                     Difficulty = QuestionDifficulty.Level2,
                     TopicId = 1,
+                    AuthorId = 1,
                     Text = "Question2?",
                     MultimediaId = "00000000-0000-0000-0000-000000000000",
                     Answer = "Answer2!"
@@ -52,6 +53,7 @@ namespace SvoyaIgra.DbMigrations.Data
                     Type = QuestionType.Text,
                     Difficulty = QuestionDifficulty.Level3,
                     TopicId = 1,
+                    AuthorId = 1,
                     Text = "Question3?",
                     MultimediaId = "00000000-0000-0000-0000-000000000000",
                     Answer = "Answer3!"
@@ -61,6 +63,7 @@ namespace SvoyaIgra.DbMigrations.Data
                     Type = QuestionType.Text,
                     Difficulty = QuestionDifficulty.Level4,
                     TopicId = 1,
+                    AuthorId = 1,
                     Text = "Question4?",
                     MultimediaId = "00000000-0000-0000-0000-000000000000",
                     Answer = "Answer4!"
@@ -70,6 +73,7 @@ namespace SvoyaIgra.DbMigrations.Data
                     Type = QuestionType.Text,
                     Difficulty = QuestionDifficulty.Level5,
                     TopicId = 1,
+                    AuthorId = 1,
                     Text = "Question5?",
                     MultimediaId = "00000000-0000-0000-0000-000000000000",
                     Answer = "Answer5!"

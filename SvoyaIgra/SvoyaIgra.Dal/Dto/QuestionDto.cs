@@ -14,6 +14,7 @@ namespace SvoyaIgra.Dal.Dto
         public QuestionDifficulty Difficulty { get; set; }
 
         public int TopicId { get; set; }
+        public int AuthorId { get; set; }
 
         public string Text { get; set; }
 
@@ -31,6 +32,7 @@ namespace SvoyaIgra.Dal.Dto
         public QuestionDifficulty Difficulty { get; set; }
 
         public int TopicId { get; set; }
+        public int AuthorId { get; set; }
 
         public string Text { get; set; }
 
@@ -50,6 +52,7 @@ namespace SvoyaIgra.Dal.Dto
         public QuestionDifficulty Difficulty { get; set; }
 
         public int TopicId { get; set; }
+        public int AuthorId { get; set; }
 
         public string Text { get; set; }
 

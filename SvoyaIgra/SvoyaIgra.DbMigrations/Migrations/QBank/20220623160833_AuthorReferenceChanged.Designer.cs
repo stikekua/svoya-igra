@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SvoyaIgra.DbMigrations.DbContexts;
 
@@ -10,9 +11,10 @@ using SvoyaIgra.DbMigrations.DbContexts;
 namespace SvoyaIgra.DbMigrations.Migrations.QBank
 {
     [DbContext(typeof(QBankDbMigrationContext))]
-    partial class QBankDbMigrationContextModelSnapshot : ModelSnapshot
+    [Migration("20220623160833_AuthorReferenceChanged")]
+    partial class AuthorReferenceChanged
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

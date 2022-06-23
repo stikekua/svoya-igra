@@ -31,6 +31,15 @@ public class AuthorService<TContext> : IAuthorService where TContext : DbContext
         return author?.ToDto();
     }
 
+    public async Task<AuthorDto?> GetAuthorAsync(string name)
+    {
+        var author = await _dbContext.Set<Author>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Name == name);
+
+        return author?.ToDto();
+    }
+
     public async Task<AuthorDto?> CreateAuthorAsync(string name)
     {
         var author = new Author
@@ -52,12 +61,12 @@ public class AuthorService<TContext> : IAuthorService where TContext : DbContext
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<TopicDto>?> GetAuthorTopicsAsync(int authorId)
+    public async Task<IEnumerable<QuestionDto>?> GetAuthorQuestionsAsync(int authorId)
     {
-        var topics = _dbContext.Set<Topic>()
-            .Where(t => t.AuthorId == authorId)
+        var questions = _dbContext.Set<Question>()
+            .Where(q => q.AuthorId == authorId)
             .AsNoTracking();
 
-        return topics.Select(t => t.ToDto());
+        return questions.Select(q => q.ToDto());
     }
 }

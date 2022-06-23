@@ -31,6 +31,15 @@ public class TopicService<TContext> : ITopicService where TContext : DbContext
         return topic?.ToDto();
     }
 
+    public async Task<TopicDto?> GetTopicAsync(string name)
+    {
+        var topic = await _dbContext.Set<Topic>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Name == name);
+
+        return topic?.ToDto();
+    }
+
     public async Task<IEnumerable<QuestionDto>?> GetTopicQuestionsAsync(int topicId)
     {
         var questions = _dbContext.Set<Question>()
