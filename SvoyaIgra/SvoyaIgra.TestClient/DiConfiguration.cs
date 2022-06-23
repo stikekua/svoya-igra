@@ -14,6 +14,7 @@ static class DiConfiguration
         services.AddScoped<IAuthorService, AuthorService<SvoyaIgraDbContext>>();
         services.AddScoped<ITopicService, TopicService<SvoyaIgraDbContext>>();
         services.AddScoped<IQuestionService, QuestionService<SvoyaIgraDbContext>>();
+        services.AddScoped<IGameService, GameService<SvoyaIgraDbContext>>();
         services.AddScoped<IImportService, ImportService>();
         services.AddTransient<IAuthorActions, AuthorActions>();
         services.AddTransient<ITopicActions, TopicActions>();

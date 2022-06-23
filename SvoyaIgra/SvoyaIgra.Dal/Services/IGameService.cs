@@ -9,14 +9,7 @@ namespace SvoyaIgra.Dal.Services
         /// </summary>
         /// <returns></returns>
         public Task<IEnumerable<TopicDto>> GetTopicsAsync();
-
-        /// <summary>
-        /// returns randomly 18 topics with the specified topics included
-        /// </summary>
-        /// <param name="topicNames">specified topics names</param>
-        /// <returns></returns>
-        public Task<IEnumerable<TopicDto>> GetTopicsAsync(string[] topicNames);
-
+        
         /// <summary>
         /// returns randomly 7 topics for final round
         /// </summary>
