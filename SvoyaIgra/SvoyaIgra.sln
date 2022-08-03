@@ -11,9 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.DbMigrations", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.TestClient", "SvoyaIgra.TestClient\SvoyaIgra.TestClient.csproj", "{64DDFE0C-AEE5-4876-B886-F6B3DC810E40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.TestClient", "SvoyaIgra.TestClient\SvoyaIgra.TestClient.csproj", "{64DDFE0C-AEE5-4876-B886-F6B3DC810E40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.ImportCSV", "SvoyaIgra.ImportCSV\SvoyaIgra.ImportCSV.csproj", "{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.ImportCSV", "SvoyaIgra.ImportCSV\SvoyaIgra.ImportCSV.csproj", "{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.WebSocketProvider", "SvoyaIgra.WebSocketProvider\SvoyaIgra.WebSocketProvider.csproj", "{A6162745-90DB-4CA6-93DB-40E5736B98AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Btn.WSTestServer", "SvoyaIgra.Btn.WSTestServer\SvoyaIgra.Btn.WSTestServer.csproj", "{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Btn.WSTestClient", "SvoyaIgra.Btn.WSTestClient\SvoyaIgra.Btn.WSTestClient.csproj", "{03365EEC-CAEB-415F-A799-BEE2B7749970}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,12 +47,26 @@ Global
 		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6162745-90DB-4CA6-93DB-40E5736B98AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6162745-90DB-4CA6-93DB-40E5736B98AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6162745-90DB-4CA6-93DB-40E5736B98AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6162745-90DB-4CA6-93DB-40E5736B98AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{64DDFE0C-AEE5-4876-B886-F6B3DC810E40} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
+		{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
+		{03365EEC-CAEB-415F-A799-BEE2B7749970} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {345BEA43-5C4A-4720-9A0F-886F36BDD4A7}
