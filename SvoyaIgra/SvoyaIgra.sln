@@ -15,11 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.TestClient", "Svo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.ImportCSV", "SvoyaIgra.ImportCSV\SvoyaIgra.ImportCSV.csproj", "{04C9F9B1-FA08-469C-A5A6-2DFE763FBA50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.WebSocketProvider", "SvoyaIgra.WebSocketProvider\SvoyaIgra.WebSocketProvider.csproj", "{A6162745-90DB-4CA6-93DB-40E5736B98AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.WebSocketProvider", "SvoyaIgra.WebSocketProvider\SvoyaIgra.WebSocketProvider.csproj", "{A6162745-90DB-4CA6-93DB-40E5736B98AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Btn.WSTestServer", "SvoyaIgra.Btn.WSTestServer\SvoyaIgra.Btn.WSTestServer.csproj", "{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Btn.WSTestServer", "SvoyaIgra.Btn.WSTestServer\SvoyaIgra.Btn.WSTestServer.csproj", "{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Btn.WSTestClient", "SvoyaIgra.Btn.WSTestClient\SvoyaIgra.Btn.WSTestClient.csproj", "{03365EEC-CAEB-415F-A799-BEE2B7749970}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Btn.WSTestClient", "SvoyaIgra.Btn.WSTestClient\SvoyaIgra.Btn.WSTestClient.csproj", "{03365EEC-CAEB-415F-A799-BEE2B7749970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Game", "SvoyaIgra.Cockpit\SvoyaIgra.Game.csproj", "{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
