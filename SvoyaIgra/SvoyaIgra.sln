@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Btn.WSTestServer"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Btn.WSTestClient", "SvoyaIgra.Btn.WSTestClient\SvoyaIgra.Btn.WSTestClient.csproj", "{03365EEC-CAEB-415F-A799-BEE2B7749970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Game", "SvoyaIgra.Cockpit\SvoyaIgra.Game.csproj", "{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Game", "SvoyaIgra.Game\SvoyaIgra.Game.csproj", "{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
