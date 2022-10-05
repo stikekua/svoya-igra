@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="SvoyaIgra.Btn.ButtonClient.View.ButtonsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SvoyaIgra.Btn.ButtonClient.View"
+      xmlns:behaviors="clr-namespace:SvoyaIgra.Btn.ButtonClient.Behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" FontSize="32" Text="Players Buttons"/>
+            <Button Grid.Column="1" Content="Exit" FontSize="16"/>
+        </Grid>
+
+        <StackPanel  Grid.Row="1" Orientation="Horizontal" >
+            <TextBlock FontSize="16" FontWeight="Bold" Text="Server" Margin="0 0 10 0"/>
+            <TextBlock FontSize="16" Text="Address:" Margin="10 0 5 0"/>
+            <TextBox MinWidth="150" Margin="0 0 10 0"></TextBox>
+            <Button Content="Connect" Padding="10 5" Margin="0 0 10 0" Command="{Binding Path=ConnectCommand}" />
+            <Button Content="Disconnect" Padding="10 5" Margin="0 0 10 0" Command="{Binding Path=DisconnectCommand}" />
+        </StackPanel>
+
+        <Grid Grid.Row="2" Margin="0 20 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" BorderBrush="{StaticResource BorderPrimary}" BorderThickness="1" CornerRadius="10" Margin="20 0 0 0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Content="RED" Background="Red" Foreground="White" 
+                            Command="{Binding Path=PlayerButtonCommand}" />
+                    <Button Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Content="GREEN" Background="Green" Foreground="White" 
+                            Command="{Binding Path=PlayerButtonCommand}" />
+                    <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Content="BLUE" Background="Blue" Foreground="White" 
+                            Command="{Binding Path=PlayerButtonCommand}" />
+                    <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                            Content="YELLOW" Background="Yellow" Foreground="Black" 
+                            Command="{Binding Path=PlayerButtonCommand}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" BorderBrush="{StaticResource BorderPrimary}" BorderThickness="1" CornerRadius="10">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Grid.Row="0" ItemsSource="{Binding Path=LogList}"
+                             behaviors:ListBoxBehavior.AutoScroll="True"
+                             Background="White">
+                    </ListBox>
+                    <Button Grid.Row="1" Content="Clear" VerticalAlignment="Center" Padding="15 5" Margin="0 10 0 0"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>
