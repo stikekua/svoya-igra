@@ -35,14 +35,14 @@ namespace SvoyaIgra.WebSocketProvider.Client
             _ws.OnError += OnWebsocketError;
             _ws.OnMessage += OnWebsocketReceived;
         }
-
+        
         public bool Connect()
         {
             try
             {
                 _log.Debug($"Try to connect to the server {_wsUri}");
                 _ws.Connect();
-                _log.Debug($"Conneected to the server {_wsUri}");
+                _log.Debug($"Connected to the server {_wsUri}");
                 return true;
             }
             catch (Exception e)

@@ -47,7 +47,7 @@ namespace SvoyaIgra.WebSocketProvider.Server
             _wssv.Start();
             if (_wssv.IsListening)
             {
-                _log.Debug("The server started successfully");
+                _log.Debug($"The server started successfully {_wssv.Address}:{_wssv.Port}");
                 Started?.Invoke();
                 foreach (var path in _wssv.WebSocketServices.Paths)
                 {

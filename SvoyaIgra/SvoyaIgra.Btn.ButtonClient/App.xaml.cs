@@ -28,9 +28,6 @@ namespace SvoyaIgra.Btn.ButtonClient
 
             _globalData = new GlobalData();
 
-            // WebSocketClient
-            _globalData.WebSocketClient = new WebSocketClientProvider();
-
             var vm = new MainViewModel(_globalData);
             var window = new MainWindow();
             window.DataContext = vm;

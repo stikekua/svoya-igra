@@ -1,61 +1,95 @@
-﻿using System;
+﻿using log4net;
+using SvoyaIgra.Btn.ButtonClient.Helpers;
+using SvoyaIgra.Btn.ButtonClient.ViewModel.Base;
+using SvoyaIgra.WebSocketProvider.Client;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
-using log4net;
-using SvoyaIgra.Btn.ButtonClient.ViewModel.Base;
-using SvoyaIgra.Btn.ButtonClient.Helpers;
-using SvoyaIgra.WebSocketProvider.Client;
 
 namespace SvoyaIgra.Btn.ButtonClient.ViewModel;
 
-public class MainViewModel : ViewModelBase, IMainViewModel
+public sealed class MainViewModel : ViewModelBase, IMainViewModel
 {
     // Logging support
     private static readonly ILog _log = LogManager.GetLogger(typeof(MainViewModel));
 
     private readonly IGlobalData _globalData;
-    private bool IsConnect;
+
+    private string _serverAddress;
+    private bool _isConnect;
+
+    public string ServerAddress
+    {
+        get => _serverAddress;
+        set => SetProperty(ref _serverAddress, value);
+    }
+
+    public bool IsConnect
+    {
+        get => _isConnect;
+        set
+        {
+            SetProperty(ref _isConnect, value);
+            ConnectCommand?.OnCanExecuteChanged();
+            DisconnectCommand?.OnCanExecuteChanged();
+        }
+    }
 
     public DelegateCommand ConnectCommand { get; set; }
     public DelegateCommand DisconnectCommand { get; set; }
 
-    public ObservableCollection<string> LogList { get; } = new ObservableCollection<string>();
+    public ObservableCollection<string> LogList { get; private set; } = new ObservableCollection<string>();
     private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
     public DelegateCommand PlayerButtonCommand { get; set; }
+    public DelegateCommand ClearButtonCommand { get; set; }
 
 
     public MainViewModel(IGlobalData globalData)
     {
         _globalData = globalData;
-        _globalData.WebSocketClient.Opened += Wss_Opened;
-        _globalData.WebSocketClient.Closed += Wss_Closed;
-        _globalData.WebSocketClient.Error += Wss_Error;
-        _globalData.WebSocketClient.Received += Wss_NewMessage;
+
+        ServerAddress = "ws://localhost:81";
 
         IsConnect = false;
 
-        ConnectCommand = new DelegateCommand(OnConnectButtonPressed);
-        DisconnectCommand = new DelegateCommand(OnDisconnectButtonPressed);
+        ConnectCommand = new DelegateCommand(OnConnectButtonPressed, CanConnectButtonPress);
+        DisconnectCommand = new DelegateCommand(OnDisconnectButtonPressed, CanDisconnectButtonPress);
 
         PlayerButtonCommand = new DelegateCommand(OnPlayerButtonPressed);
+        ClearButtonCommand = new DelegateCommand(OnClearButtonPressed);
+    }
+
+    private void OnClearButtonPressed(object obj)
+    {
+        LogList.Clear();
     }
 
     private void OnPlayerButtonPressed(object obj)
     {
-        _log.Info("ButtonPressed: RED");
-        if (_globalData.WebSocketClient.Send("RED"))
+        _log.Info($"ButtonPressed: {obj}");
+        if (_globalData.WebSocketClient.Send($"{obj}"))
         {
-            AddToLogList($"C: RED");
+            AddToLogList($"C: {obj}");
         }
     }
 
     private void OnConnectButtonPressed(object obj)
     {
+        // WebSocketClient
+        _globalData.WebSocketClient = new WebSocketClientProvider(ServerAddress);
+
+        _globalData.WebSocketClient.Opened += Wss_Opened;
+        _globalData.WebSocketClient.Closed += Wss_Closed;
+        _globalData.WebSocketClient.Error += Wss_Error;
+        _globalData.WebSocketClient.Received += Wss_NewMessage;
+
+        _log.Info($"wsClient connecting to {ServerAddress}");
+        AddToLogList($"wsClient connecting to {ServerAddress}");
         if (_globalData.WebSocketClient.Connect())
         {
-            _log.Info("wsClient connecting");
-            AddToLogList($"Info wsClient connecting");
+            _log.Info("wsClient connected");
+            AddToLogList($"Info wsClient connected");
             IsConnect = true;
         }
         else
@@ -70,6 +104,16 @@ public class MainViewModel : ViewModelBase, IMainViewModel
         AddToLogList($"Info wsClient disconnecting");
         _globalData.WebSocketClient.Dispose();
         IsConnect = false;
+    }
+
+    public bool CanDisconnectButtonPress(object obj)
+    {
+        return IsConnect;
+    }
+
+    public bool CanConnectButtonPress(object obj)
+    {
+        return !IsConnect;
     }
 
     private void Wss_Opened()
