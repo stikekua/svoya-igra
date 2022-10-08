@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SvoyaIgra.Shared\SvoyaIgra.Shared.csproj" />
     <ProjectReference Include="..\SvoyaIgra.WebSocketProvider\SvoyaIgra.WebSocketProvider.csproj" />
   </ItemGroup>
 

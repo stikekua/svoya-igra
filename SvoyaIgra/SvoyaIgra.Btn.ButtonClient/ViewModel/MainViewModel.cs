@@ -68,9 +68,12 @@ public sealed class MainViewModel : ViewModelBase, IMainViewModel
     private void OnPlayerButtonPressed(object obj)
     {
         _log.Info($"ButtonPressed: {obj}");
-        if (_globalData.WebSocketClient.Send($"{obj}"))
+        if (_globalData.WebSocketClient != null)
         {
-            AddToLogList($"C: {obj}");
+            if (_globalData.WebSocketClient.Send($"{obj}"))
+            {
+                AddToLogList($"C: {obj}");
+            }
         }
     }
 
