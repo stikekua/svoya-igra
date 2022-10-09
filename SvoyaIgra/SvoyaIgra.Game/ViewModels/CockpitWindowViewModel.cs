@@ -19,15 +19,61 @@ namespace SvoyaIgra.Game.ViewModels
         #endregion
 
         #region PlayScreen
-        public PlayScreenWindow PlayScreenWindow { get; set; }
+
+        PlayScreenWindow _playScreenWindow=null;
+        public PlayScreenWindow PlayScreenWindow 
+        { 
+            get
+            {
+                return _playScreenWindow;
+            }
+            set
+            {
+                if (_playScreenWindow!=value)
+                {
+                    _playScreenWindow = value;
+                    OnPropertyChanged(nameof(PlayScreenWindow));
+                    OnPropertyChanged(nameof(PlayScreenRunning));
+                }
+            }
+        }
+
         public PlayScreenViewModel PlayScreenViewModel { get; set; }
+
+        public bool PlayScreenRunning
+        {
+            get
+            {
+               if (PlayScreenWindow!=null) return true;
+               return false;
+            }
+        }
+
+        bool _playScreenLocked = false;
+        public bool PlayScreenLocked
+        {
+            get
+            {
+                return _playScreenLocked;
+            }
+            set
+            {
+                if (_playScreenLocked != value)
+                {
+                    _playScreenLocked = value;
+                    OnPropertyChanged(nameof(PlayScreenLocked));
+                    LockPresentScreenMethod(value);
+
+                }
+            }
+        }
+
 
         #region RelayCommands
         public RelayCommand OpenPresentScreenCommand { get; set; } 
         public RelayCommand ClosePresentScreenCommand { get; set; } 
         public RelayCommand MinimizePresentScreenCommand { get; set; } 
         public RelayCommand MaximizePresentScreenCommand { get; set; }
-        public RelayCommand MovePresentScreenCommand { get; set; }
 
         #endregion
 
@@ -42,19 +88,28 @@ namespace SvoyaIgra.Game.ViewModels
           ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
           MinimizePresentScreenCommand = new RelayCommand(MinimizePresentScreenMethod);
           MaximizePresentScreenCommand = new RelayCommand(MaximizePresentScreenMethod);
-          MovePresentScreenCommand = new RelayCommand(MovePresentScreenMethod);
-
-
         }
 
         #region Methods
 
-        private void MovePresentScreenMethod(object obj)
+        private void LockPresentScreenMethod(bool parameter)
         {
             if (PlayScreenWindow != null && PlayScreenViewModel != null)
             {
-               // PlayScreenWindow.;  working on it
+                if (parameter)
+                {
+                    PlayScreenViewModel.WindowState = WindowState.Maximized;
+                    PlayScreenWindow.Topmost = true;
+                    PlayScreenWindow.WindowStyle = WindowStyle.None;
+                }
+                else
+                {
+                    PlayScreenWindow.Topmost = false;
+                    PlayScreenWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+                }
             }
+                
+
         }
 
         private void MinimizePresentScreenMethod(object obj)
@@ -86,8 +141,8 @@ namespace SvoyaIgra.Game.ViewModels
             PlayScreenViewModel = new PlayScreenViewModel();
             PlayScreenWindow  = new PlayScreenWindow();
             PlayScreenWindow.DataContext = PlayScreenViewModel;
-            PlayScreenWindow.Show();
-            
+            PlayScreenWindow.WindowState = WindowState.Maximized;
+            PlayScreenWindow.Show();            
         }
 
 

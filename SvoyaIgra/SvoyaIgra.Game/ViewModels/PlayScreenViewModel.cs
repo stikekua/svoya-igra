@@ -20,8 +20,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-
-
+        
         #endregion
 
         #region Constructors

@@ -8,7 +8,7 @@
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
         mc:Ignorable="d"
         Title="CockpitWindow" 
-        Height="500" 
+        Height="500"         
         Width="500"
         WindowStyle="SingleBorderWindow">
     <Window.DataContext>
@@ -28,7 +28,8 @@
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" x:Name="ThisWindowPanelGrid">
-            <Button Content="Close app" Command="{Binding CloseAppCommand}"/>
+            <Button Content="Close app" Command="{Binding CloseAppCommand}"
+                    IsEnabled="{Binding PlayScreenRunning}"/>
         </Grid>
         <Grid Grid.Row="1" x:Name="PresentWindowControlGrid">
             <Grid.ColumnDefinitions>
@@ -37,11 +38,29 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="WindowControlGrid">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Open" Command="{Binding OpenPresentScreenCommand}"/>
-                    <Button Content="Close" Command="{Binding ClosePresentScreenCommand}"/>
-                    <Button Content="Minimize" Command="{Binding MinimizePresentScreenCommand}"/>
-                    <Button Content="Maximize" Command="{Binding MaximizePresentScreenCommand}"/>
-                    <Button Content="Move" Command="{Binding MovePresentScreenCommand}"/>
+                    <Button Content="Open" Command="{Binding OpenPresentScreenCommand}">
+                        <Button.Resources>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlayScreenRunning}" Value="True">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PlayScreenRunning}" Value="False">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Resources>                        
+                    </Button>
+                    <Button Content="Close" 
+                            Command="{Binding ClosePresentScreenCommand}"
+                            IsEnabled="{Binding PlayScreenRunning}"/>
+                    <CheckBox 
+                        Command="{Binding MovePresentScreenCommand}"
+                        IsChecked="{Binding PlayScreenLocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsEnabled="{Binding PlayScreenRunning, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBlock Text="Lock playscreen" TextWrapping="Wrap"/>
+                    </CheckBox>
                 </StackPanel>
                 
             </Grid>
