@@ -3,11 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gf="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
         xmlns:local="clr-namespace:SvoyaIgra.Game.Views"
         mc:Ignorable="d"
-        Title="PlayScreenWindow" Height="450" Width="800"
+        Title="PlayScreenWindow" Height="1080" Width="1920"
         WindowState="{Binding WindowState, UpdateSourceTrigger=PropertyChanged}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
+    </Window.Resources>
     <Grid>
-        <Label Content="I am playscreen" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" x:Name="PlayerScoreGrid">
+            <Label Content="Here will be player results" FontSize="20" HorizontalAlignment="Center"/>
+        </Grid>
+        <DockPanel Grid.Row="1" x:Name="MainScreenPart">
+            <gf:FirstRoundIntro Visibility="{Binding IsFirstRoundIntro, Converter={StaticResource visibilityConverter}}"/>
+            <gf:NormalRound Visibility="{Binding IsNormalRound, Converter={StaticResource visibilityConverter}}"/>
+        </DockPanel>
     </Grid>
 </Window>

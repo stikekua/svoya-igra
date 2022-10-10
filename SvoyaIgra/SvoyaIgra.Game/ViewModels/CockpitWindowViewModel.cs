@@ -74,6 +74,10 @@ namespace SvoyaIgra.Game.ViewModels
         public RelayCommand ClosePresentScreenCommand { get; set; } 
         public RelayCommand MinimizePresentScreenCommand { get; set; } 
         public RelayCommand MaximizePresentScreenCommand { get; set; }
+        public RelayCommand ChangeGamePhaseCommand { get; set; }
+
+
+        
 
         #endregion
 
@@ -86,8 +90,18 @@ namespace SvoyaIgra.Game.ViewModels
           CloseAppCommand  = new RelayCommand(CloseAppMethod);
           OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
           ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
-          MinimizePresentScreenCommand = new RelayCommand(MinimizePresentScreenMethod);
-          MaximizePresentScreenCommand = new RelayCommand(MaximizePresentScreenMethod);
+
+            ChangeGamePhaseCommand = new RelayCommand(ChangeGamePhaseMethod);
+
+        }
+
+        private void ChangeGamePhaseMethod(object obj)
+        {
+            if (PlayScreenWindow != null && PlayScreenViewModel != null)
+            {
+                if (PlayScreenViewModel.GamePhase == 0) PlayScreenViewModel.GamePhase = 1;
+                else PlayScreenViewModel.GamePhase = 0;
+            }
         }
 
         #region Methods
