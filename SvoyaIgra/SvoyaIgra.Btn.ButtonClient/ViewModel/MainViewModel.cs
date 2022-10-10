@@ -18,22 +18,24 @@ public partial class MainViewModel : IMainViewModel
     private readonly IGlobalData _globalData;
 
     [ObservableProperty]
-    string _serverAddress;
+    private string _serverAddress;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
     [NotifyCanExecuteChangedFor(nameof(DisconnectCommand))]
     private bool _isConnect;
-    
-    public ObservableCollection<string> LogList { get; } = new ObservableCollection<string>();
+
+    [ObservableProperty]
+    private ObservableCollection<string> _logList = new ();
+
     private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
     
     public MainViewModel(IGlobalData globalData)
     {
         _globalData = globalData;
 
-        ServerAddress = "ws://localhost:81";
-        IsConnect = false;
+        _serverAddress = "ws://localhost:81";
+        _isConnect = false;
         
     }
 
