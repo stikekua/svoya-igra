@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game"
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
@@ -13,7 +14,7 @@
         WindowState="Maximized"
         WindowStyle="SingleBorderWindow">
     <Window.DataContext>
-        <viewModels:CockpitWindowViewModel/>
+        <viewModels:GameViewModel/>
     </Window.DataContext>
 
 
@@ -115,9 +116,67 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="WindowControlGrid">
-                <Button Content="Change Game Phase"
-                        Command="{Binding ChangeGamePhaseCommand}"
-                        IsEnabled="{Binding PlayScreenRunning}"/>
+                <StackPanel Orientation="Horizontal" 
+                            Height="50" 
+                            VerticalAlignment="Top"
+                            IsEnabled="{Binding PlayScreenRunning}">
+                    <RadioButton GroupName="GamePhase" Content="Game Intro" Command="{Binding ChangeGamePhaseCommand}" IsChecked="True">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>0</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" Content="First round Intro" Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>1</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" Content="First round" Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>2</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="Second round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>3</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" Content="Second round" 
+                                 Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>4</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" Content="Third round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>5</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" Content="Third round" 
+                                 Command="{Binding ChangeGamePhaseCommand}" >
+                        <RadioButton.CommandParameter>
+                            <system:Int32>6</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="Final round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>7</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="Final round" 
+                                 Command="{Binding ChangeGamePhaseCommand}">
+                        <RadioButton.CommandParameter>
+                            <system:Int32>8</system:Int32>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                </StackPanel>
+                
+
             </Grid>
             <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
                 

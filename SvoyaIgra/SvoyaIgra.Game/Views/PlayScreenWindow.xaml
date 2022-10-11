@@ -7,12 +7,13 @@
         xmlns:local="clr-namespace:SvoyaIgra.Game.Views"
         mc:Ignorable="d"
         Title="PlayScreenWindow" Height="1080" Width="1920"
-        WindowState="{Binding WindowState, UpdateSourceTrigger=PropertyChanged}">
+        WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -20,8 +21,23 @@
             <Label Content="Here will be player results" FontSize="20" HorizontalAlignment="Center"/>
         </Grid>
         <DockPanel Grid.Row="1" x:Name="MainScreenPart">
+            <gf:GameIntro       Visibility="{Binding IsGameIntro, Converter={StaticResource visibilityConverter}}"/>
             <gf:FirstRoundIntro Visibility="{Binding IsFirstRoundIntro, Converter={StaticResource visibilityConverter}}"/>
-            <gf:NormalRound Visibility="{Binding IsNormalRound, Converter={StaticResource visibilityConverter}}"/>
+            <gf:NormalRound     Visibility="{Binding IsFirstRound, Converter={StaticResource visibilityConverter}}"
+                            />
+            <gf:SecondRoundIntro Visibility="{Binding IsSecondRoundIntro, Converter={StaticResource visibilityConverter}}"
+                            />
+            <gf:NormalRound Visibility="{Binding IsSecondRound, Converter={StaticResource visibilityConverter}}"
+                            />
+            <gf:ThirdRoundIntro Visibility="{Binding IsThirdRoundIntro, Converter={StaticResource visibilityConverter}}"
+                            />
+            <gf:NormalRound Visibility="{Binding IsThirdRound, Converter={StaticResource visibilityConverter}}"
+                            />
+            <gf:FinalRoundIntro Visibility="{Binding IsFinalRoundIntro, Converter={StaticResource visibilityConverter}}"
+                            />
+            <gf:FinalRound Visibility="{Binding IsFinalRound, Converter={StaticResource visibilityConverter}}"
+                            />
         </DockPanel>
+
     </Grid>
 </Window>
