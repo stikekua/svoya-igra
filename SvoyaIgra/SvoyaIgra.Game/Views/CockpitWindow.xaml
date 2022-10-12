@@ -9,9 +9,8 @@
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
         mc:Ignorable="d"
         Title="CockpitWindow" 
-        Height="1080"         
-        Width="1920"
-        WindowState="Maximized"
+        Height="800"         
+        Width="700"
         WindowStyle="SingleBorderWindow">
     <Window.DataContext>
         <viewModels:GameViewModel/>
@@ -94,9 +93,8 @@
                     <StackPanel Orientation="Horizontal" >
                         <CheckBox Style="{StaticResource CheckBoxWindow}"
                                   VerticalAlignment="Center"
-                                  Command="{Binding MovePresentScreenCommand}"
-                                  IsChecked="{Binding PlayScreenLocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  IsEnabled="{Binding PlayScreenRunning, UpdateSourceTrigger=PropertyChanged}"/>
+                                  IsChecked="{Binding PlayScreenLocked}"
+                                  IsEnabled="{Binding PlayScreenRunning}"/>
                         <TextBlock Text="Lock Playscreen" 
                                        Style="{StaticResource DefaultTextBlock}"/>
                     </StackPanel>
@@ -112,7 +110,7 @@
         </Grid>
         <Grid Grid.Row="1" x:Name="PresentWindowControlGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="WindowControlGrid">
@@ -158,7 +156,11 @@
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRound}"/>
                 </StackPanel>
-                
+                <StackPanel VerticalAlignment="Bottom">
+                    <Button Content="Get Questions" Command="{Binding GetQuestions}"
+                            Width="150" Height="50"/>
+
+                </StackPanel>
 
             </Grid>
             <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">

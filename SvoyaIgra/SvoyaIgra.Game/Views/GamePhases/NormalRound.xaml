@@ -3,9 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
              xmlns:local="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:Background="White">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
+        <helpers:QuestionIndexesConverter x:Key="multivalueConverer"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -23,11 +30,269 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" x:Name="Topic1" Text="topic1"/>
-        <TextBlock Grid.Row="1" x:Name="Topic2" Text="topic2"/>
-        <TextBlock Grid.Row="2" x:Name="Topic3" Text="topic3"/>
-        <TextBlock Grid.Row="3" x:Name="Topic4" Text="topic4"/>
-        <TextBlock Grid.Row="4" x:Name="Topic5" Text="topic5"/>
-        <TextBlock Grid.Row="5" x:Name="Topic6" Text="topic6"/>
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="MinWidth" Value="100"/>
+                <Setter Property="FontSize" Value="15"/>
+            </Style>
+            
+        </Grid.Resources>
+        <TextBlock Grid.Row="0" x:Name="Topic1" Text="{Binding CurrentRoundQuestions.Topics[0].Name}"/>
+        <TextBlock Grid.Row="1" x:Name="Topic2" Text="{Binding CurrentRoundQuestions.Topics[1].Name}"/>
+        <TextBlock Grid.Row="2" x:Name="Topic3" Text="{Binding CurrentRoundQuestions.Topics[2].Name}"/>
+        <TextBlock Grid.Row="3" x:Name="Topic4" Text="{Binding CurrentRoundQuestions.Topics[3].Name}"/>
+        <TextBlock Grid.Row="4" x:Name="Topic5" Text="{Binding CurrentRoundQuestions.Topics[4].Name}"/>
+        <TextBlock Grid.Row="5" x:Name="Topic6" Text="{Binding CurrentRoundQuestions.Topics[5].Name}"/>
+
+        <Button Grid.Row="0" Grid.Column="1" x:Name="Topic1Question1" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>0</system:Int32>
+                    <system:Int32>0</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="2" x:Name="Topic1Question2" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>0</system:Int32>
+                    <system:Int32>1</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="3" x:Name="Topic1Question3" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>0</system:Int32>
+                    <system:Int32>2</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="4" x:Name="Topic1Question4" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>0</system:Int32>
+                    <system:Int32>3</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="5" x:Name="Topic1Question5" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>0</system:Int32>
+                    <system:Int32>4</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+
+        <Button Grid.Row="1" Grid.Column="1" x:Name="Topic2Question1" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>1</system:Int32>
+                    <system:Int32>0</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="2" x:Name="Topic2Question2" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>1</system:Int32>
+                    <system:Int32>1</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="3" x:Name="Topic2Question3" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>1</system:Int32>
+                    <system:Int32>2</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="4" x:Name="Topic2Question4" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>1</system:Int32>
+                    <system:Int32>3</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="1" Grid.Column="5" x:Name="Topic2Question5" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>1</system:Int32>
+                    <system:Int32>4</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+
+        <Button Grid.Row="2" Grid.Column="1" x:Name="Topic3Question1" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>2</system:Int32>
+                    <system:Int32>0</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="2" Grid.Column="2" x:Name="Topic3Question2" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>2</system:Int32>
+                    <system:Int32>1</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="2" Grid.Column="3" x:Name="Topic3Question3" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>2</system:Int32>
+                    <system:Int32>2</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="2" Grid.Column="4" x:Name="Topic3Question4" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>2</system:Int32>
+                    <system:Int32>3</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="2" Grid.Column="5" x:Name="Topic3Question5" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>2</system:Int32>
+                    <system:Int32>4</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+
+        <Button Grid.Row="3" Grid.Column="1" x:Name="Topic4Question1" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>3</system:Int32>
+                    <system:Int32>0</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="3" Grid.Column="2" x:Name="Topic4Question2" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>3</system:Int32>
+                    <system:Int32>1</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="3" Grid.Column="3" x:Name="Topic4Question3" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>3</system:Int32>
+                    <system:Int32>2</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="3" Grid.Column="4" x:Name="Topic4Question4" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>3</system:Int32>
+                    <system:Int32>3</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="3" Grid.Column="5" x:Name="Topic4Question5" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>3</system:Int32>
+                    <system:Int32>4</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+
+        <Button Grid.Row="4" Grid.Column="1" x:Name="Topic5Question1" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>4</system:Int32>
+                    <system:Int32>0</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="4" Grid.Column="2" x:Name="Topic5Question2" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>4</system:Int32>
+                    <system:Int32>1</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="4" Grid.Column="3" x:Name="Topic5Question3" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>4</system:Int32>
+                    <system:Int32>2</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="4" Grid.Column="4" x:Name="Topic5Question4" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>4</system:Int32>
+                    <system:Int32>3</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="4" Grid.Column="5" x:Name="Topic5Question5" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>4</system:Int32>
+                    <system:Int32>4</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+
+        <Button Grid.Row="5" Grid.Column="1" x:Name="Topic6Question1" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>5</system:Int32>
+                    <system:Int32>0</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="2" x:Name="Topic6Question2" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>5</system:Int32>
+                    <system:Int32>1</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="3" x:Name="Topic6Question3" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>5</system:Int32>
+                    <system:Int32>2</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="4" x:Name="Topic6Question4" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>5</system:Int32>
+                    <system:Int32>3</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+        <Button Grid.Row="5" Grid.Column="5" x:Name="Topic6Question5" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource boolToVisConverter}}">
+            <Button.CommandParameter>
+                <x:Array Type="system:Object">
+                    <system:Int32>5</system:Int32>
+                    <system:Int32>4</system:Int32>
+                </x:Array>
+            </Button.CommandParameter>
+        </Button>
+
+
+
+
+
     </Grid>
 </UserControl>

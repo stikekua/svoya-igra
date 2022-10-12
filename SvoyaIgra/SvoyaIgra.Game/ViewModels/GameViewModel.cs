@@ -1,9 +1,14 @@
-﻿using SvoyaIgra.Game.ViewModels.Helpers;
+﻿using SvoyaIgra.Game.Metadata;
+using SvoyaIgra.Game.ViewModels.Helpers;
 using SvoyaIgra.Game.Views;
 using SvoyaIgra.Game.Views.GamePhases;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -81,6 +86,11 @@ namespace SvoyaIgra.Game.ViewModels
                 if (_gamePhase != value)
                 {
                     _gamePhase = value;
+                    if      (value == (int)GamePhaseEnum.FirstRound)    CurrentRoundQuestions = AllRoundsQuestions[0];
+                    else if (value == (int)GamePhaseEnum.SecondRound)   CurrentRoundQuestions = AllRoundsQuestions[1];
+                    else if (value == (int)GamePhaseEnum.ThirdRound)    CurrentRoundQuestions = AllRoundsQuestions[2];
+
+
                     OnPropertyChanged(nameof(GamePhase));
                     OnPropertyChanged(nameof(IsGameIntro));
                     OnPropertyChanged(nameof(IsFirstRoundIntro));
@@ -176,22 +186,76 @@ namespace SvoyaIgra.Game.ViewModels
         public RelayCommand ChangeGamePhaseCommand { get; set; }
 
 
-        
+
 
         #endregion
 
         #endregion
+
+
+        #region Questions
+
+        private RoundQuestions _currentRoundQuestions;
+        public RoundQuestions CurrentRoundQuestions
+        {
+            get { return _currentRoundQuestions; }
+            set
+            {
+                if (_currentRoundQuestions != value)
+                {
+                    _currentRoundQuestions = value;
+                    OnPropertyChanged(nameof(CurrentRoundQuestions));
+                }
+            }
+        }
+
+        List<RoundQuestions> AllRoundsQuestions { get; set; } = new List<RoundQuestions>();
+
+        public RelayCommand GetQuestions { get; set; }
+
+        public RelayCommand OpenQuestionCommand { get; set; }
+
+        #endregion
+
 
         #endregion
 
         public GameViewModel()
         {
-          CloseAppCommand  = new RelayCommand(CloseAppMethod);
-          OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
-          ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
+            CloseAppCommand  = new RelayCommand(CloseAppMethod);
+            OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
+            ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
 
-          ChangeGamePhaseCommand = new RelayCommand(ChangeGamePhaseMethod);
+            ChangeGamePhaseCommand = new RelayCommand(ChangeGamePhaseMethod);
 
+            GetQuestions = new RelayCommand(GetQuestionsMethod);
+            OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
+
+            ///test
+            GetQuestionsMethod(null);
+            OpenPresentScreenMethod(null);
+            ///
+
+        }
+
+        private void GetQuestionsMethod(object obj)
+        {
+            for (int z = 0; z < 3; z++)//rounds
+            {
+                var topics = new List<Topic>();
+                for (int i = 0; i < 6; i++) //topics
+                {
+                    var listOfQuestions = new List<Question>();
+                    for (int k = 0; k < 5; k++) //questions
+                    {
+                        listOfQuestions.Add(new Question("question " + k.ToString(), (k * 100 + 100)*(z+1)));
+                    }
+                    topics.Add(new Topic(listOfQuestions, "Round " + (z+1).ToString()+ " Topic " + i.ToString()));
+                    
+                }
+                AllRoundsQuestions.Add(new RoundQuestions(topics));
+            }
+            //FirstRoundDataContext = new RoundDataContext(1, new RoundQuestions(topics),IsFirstRound);
         }
 
         private void ChangeGamePhaseMethod(object obj)
@@ -217,9 +281,7 @@ namespace SvoyaIgra.Game.ViewModels
                     PlayScreenWindow.Topmost = false;
                     PlayScreenWindow.WindowStyle = WindowStyle.SingleBorderWindow;
                 }
-            }
-                
-
+            }               
         }
 
         private void ClosePresentScreenMethod(object obj)
@@ -233,11 +295,26 @@ namespace SvoyaIgra.Game.ViewModels
         private void OpenPresentScreenMethod(object obj)
         {
             PlayScreenWindow  = new PlayScreenWindow();
-           // PlayScreenWindow.DataContext = PlayScreenViewModel;
             PlayScreenWindow.DataContext = this;
             PlayScreenWindow.WindowState = WindowState.Maximized;
             PlayScreenWindow.Show();            
         }
+
+        private void OpenQuestionMethod(object obj)
+        {
+            var values = (object[])obj;
+            int topicIndex = (int)values[0];
+            int questionIndex = (int)values[1];
+            MessageBox.Show(String.Format("Topic: {0}, question:{1}, price {2}",
+                CurrentRoundQuestions.Topics[topicIndex].Name,
+                CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].QuestionText,
+                CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].Price));
+
+            CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].NotYetAsked = false;
+
+            OnPropertyChanged(nameof(CurrentRoundQuestions));
+        }
+
 
 
         private void CloseAppMethod(object obj)
