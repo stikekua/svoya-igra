@@ -7,6 +7,20 @@ using System.Windows;
 
 namespace SvoyaIgra.Game.ViewModels
 {
+    public enum GamePhaseEnum
+    {
+        GameIntro = 0,
+        FirstRoundIntro = 1,
+        FirstRound = 2,
+        SecondRoundIntro = 3,
+        SecondRound = 4,
+        ThirdRoundIntro = 5,
+        ThirdRound = 6,
+        FinalRoundIntro = 7,
+        FinalRound = 8,
+        Results = 9
+    }
+
     public class GameViewModel:ViewModelBase
     {
         #region Properties
@@ -17,19 +31,7 @@ namespace SvoyaIgra.Game.ViewModels
 
 
 
-        enum GamePhaseEnum
-        {
-            GameIntro           = 0,
-            FirstRoundIntro     = 1,
-            FirstRound          = 2,
-            SecondRoundIntro    = 3,
-            SecondRound         = 4,
-            ThirdRoundIntro     = 5,
-            ThirdRound          = 6,
-            FinalRoundIntro     = 7,
-            FinalRound          = 8,
-            Results             = 9
-        }
+
 
 
         #endregion
@@ -194,11 +196,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void ChangeGamePhaseMethod(object obj)
         {
-            int phase = (int)obj;
-            if (PlayScreenWindow != null)
-            {
-                GamePhase = phase;
-            }
+            int phase = Convert.ToInt32(obj);
+            if (PlayScreenWindow != null) GamePhase = phase;
         }
 
         #region Methods

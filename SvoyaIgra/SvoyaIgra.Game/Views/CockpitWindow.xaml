@@ -117,63 +117,46 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="WindowControlGrid">
                 <StackPanel Orientation="Horizontal" 
-                            Height="50" 
+                            Height="auto" 
+                            Width="auto"
                             VerticalAlignment="Top"
                             IsEnabled="{Binding PlayScreenRunning}">
-                    <RadioButton GroupName="GamePhase" Content="Game Intro" Command="{Binding ChangeGamePhaseCommand}" IsChecked="True">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>0</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                    <RadioButton GroupName="GamePhase" Content="First round Intro" Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>1</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                    <RadioButton GroupName="GamePhase" Content="First round" Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>2</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="Game Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.GameIntro}"
+                                 IsChecked="True"/>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="First round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}" 
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRoundIntro}"/>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="First round" 
+                                 Command="{Binding ChangeGamePhaseCommand}" 
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRound}"/>
                     <RadioButton GroupName="GamePhase" 
                                  Content="Second round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>3</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                    <RadioButton GroupName="GamePhase" Content="Second round" 
-                                 Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>4</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
-                    <RadioButton GroupName="GamePhase" Content="Third round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>5</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRoundIntro}"/>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="Second round" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRound}"/>
+                    <RadioButton GroupName="GamePhase" 
+                                 Content="Third round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}"/>
                     <RadioButton GroupName="GamePhase" Content="Third round" 
-                                 Command="{Binding ChangeGamePhaseCommand}" >
-                        <RadioButton.CommandParameter>
-                            <system:Int32>6</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
+                                 Command="{Binding ChangeGamePhaseCommand}" 
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRound}"/>
                     <RadioButton GroupName="GamePhase" 
                                  Content="Final round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>7</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRoundIntro}"/>
                     <RadioButton GroupName="GamePhase" 
                                  Content="Final round" 
-                                 Command="{Binding ChangeGamePhaseCommand}">
-                        <RadioButton.CommandParameter>
-                            <system:Int32>8</system:Int32>
-                        </RadioButton.CommandParameter>
-                    </RadioButton>
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRound}"/>
                 </StackPanel>
                 
 
