@@ -7,14 +7,23 @@
         xmlns:local="clr-namespace:SvoyaIgra.Game"
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="CockpitWindow" 
         Height="800"         
-        Width="700"
-        WindowStyle="SingleBorderWindow">
+        Width="900"
+        WindowStyle="SingleBorderWindow" >
     <Window.DataContext>
         <viewModels:GameViewModel/>
     </Window.DataContext>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseAppCommand}"  />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
 
 
     <Window.Resources>
@@ -54,6 +63,7 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -156,8 +166,11 @@
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRound}"/>
                 </StackPanel>
-                <StackPanel VerticalAlignment="Bottom">
+                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
                     <Button Content="Get Questions" Command="{Binding GetQuestions}"
+                            Width="150" Height="50"/>
+                    <Button Content="CloseQuestion" Command="{Binding ChangeGamePhaseCommand}" CommandParameter="{Binding PreviousGamePhase, UpdateSourceTrigger=PropertyChanged}"
+                            Visibility="{Binding IsQuestion, Converter={StaticResource BoolToVisibilityConverter}}"
                             Width="150" Height="50"/>
 
                 </StackPanel>

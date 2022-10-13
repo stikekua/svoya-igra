@@ -23,7 +23,19 @@ namespace SvoyaIgra.Game.ViewModels
         ThirdRound = 6,
         FinalRoundIntro = 7,
         FinalRound = 8,
-        Results = 9
+        Results = 9,
+
+        Question = 10
+
+    }
+
+    public enum QuestionTypeEnum
+    {
+        Text = 1,
+        Picture = 2,
+        PictureSeries = 3,
+        Musical = 4,
+        Video = 5
     }
 
     public class GameViewModel:ViewModelBase
@@ -83,53 +95,51 @@ namespace SvoyaIgra.Game.ViewModels
             get { return _gamePhase; }
             set
             {
+                PreviousGamePhase = _gamePhase;
                 if (_gamePhase != value)
                 {
                     _gamePhase = value;
-                    if      (value == (int)GamePhaseEnum.FirstRound)    CurrentRoundQuestions = AllRoundsQuestions[0];
-                    else if (value == (int)GamePhaseEnum.SecondRound)   CurrentRoundQuestions = AllRoundsQuestions[1];
-                    else if (value == (int)GamePhaseEnum.ThirdRound)    CurrentRoundQuestions = AllRoundsQuestions[2];
-
-
                     OnPropertyChanged(nameof(GamePhase));
-                    OnPropertyChanged(nameof(IsGameIntro));
-                    OnPropertyChanged(nameof(IsFirstRoundIntro));
-                    OnPropertyChanged(nameof(IsFirstRound));
-                    OnPropertyChanged(nameof(IsSecondRoundIntro));
-                    OnPropertyChanged(nameof(IsSecondRound));
-                    OnPropertyChanged(nameof(IsThirdRoundIntro));
-                    OnPropertyChanged(nameof(IsThirdRound));
-                    OnPropertyChanged(nameof(IsFinalRoundIntro));
-                    OnPropertyChanged(nameof(IsFinalRound));
+                    GamePhaseUpdate();
                 }
             }
         }
+
+        private int _previousGamePhase = 0;
+        public int PreviousGamePhase
+        {
+            get { return _previousGamePhase; }
+            set
+            {
+                if (_previousGamePhase != value)
+                {
+                    _previousGamePhase = value;
+                    OnPropertyChanged(nameof(PreviousGamePhase));
+                }
+            }
+        }
+
 
         public bool IsGameIntro
         {
             get { return GamePhase == (int)GamePhaseEnum.GameIntro ? true : false; }
         }
-
         public bool IsFirstRoundIntro
         {
             get { return GamePhase == (int)GamePhaseEnum.FirstRoundIntro ? true : false; }
         }
-
         public bool IsFirstRound
         {
             get { return GamePhase == (int)GamePhaseEnum.FirstRound ? true : false; }
         }
-
         public bool IsSecondRoundIntro
         {
             get { return GamePhase == (int)GamePhaseEnum.SecondRoundIntro ? true : false; }
         }
-
         public bool IsSecondRound
         {
             get { return GamePhase == (int)GamePhaseEnum.SecondRound ? true : false; }
         }
-
         public bool IsThirdRoundIntro
         {
             get { return GamePhase == (int)GamePhaseEnum.ThirdRoundIntro ? true : false; }
@@ -141,10 +151,13 @@ namespace SvoyaIgra.Game.ViewModels
         public bool IsFinalRoundIntro
         {
             get { return GamePhase == (int)GamePhaseEnum.FinalRoundIntro ? true : false; }        }
-
         public bool IsFinalRound
         {
             get { return GamePhase == (int)GamePhaseEnum.FinalRound ? true : false; }
+        }
+        public bool IsQuestion
+        {
+            get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
         }
         #endregion
 
@@ -195,6 +208,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Questions
 
+        private List<RoundQuestions> AllRoundsQuestions { get; set; } = new List<RoundQuestions>();
+
         private RoundQuestions _currentRoundQuestions;
         public RoundQuestions CurrentRoundQuestions
         {
@@ -209,11 +224,24 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        List<RoundQuestions> AllRoundsQuestions { get; set; } = new List<RoundQuestions>();
+        
 
         public RelayCommand GetQuestions { get; set; }
-
         public RelayCommand OpenQuestionCommand { get; set; }
+        public RelayCommand CloseQuestion { get; set; }
+
+        private Question _currentQuestion = new Question();
+        public Question CurrentQuestion 
+        {   get {  return _currentQuestion; }
+            set 
+            {
+                if (_currentQuestion!=value)
+                {                    
+                    _currentQuestion = value;
+                    OnPropertyChanged(nameof(CurrentQuestion));
+                } 
+            } 
+        }
 
         #endregion
 
@@ -238,6 +266,32 @@ namespace SvoyaIgra.Game.ViewModels
 
         }
 
+
+
+
+
+        #region Methods
+
+        void GamePhaseUpdate()
+        {
+
+            if (GamePhase == (int)GamePhaseEnum.FirstRound) CurrentRoundQuestions = AllRoundsQuestions[0];
+            else if (GamePhase == (int)GamePhaseEnum.SecondRound) CurrentRoundQuestions = AllRoundsQuestions[1];
+            else if (GamePhase == (int)GamePhaseEnum.ThirdRound) CurrentRoundQuestions = AllRoundsQuestions[2];
+
+
+            OnPropertyChanged(nameof(IsGameIntro));
+            OnPropertyChanged(nameof(IsFirstRoundIntro));
+            OnPropertyChanged(nameof(IsFirstRound));
+            OnPropertyChanged(nameof(IsSecondRoundIntro));
+            OnPropertyChanged(nameof(IsSecondRound));
+            OnPropertyChanged(nameof(IsThirdRoundIntro));
+            OnPropertyChanged(nameof(IsThirdRound));
+            OnPropertyChanged(nameof(IsFinalRoundIntro));
+            OnPropertyChanged(nameof(IsFinalRound));
+            OnPropertyChanged(nameof(IsQuestion));
+        }
+
         private void GetQuestionsMethod(object obj)
         {
             for (int z = 0; z < 3; z++)//rounds
@@ -248,10 +302,10 @@ namespace SvoyaIgra.Game.ViewModels
                     var listOfQuestions = new List<Question>();
                     for (int k = 0; k < 5; k++) //questions
                     {
-                        listOfQuestions.Add(new Question("question " + k.ToString(), (k * 100 + 100)*(z+1)));
+                        listOfQuestions.Add(new Question("question " + k.ToString(), (k * 100 + 100) * (z + 1),k+1));
                     }
-                    topics.Add(new Topic(listOfQuestions, "Round " + (z+1).ToString()+ " Topic " + i.ToString()));
-                    
+                    topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
+
                 }
                 AllRoundsQuestions.Add(new RoundQuestions(topics));
             }
@@ -260,11 +314,13 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void ChangeGamePhaseMethod(object obj)
         {
-            int phase = Convert.ToInt32(obj);
-            if (PlayScreenWindow != null) GamePhase = phase;
+            ChangeGamePhaseMethod(Convert.ToInt32(obj));
         }
 
-        #region Methods
+        private void ChangeGamePhaseMethod(int phaseNumber)
+        {
+            if (PlayScreenWindow != null) GamePhase = phaseNumber;
+        }
 
         private void LockPresentScreenMethod(bool parameter)
         {
@@ -305,10 +361,10 @@ namespace SvoyaIgra.Game.ViewModels
             var values = (object[])obj;
             int topicIndex = (int)values[0];
             int questionIndex = (int)values[1];
-            MessageBox.Show(String.Format("Topic: {0}, question:{1}, price {2}",
-                CurrentRoundQuestions.Topics[topicIndex].Name,
-                CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].QuestionText,
-                CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].Price));
+
+            CurrentQuestion = CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex];
+
+            GamePhase = (int)GamePhaseEnum.Question;
 
             CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].NotYetAsked = false;
 

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SvoyaIgra.Game.Views.Questions
 {
     /// <summary>
-    /// Interaction logic for SimpleQuestion.xaml
+    /// Interaction logic for PictureSeriesQuestion.xaml
     /// </summary>
-    public partial class SimpleQuestion : UserControl
+    public partial class PictureSeriesQuestion : UserControl
     {
-        public SimpleQuestion()
+        public PictureSeriesQuestion()
         {
             InitializeComponent();
         }

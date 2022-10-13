@@ -35,6 +35,7 @@
             <Style TargetType="Button">
                 <Setter Property="MinWidth" Value="100"/>
                 <Setter Property="FontSize" Value="15"/>
+                <Setter Property="Padding" Value="2"/>
             </Style>
             
         </Grid.Resources>

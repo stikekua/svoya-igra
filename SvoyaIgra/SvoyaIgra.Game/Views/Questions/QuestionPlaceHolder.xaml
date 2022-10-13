@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="SvoyaIgra.Game.Views.Questions.QuestionPlaceHolder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:questions="clr-namespace:SvoyaIgra.Game.Views.Questions"
+             xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
+             xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:Background="White">
+    <UserControl.Resources>
+        <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>
+    </UserControl.Resources>
+    <DockPanel>
+        <questions:TextQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+            Path=DataContext.CurrentQuestion.QuestionType, 
+            Converter={StaticResource visibilityParameterConverter},
+            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Text}}"/>
+        <questions:PictureQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+            Path=DataContext.CurrentQuestion.QuestionType, 
+            Converter={StaticResource visibilityParameterConverter},
+            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Picture}}"/>
+        <questions:PictureSeriesQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+            Path=DataContext.CurrentQuestion.QuestionType, 
+            Converter={StaticResource visibilityParameterConverter},
+            ConverterParameter={x:Static viewModels:QuestionTypeEnum.PictureSeries}}"/>
+        <questions:MusicalQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+            Path=DataContext.CurrentQuestion.QuestionType, 
+            Converter={StaticResource visibilityParameterConverter},
+            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Musical}}"/>
+        <questions:VideoQuestion 
+            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+            Path=DataContext.CurrentQuestion.QuestionType, 
+            Converter={StaticResource visibilityParameterConverter},
+            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Video}}"/>
+    </DockPanel>
+</UserControl>
