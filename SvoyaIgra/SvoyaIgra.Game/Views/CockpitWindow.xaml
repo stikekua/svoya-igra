@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game"
+        xmlns:gf="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
+        xmlns:questions="clr-namespace:SvoyaIgra.Game.Views.Questions"        
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -22,8 +24,6 @@
             <i:InvokeCommandAction Command="{Binding CloseAppCommand}"  />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-
-
 
 
     <Window.Resources>
@@ -64,10 +64,12 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
@@ -120,67 +122,136 @@
         </Grid>
         <Grid Grid.Row="1" x:Name="PresentWindowControlGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10*"/>
                 <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="WindowControlGrid">
-                <StackPanel Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" 
                             Height="auto" 
                             Width="auto"
                             VerticalAlignment="Top"
                             IsEnabled="{Binding PlayScreenRunning}">
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Game Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.GameIntro}"
                                  IsChecked="True"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="First round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRoundIntro}"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="First round" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRound}"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Second round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRoundIntro}"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Second round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRound}"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Third round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}"/>
-                    <RadioButton GroupName="GamePhase" Content="Third round" 
+                        <RadioButton GroupName="GamePhase" Content="Third round" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRound}"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Final round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRoundIntro}"/>
-                    <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Final round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRound}"/>
-                </StackPanel>
-                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
-                    <Button Content="Get Questions" Command="{Binding GetQuestions}"
-                            Width="150" Height="50"/>
-                    <Button Content="CloseQuestion" Command="{Binding ChangeGamePhaseCommand}" CommandParameter="{Binding PreviousGamePhase, UpdateSourceTrigger=PropertyChanged}"
-                            Visibility="{Binding IsQuestion, Converter={StaticResource BoolToVisibilityConverter}}"
-                            Width="150" Height="50"/>
+                    </StackPanel>
 
                 </StackPanel>
+
 
             </Grid>
             <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
-                
+                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Grid.Column="1">
+                    <Button Content="Get Questions" Command="{Binding GetQuestions}"
+                            Width="150" Height="50"/>
+                    <Button Content="CloseQuestion" Command="{Binding ChangeGamePhaseCommand}" CommandParameter="{Binding PreviousGamePhase, UpdateSourceTrigger=PropertyChanged}"
+                            IsEnabled="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter} ,ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"
+                            Width="150" Height="50"/>
+                    <StackPanel>
+                        <TextBox Text="{Binding ScoreBoardText}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="+" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="30"/>
+                            <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="30"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </Grid>
-        <Grid Grid.Row="2" x:Name="QuestionsControlGrid">
+        <Grid Grid.Row="2" x:Name="PlayerControl">
+            <Grid.Resources>
+                
+            </Grid.Resources>
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton Margin="5" Background="{Binding Players[0].ColorCode}" 
+                              IsChecked="{Binding Players[0].isSelected}"
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="0">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Players[0].Name}"/>
+                        <TextBlock Text="{Binding Players[0].Score}"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton Margin="5" Background="{Binding Players[1].ColorCode}" 
+                              IsChecked="{Binding Players[1].isSelected}" 
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="1">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Players[1].Name}"/>
+                        <TextBlock Text="{Binding Players[1].Score}"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton Margin="5" Background="{Binding Players[2].ColorCode}" 
+                              IsChecked="{Binding Players[2].isSelected}" 
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="2">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Players[2].Name}"/>
+                        <TextBlock Text="{Binding Players[2].Score}"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton Margin="5" Background="{Binding Players[3].ColorCode}" 
+                              IsChecked="{Binding Players[3].isSelected}" 
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="3">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Players[3].Name}"/>
+                        <TextBlock Text="{Binding Players[3].Score}"/>
+                    </StackPanel>
+                </ToggleButton>
+
+            </StackPanel>
+            
+        </Grid>
+        <Grid Grid.Row="3" x:Name="QuestionsControlGrid">
+            <DockPanel x:Name="MainScreenPart">
+                <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
+                <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
+                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
+                <gf:SecondRoundIntro            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRoundIntro}}"/>
+                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
+                <gf:ThirdRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}}"/>
+                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
+                <gf:FinalRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRoundIntro}}"/>
+                <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRound}}"/>
+                <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
+            </DockPanel>
 
         </Grid>
 

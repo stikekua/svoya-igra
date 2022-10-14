@@ -5,7 +5,7 @@
         public string QuestionText { get; set; } = "";
         public int Price { get; set; } = 0;
         public bool NotYetAsked { get; set; } = true;
-        public int QuestionType { get; set; } = 0;
+        public int QuestionType { get; set; } = 1;
 
         //Text = 1
         //Picture = 2

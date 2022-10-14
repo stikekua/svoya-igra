@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace SvoyaIgra.Game.ViewModels.Helpers
 {
-    public class QuestionIndexesConverter : IMultiValueConverter
+    public class MultiParameterConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
