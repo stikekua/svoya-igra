@@ -44,36 +44,87 @@
                     <DataTemplate>
                         
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
                             <DataGrid x:Name="QuestionsDataGrid" 
                                               ItemsSource="{Binding Questions,UpdateSourceTrigger=PropertyChanged}"                                               
-                                              AutoGenerateColumns="False" 
-                                              Width="50"
+                                              AutoGenerateColumns="False"
+                                              MinHeight="100"
+                                              Height="auto"
+                                              Width="auto"
                                               CanUserAddRows="False"
                                               CanUserDeleteRows="False"
                                               CanUserResizeColumns="False"
                                               CanUserSortColumns="False"
                                               HeadersVisibility="None"
                                               HorizontalScrollBarVisibility="Hidden"
-                                              HorizontalAlignment="Left"
-                                              IsReadOnly="True">
+                                              HorizontalAlignment="Left">
+                                    <DataGrid.Style>
+                                        <Style TargetType="DataGrid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="PlayScreen">
+                                                    <Setter Property="IsReadOnly" Value="True"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="CockpitScreen">
+                                                    <Setter Property="IsReadOnly" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.Style>
                                 <DataGrid.LayoutTransform>
                                     <TransformGroup>
                                         <RotateTransform Angle="-90"/>
                                     </TransformGroup>
                                 </DataGrid.LayoutTransform>
-                                <DataGrid.Columns>
-                                    <DataGridTemplateColumn Width="50"  >
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="{x:Null}" />
+                                                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.Columns>
+                                    <DataGridTemplateColumn   >
                                         <DataGridTemplateColumn.CellTemplate >
                                             <DataTemplate >
-                                                <Button Content="{Binding Price}" 
+                                                    <StackPanel Height="50" Width="50" Visibility="{Binding NotYetAsked, Converter={StaticResource visibilityHiddenConverter},UpdateSourceTrigger=PropertyChanged}">
+                                                        <StackPanel.LayoutTransform>
+                                                            <RotateTransform Angle="90"/>
+                                                        </StackPanel.LayoutTransform>
+                                                        <Button Content="{Binding Price}" 
                                                                 Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
-                                                                CommandParameter="{Binding}"
-                                                                Visibility="{Binding NotYetAsked, Converter={StaticResource visibilityHiddenConverter},UpdateSourceTrigger=PropertyChanged}">
-                                                    <Button.LayoutTransform>
-                                                        <RotateTransform Angle="90"/>
-                                                    </Button.LayoutTransform>
-                                                </Button>
+                                                                CommandParameter="{Binding}">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="PlayScreen">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="CockpitScreen">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+                                                        <TextBlock Text="{Binding Price}" FontSize="20">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="PlayScreen">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="CockpitScreen">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </StackPanel>
+
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn >

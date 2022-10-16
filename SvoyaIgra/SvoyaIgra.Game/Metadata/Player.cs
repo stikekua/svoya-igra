@@ -1,9 +1,25 @@
 ﻿namespace SvoyaIgra.Game.Metadata
 {
-    public class Player
+    public class Player:ViewModels.Helpers.ViewModelBase
     {
         public string Name { get; set; }
-        public int Score { get; set; }=0;
+        int _score = 0;
+        public int Score 
+        { 
+            get
+            {
+                return _score;
+            }
+            set
+            {
+                if (_score != value)
+                {
+                    _score = value;
+                    OnPropertyChanged(nameof(Score));
+                }
+                
+            }
+        }
         public string ColorCode { get; set; }
         public bool isActive { get; set; } = true;
         public bool isSelected { get; set; } = false;

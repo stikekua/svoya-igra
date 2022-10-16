@@ -243,11 +243,11 @@
             <DockPanel x:Name="MainScreenPart">
                 <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
                 <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
-                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
+                <gf:NormalRound    WhichScreenLocation="CockpitScreen"               Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
                 <gf:SecondRoundIntro            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRoundIntro}}"/>
-                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
+                <gf:NormalRound       WhichScreenLocation="CockpitScreen"            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
                 <gf:ThirdRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}}"/>
-                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
+                <gf:NormalRound      WhichScreenLocation="CockpitScreen"             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
                 <gf:FinalRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRoundIntro}}"/>
                 <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRound}}"/>
                 <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>

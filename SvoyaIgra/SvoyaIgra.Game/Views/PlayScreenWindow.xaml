@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:gf="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game.Views"
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
@@ -22,16 +23,52 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" x:Name="PlayerScoreGrid">
-            <Label Content="Here will be player results" FontSize="20" HorizontalAlignment="Center"/>
+            <DataGrid x:Name="mainDatagrid"
+                      ItemsSource="{Binding Players,UpdateSourceTrigger=PropertyChanged}" 
+                      IsReadOnly="True"
+                      HorizontalAlignment="Center"
+                      AutoGenerateColumns="False" 
+                      
+                      Height="auto"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="False"
+                      HeadersVisibility="None"
+                      HorizontalScrollBarVisibility="Hidden">
+                <DataGrid.LayoutTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="-90"/>
+                    </TransformGroup>
+                </DataGrid.LayoutTransform>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Background="{Binding ColorCode}" Margin="5" Width="200" VerticalAlignment="Center">
+                                    <StackPanel.LayoutTransform>
+                                        <RotateTransform Angle="90"/>
+                                    </StackPanel.LayoutTransform>
+                                    <TextBlock Text="{Binding Name}"/>
+                                    <TextBlock Text="{Binding Score}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+                
+            </DataGrid>
         </Grid>
         <DockPanel Grid.Row="1" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" Width="auto" Height="auto">            
             <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
             <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
-            <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
+            <gf:NormalRound WhichScreenLocation="PlayScreen"                Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
+
+
             <gf:SecondRoundIntro            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRoundIntro}}"/>
-            <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
+            <gf:NormalRound    WhichScreenLocation="PlayScreen"             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
             <gf:ThirdRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}}"/>
-            <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
+            <gf:NormalRound    WhichScreenLocation="PlayScreen"             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
             <gf:FinalRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRoundIntro}}"/>
             <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRound}}"/>
             <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>            
