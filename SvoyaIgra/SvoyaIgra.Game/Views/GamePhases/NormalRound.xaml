@@ -12,111 +12,85 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
         <helpers:MultiParameterConverter x:Key="multiValueConverer"/>
-        <helpers:VisibilityHiddenConverter x:Key="visibilityHiddenConverer"/>
+        <helpers:VisibilityHiddenConverter x:Key="visibilityHiddenConverter"/>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.Resources>
-            <Style TargetType="Button">
-                <Setter Property="MinWidth" Value="100"/>
-                <Setter Property="FontSize" Value="15"/>
-                <Setter Property="Padding" Value="2"/>
-            </Style>
-            
-        </Grid.Resources>
-        <TextBlock Grid.Row="0" x:Name="Topic1" Text="{Binding CurrentRoundQuestions.Topics[0].Name}"/>
-        <TextBlock Grid.Row="1" x:Name="Topic2" Text="{Binding CurrentRoundQuestions.Topics[1].Name}"/>
-        <TextBlock Grid.Row="2" x:Name="Topic3" Text="{Binding CurrentRoundQuestions.Topics[2].Name}"/>
-        <TextBlock Grid.Row="3" x:Name="Topic4" Text="{Binding CurrentRoundQuestions.Topics[3].Name}"/>
-        <TextBlock Grid.Row="4" x:Name="Topic5" Text="{Binding CurrentRoundQuestions.Topics[4].Name}"/>
-        <TextBlock Grid.Row="5" x:Name="Topic6" Text="{Binding CurrentRoundQuestions.Topics[5].Name}"/>
+    <DockPanel>
+        <DataGrid x:Name="mainDatagrid"
+                      ItemsSource="{Binding CurrentRoundQuestions,UpdateSourceTrigger=PropertyChanged}" 
+                      AutoGenerateColumns="False" 
+                      Width="auto"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="False"
+                      HeadersVisibility="None"
+                      HorizontalScrollBarVisibility="Hidden"
+                        >
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{x:Null}" />
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Width="auto" >
+                
+                <DataGridTemplateColumn.CellTemplate>
+                    
+                    <DataTemplate>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}"/>
+                            <DataGrid x:Name="QuestionsDataGrid" 
+                                              ItemsSource="{Binding Questions,UpdateSourceTrigger=PropertyChanged}"                                               
+                                              AutoGenerateColumns="False" 
+                                              Width="50"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              CanUserResizeColumns="False"
+                                              CanUserSortColumns="False"
+                                              HeadersVisibility="None"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              HorizontalAlignment="Left"
+                                              IsReadOnly="True">
+                                <DataGrid.LayoutTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-90"/>
+                                    </TransformGroup>
+                                </DataGrid.LayoutTransform>
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn Width="50"  >
+                                        <DataGridTemplateColumn.CellTemplate >
+                                            <DataTemplate >
+                                                <Button Content="{Binding Price}" 
+                                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Visibility="{Binding NotYetAsked, Converter={StaticResource visibilityHiddenConverter},UpdateSourceTrigger=PropertyChanged}">
+                                                    <Button.LayoutTransform>
+                                                        <RotateTransform Angle="90"/>
+                                                    </Button.LayoutTransform>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn >
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
 
-        <Button Grid.Row="0" Grid.Column="1" x:Name="Topic1Question1" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[0].Price}" 
-                Command="{Binding OpenQuestionCommand}" 
-                Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}" 
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[0].Questions[0]}"/>
-        <Button Grid.Row="0" Grid.Column="2" x:Name="Topic1Question2" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[1].Price}" Command="{Binding OpenQuestionMethodExtended}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[0].Questions[1]}"/>
-        <Button Grid.Row="0" Grid.Column="3" x:Name="Topic1Question3" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[2].Price}" Command="{Binding OpenQuestionMethodExtended}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[0].Questions[2]}"/>
-        <Button Grid.Row="0" Grid.Column="4" x:Name="Topic1Question4" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[0].Questions[3]}"/>
-        <Button Grid.Row="0" Grid.Column="5" x:Name="Topic1Question5" Content="{Binding CurrentRoundQuestions.Topics[0].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[0].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[0].Questions[4]}"/>
+        </DataGrid.Columns>
 
-        <Button Grid.Row="1" Grid.Column="1" x:Name="Topic2Question1" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[1].Questions[0]}"/>
-        <Button Grid.Row="1" Grid.Column="2" x:Name="Topic2Question2" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[1].Questions[1]}"/>
-        <Button Grid.Row="1" Grid.Column="3" x:Name="Topic2Question3" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[1].Questions[2]}"/>
-        <Button Grid.Row="1" Grid.Column="4" x:Name="Topic2Question4" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[1].Questions[3]}"/>
-        <Button Grid.Row="1" Grid.Column="5" x:Name="Topic2Question5" Content="{Binding CurrentRoundQuestions.Topics[1].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[1].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[1].Questions[4]}"/>
-
-        <Button Grid.Row="2" Grid.Column="1" x:Name="Topic3Question1" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[2].Questions[0]}"/>
-        <Button Grid.Row="2" Grid.Column="2" x:Name="Topic3Question2" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[2].Questions[1]}"/>
-        <Button Grid.Row="2" Grid.Column="3" x:Name="Topic3Question3" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[2].Questions[2]}"/>
-        <Button Grid.Row="2" Grid.Column="4" x:Name="Topic3Question4" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[2].Questions[3]}"/>
-        <Button Grid.Row="2" Grid.Column="5" x:Name="Topic3Question5" Content="{Binding CurrentRoundQuestions.Topics[2].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[2].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[2].Questions[4]}"/>
-
-        <Button Grid.Row="3" Grid.Column="1" x:Name="Topic4Question1" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[3].Questions[0]}"/>
-        <Button Grid.Row="3" Grid.Column="2" x:Name="Topic4Question2" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[3].Questions[1]}"/>
-        <Button Grid.Row="3" Grid.Column="3" x:Name="Topic4Question3" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[3].Questions[2]}"/>
-        <Button Grid.Row="3" Grid.Column="4" x:Name="Topic4Question4" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[3].Questions[3]}"/>
-        <Button Grid.Row="3" Grid.Column="5" x:Name="Topic4Question5" Content="{Binding CurrentRoundQuestions.Topics[3].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[3].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[3].Questions[4]}"/>
-
-        <Button Grid.Row="4" Grid.Column="1" x:Name="Topic5Question1" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[4].Questions[0]}"/>
-        <Button Grid.Row="4" Grid.Column="2" x:Name="Topic5Question2" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[4].Questions[1]}"/>
-        <Button Grid.Row="4" Grid.Column="3" x:Name="Topic5Question3" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[4].Questions[2]}"/>
-        <Button Grid.Row="4" Grid.Column="4" x:Name="Topic5Question4" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[4].Questions[3]}"/>
-        <Button Grid.Row="4" Grid.Column="5" x:Name="Topic5Question5" Content="{Binding CurrentRoundQuestions.Topics[4].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[4].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[4].Questions[4]}"/>
-
-        <Button Grid.Row="5" Grid.Column="1" x:Name="Topic6Question1" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[0].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[0].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[5].Questions[0]}"/>
-        <Button Grid.Row="5" Grid.Column="2" x:Name="Topic6Question2" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[1].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[1].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[5].Questions[1]}"/>
-        <Button Grid.Row="5" Grid.Column="3" x:Name="Topic6Question3" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[2].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[2].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[5].Questions[2]}"/>
-        <Button Grid.Row="5" Grid.Column="4" x:Name="Topic6Question4" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[3].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[3].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[5].Questions[3]}"/>
-        <Button Grid.Row="5" Grid.Column="5" x:Name="Topic6Question5" Content="{Binding CurrentRoundQuestions.Topics[5].Questions[4].Price}" Command="{Binding OpenQuestionCommand}" Visibility="{Binding CurrentRoundQuestions.Topics[5].Questions[4].NotYetAsked, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource visibilityHiddenConverer}}"
-                CommandParameter="{Binding CurrentRoundQuestions.Topics[5].Questions[4]}"/>
+    </DataGrid>
 
 
 
 
 
-    </Grid>
+    </DockPanel>
 </UserControl>

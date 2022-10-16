@@ -174,10 +174,10 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Questions
 
-        private List<RoundQuestions> AllRoundsQuestions { get; set; } = new List<RoundQuestions>();
+        private List<ObservableCollection<Topic>> AllRoundsQuestions { get; set; } = new List<ObservableCollection<Topic>>();
 
-        private RoundQuestions _currentRoundQuestions;
-        public RoundQuestions CurrentRoundQuestions
+        private ObservableCollection<Topic> _currentRoundQuestions;
+        public ObservableCollection<Topic> CurrentRoundQuestions
         {
             get { return _currentRoundQuestions; }
             set
@@ -190,7 +190,21 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        
+        private ObservableCollection<Topic> _currentRoundQuestionsTest = new ObservableCollection<Topic>();
+        public ObservableCollection<Topic> CurrentRoundQuestionsTest
+        {
+            get { return _currentRoundQuestionsTest; }
+            set
+            {
+                if (_currentRoundQuestionsTest != value)
+                {
+                    _currentRoundQuestionsTest = value;
+                    OnPropertyChanged(nameof(CurrentRoundQuestionsTest));
+                }
+            }
+        }
+
+
 
         public RelayCommand GetQuestions { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
@@ -323,24 +337,32 @@ namespace SvoyaIgra.Game.ViewModels
             Question q = (Question)obj;
             int topicIndex = -2;
             int questionIndex = -2;
-            for (int i = 0; i < CurrentRoundQuestions.Topics.Count; i++)
+            for (int i = 0; i < CurrentRoundQuestionsTest.Count; i++)
             {
-                topicIndex = CurrentRoundQuestions.Topics[i].Questions.IndexOf(CurrentRoundQuestions.Topics[i].Questions.FirstOrDefault(x=>x==q));
-                if (topicIndex > -1) break;                
+                questionIndex = CurrentRoundQuestionsTest[i].Questions.IndexOf(q);
+                if (questionIndex > -1)
+                {
+                    topicIndex = i;
+                    break;
+                }
+
             }
-            questionIndex = CurrentRoundQuestions.Topics[topicIndex].Questions.IndexOf(q);
+            questionIndex = CurrentRoundQuestionsTest[topicIndex].Questions.IndexOf(q);
 
 
 
-            CurrentQuestion = CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex];
+            CurrentQuestion = CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex];
 
             GamePhase = (int)GamePhaseEnum.Question;
 
-            CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].NotYetAsked = false;
+            CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex].NotYetAsked = false;
 
-            OnPropertyChanged(nameof(CurrentRoundQuestions));
+            OnPropertyChanged(nameof(CurrentRoundQuestionsTest));
 
-            ScoreBoardText = CurrentQuestion.Price.ToString();
+            Debug.WriteLine("topicIndex "+ topicIndex.ToString() + "questionIndex "+ questionIndex.ToString());
+            Debug.WriteLine("NotYetAsked "+ CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex].NotYetAsked.ToString());
+
+            ScoreBoardText = CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex].Price.ToString();
         }
 
         private void ChangePlayerScoreMethod(object obj)
@@ -392,19 +414,50 @@ namespace SvoyaIgra.Game.ViewModels
         {
             for (int z = 0; z < 3; z++)//rounds
             {
-                var topics = new List<Topic>();
+                var topics = new ObservableCollection<Topic>();
                 for (int i = 0; i < 6; i++) //topics
                 {
                     var listOfQuestions = new List<Question>();
                     for (int k = 0; k < 5; k++) //questions
                     {
-                        listOfQuestions.Add(new Question("question " + k.ToString(), (k * 100 + 100) * (z + 1),k+1));
+                        listOfQuestions.Add(new Question("Topic "+i.ToString()+" question " + k.ToString(), (k * 100 + 100) * (z + 1),k+1));
                     }
                     topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
 
                 }
-                AllRoundsQuestions.Add(new RoundQuestions(topics));
+                AllRoundsQuestions.Add(topics);
             }
+
+
+            //for (int z = 0; z < 3; z++)//rounds
+            //{
+            //    var topics = new List<Topic>();
+            //    for (int i = 0; i < 6; i++) //topics
+            //    {
+            //        var listOfQuestions = new List<Question>();
+            //        for (int k = 0; k < 5; k++) //questions
+            //        {
+            //            listOfQuestions.Add(new Question("Topic " + i.ToString() + " question " + k.ToString(), (k * 100 + 100) * (z + 1), k + 1));
+            //        }
+            //        topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
+
+            //    }
+            //    AllRoundsQuestions.Add(new RoundQuestions(topics));
+            //}
+
+            //var topicsTest = new List<Topic>();
+            //for (int i = 0; i < 6; i++) //topics
+            //{
+            //    var listOfQuestions = new List<Question>();
+            //    for (int k = 0; k < 5; k++) //questions
+            //    {
+            //        listOfQuestions.Add(new Question("Topic " + i.ToString() + " question " + k.ToString(), (k * 100 + 100) , k + 1));
+            //    }
+            //    CurrentRoundQuestionsTest.Add(new Topic(listOfQuestions, "Round 1" + " Topic " + i.ToString()));
+
+            //}
+
+            
             //FirstRoundDataContext = new RoundDataContext(1, new RoundQuestions(topics),IsFirstRound);
         }
         private void GetPlayers()
@@ -462,9 +515,9 @@ namespace SvoyaIgra.Game.ViewModels
 
             int topicIndex = -2;
             int questionIndex = -2;
-            for (int i = 0; i < CurrentRoundQuestions.Topics.Count; i++)
+            for (int i = 0; i < CurrentRoundQuestions.Count; i++)
             {
-                questionIndex = CurrentRoundQuestions.Topics[i].Questions.IndexOf(q);
+                questionIndex = CurrentRoundQuestions[i].Questions.IndexOf(q);
                 if (questionIndex > -1)
                 {
                     topicIndex = i;
@@ -472,11 +525,8 @@ namespace SvoyaIgra.Game.ViewModels
                 }
                     
             }
-            //Debug.WriteLine("topicIndex " + topicIndex);
-            //questionIndex = CurrentRoundQuestions.Topics[topicIndex].Questions.IndexOf(q);
-            //Debug.WriteLine("questionIndex " + questionIndex);
-            CurrentQuestion = CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex];
-            CurrentRoundQuestions.Topics[topicIndex].Questions[questionIndex].NotYetAsked = false;
+            CurrentQuestion = CurrentRoundQuestions[topicIndex].Questions[questionIndex];
+            CurrentRoundQuestions[topicIndex].Questions[questionIndex].NotYetAsked = false;
 
 
             GamePhase = (int)GamePhaseEnum.Question;

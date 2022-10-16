@@ -1,10 +1,25 @@
-﻿namespace SvoyaIgra.Game.Metadata
+﻿using SvoyaIgra.Game.ViewModels.Helpers;
+
+namespace SvoyaIgra.Game.Metadata
 {
-    public class Question
+    public class Question : ViewModelBase
     {
         public string QuestionText { get; set; } = "";
         public int Price { get; set; } = 0;
-        public bool NotYetAsked { get; set; } = true;
+        bool _notYetAsked;
+        public bool NotYetAsked 
+        { 
+            get { return _notYetAsked; }
+            set 
+            {
+                if (_notYetAsked != value)
+                {
+                    _notYetAsked = value;
+                    OnPropertyChanged(nameof(NotYetAsked));
+                }
+                 
+            } 
+        }
         public int QuestionType { get; set; } = 1;
 
         //Text = 1
@@ -25,5 +40,8 @@
         {
 
         }
+
+
+
     }
 }

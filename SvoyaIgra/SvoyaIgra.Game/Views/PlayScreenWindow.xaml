@@ -14,6 +14,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
         <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>
+        <helpers:VisibilityHiddenConverter x:Key="visibilityHiddenConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -23,7 +24,7 @@
         <Grid Grid.Row="0" x:Name="PlayerScoreGrid">
             <Label Content="Here will be player results" FontSize="20" HorizontalAlignment="Center"/>
         </Grid>
-        <DockPanel Grid.Row="1" x:Name="MainScreenPart">            
+        <DockPanel Grid.Row="1" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" Width="auto" Height="auto">            
             <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
             <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
             <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
@@ -33,8 +34,8 @@
             <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
             <gf:FinalRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRoundIntro}}"/>
             <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRound}}"/>
-            <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
-       </DockPanel>
+            <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>            
+        </DockPanel>
 
     </Grid>
 </Window>
