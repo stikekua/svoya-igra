@@ -7,124 +7,73 @@
              xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
              xmlns:local="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             Height="1080"
+             Width="1920"
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             
              d:Background="White">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
-        <helpers:MultiParameterConverter x:Key="multiValueConverer"/>
-        <helpers:VisibilityHiddenConverter x:Key="visibilityHiddenConverter"/>
-    </UserControl.Resources>
-    <DockPanel>
-        <DataGrid x:Name="mainDatagrid"
-                      ItemsSource="{Binding CurrentRoundQuestions,UpdateSourceTrigger=PropertyChanged}" 
-                      AutoGenerateColumns="False" 
-                      Width="auto"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserResizeColumns="False"
-                      CanUserSortColumns="False"
-                      HeadersVisibility="None"
-                      HorizontalScrollBarVisibility="Hidden"
-                        >
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="{x:Null}" />
-                            <Setter Property="BorderBrush" Value="{x:Null}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.CellStyle>
-        <DataGrid.Columns>
-            <DataGridTemplateColumn Width="auto" >
-                
-                <DataGridTemplateColumn.CellTemplate>
-                    
-                    <DataTemplate>
-                        
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                            <DataGrid x:Name="QuestionsDataGrid" 
-                                              ItemsSource="{Binding Questions,UpdateSourceTrigger=PropertyChanged}"                                               
-                                              AutoGenerateColumns="False"
-                                              MinHeight="100"
-                                              Height="auto"
-                                              Width="auto"
-                                              CanUserAddRows="False"
-                                              CanUserDeleteRows="False"
-                                              CanUserResizeColumns="False"
-                                              CanUserSortColumns="False"
-                                              HeadersVisibility="None"
-                                              HorizontalScrollBarVisibility="Hidden"
-                                              HorizontalAlignment="Left">
-                                    <DataGrid.Style>
-                                        <Style TargetType="DataGrid">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="PlayScreen">
-                                                    <Setter Property="IsReadOnly" Value="True"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="CockpitScreen">
-                                                    <Setter Property="IsReadOnly" Value="False"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DataGrid.Style>
-                                <DataGrid.LayoutTransform>
-                                    <TransformGroup>
-                                        <RotateTransform Angle="-90"/>
-                                    </TransformGroup>
-                                </DataGrid.LayoutTransform>
-                                    <DataGrid.CellStyle>
-                                        <Style TargetType="DataGridCell">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="{x:Null}" />
-                                                    <Setter Property="BorderBrush" Value="{x:Null}" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DataGrid.CellStyle>
-                                    <DataGrid.Columns>
-                                    <DataGridTemplateColumn   >
-                                        <DataGridTemplateColumn.CellTemplate >
-                                            <DataTemplate >
-                                                    <StackPanel Height="50" Width="50" Visibility="{Binding NotYetAsked, Converter={StaticResource visibilityHiddenConverter},UpdateSourceTrigger=PropertyChanged}">
-                                                        <StackPanel.LayoutTransform>
-                                                            <RotateTransform Angle="90"/>
-                                                        </StackPanel.LayoutTransform>
-                                                        <Button Content="{Binding Price}" 
-                                                                Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
-                                                                CommandParameter="{Binding}">
-                                                            <Button.Style>
-                                                                <Style TargetType="Button">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="PlayScreen">
-                                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="CockpitScreen">
-                                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Button.Style>
-                                                        </Button>
-                                                        <TextBlock Text="{Binding Price}" FontSize="20">
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="PlayScreen">
-                                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=WhichScreenLocation}" Value="CockpitScreen">
-                                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
-                                                    </StackPanel>
+        
 
+
+
+    </UserControl.Resources>
+        <DataGrid x:Name="mainDatagrid"
+                  ItemsSource="{Binding CurrentRoundQuestions,UpdateSourceTrigger=PropertyChanged}" 
+                  Style="{StaticResource MainQuestionsGrid}" 
+                  Width="1920"
+                  Height="1000"
+                  Background="Transparent"
+                  RowBackground="Transparent"
+                  GridLinesVisibility="None">
+
+        <DataGrid.CellStyle>
+            <Style TargetType="DataGridCell" BasedOn="{StaticResource DatagridQuestionCell}">
+                <Setter Property="Width" Value="1920"/>
+                <Setter Property="Height" Value="146"/>
+                <Setter Property="BorderBrush" Value="Yellow"/>
+                <Setter Property="BorderThickness" Value="0,2,0,2"/>
+            </Style>
+        </DataGrid.CellStyle>
+        <DataGrid.Columns>            
+            <DataGridTemplateColumn > 
+                <DataGridTemplateColumn.CellTemplate>                    
+                    <DataTemplate >
+                        <StackPanel Orientation="Horizontal"  Width="1900"
+                                    >
+                            <TextBlock Text="{Binding Name}" Padding="100,0,0,0" VerticalAlignment="Center" Width="500"
+                                       Style="{StaticResource TopicHeaderTextBlock}"/>
+                            <DataGrid x:Name="QuestionsDataGrid"                  
+                                      ItemsSource="{Binding Questions,UpdateSourceTrigger=PropertyChanged}"                                               
+                                      Style="{StaticResource InsideQuestionsGrid}" Height="2100"
+                                      BorderBrush="Yellow"
+                                      BorderThickness="0,2,0,0"
+                                      HeadersVisibility="None"
+                                      Background="Transparent"
+                                      RowBackground="Transparent"
+                                      GridLinesVisibility="None"
+                                      HorizontalGridLinesBrush="Yellow"
+                                      >
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="BorderThickness" Value="0,2,0,2"/>
+                                        <Setter Property="BorderBrush" Value="Yellow"/>
+                                    </Style>
+                                </DataGrid.RowStyle>
+  
+
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn >
+                                        <DataGridTemplateColumn.CellTemplate>                                            
+                                            <DataTemplate >
+                                                    <StackPanel Style="{StaticResource QuestionsPrices}" Width="277" Height="140" VerticalAlignment="Center">                                                    
+                                                        <Button Style="{StaticResource PriceButton}"                                                             
+                                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}, Path=DataContext.OpenQuestionCommand}"/>
+                                                        <TextBlock  Style="{StaticResource PriceTextBlock}" 
+                                                                    VerticalAlignment="Center" 
+                                                                    Padding="50" 
+                                                                    HorizontalAlignment="Center"/>
+                                                    </StackPanel>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn >
@@ -143,5 +92,4 @@
 
 
 
-    </DockPanel>
 </UserControl>
