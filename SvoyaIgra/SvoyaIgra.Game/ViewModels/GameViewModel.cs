@@ -420,7 +420,8 @@ namespace SvoyaIgra.Game.ViewModels
                     var listOfQuestions = new List<Question>();
                     for (int k = 0; k < 5; k++) //questions
                     {
-                        listOfQuestions.Add(new Question("Topic "+i.ToString()+" question " + k.ToString(), (k * 100 + 100) * (z + 1),k+1));
+                        string questionText = "Topic " + i.ToString() + " question " + k.ToString();
+                        listOfQuestions.Add(new Question(questionText,"Answer for "+questionText ,(k * 100 + 100) * (z + 1),k+1));
                     }
                     topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
 
@@ -448,9 +449,9 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 if (parameter)
                 {
-                    PlayScreenWindowState = WindowState.Maximized;
-                    PlayScreenWindow.Topmost = true;
+                    PlayScreenWindowState = WindowState.Maximized;                    
                     PlayScreenWindow.WindowStyle = WindowStyle.None;
+                    PlayScreenWindow.Topmost = true;
                 }
                 else
                 {

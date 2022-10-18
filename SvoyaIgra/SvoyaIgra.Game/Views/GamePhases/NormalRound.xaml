@@ -13,83 +13,91 @@
              
              d:Background="White">
     <UserControl.Resources>
-        
-
-
-
+        <Style TargetType="TextBlock" x:Key="TopicTextBlockStyle">
+            <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
+            <Setter Property="FontFamily" Value="{StaticResource PlayscreenFont}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="Padding" Value="55"/>
+        </Style>
     </UserControl.Resources>
-        <DataGrid x:Name="mainDatagrid"
-                  ItemsSource="{Binding CurrentRoundQuestions,UpdateSourceTrigger=PropertyChanged}" 
-                  Style="{StaticResource MainQuestionsGrid}" 
-                  Width="1920"
-                  Height="1000"
+    
+        <DataGrid ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="10"
+                  CanUserAddRows="False"
+                  HeadersVisibility="None"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
                   Background="Transparent"
                   RowBackground="Transparent"
-                  GridLinesVisibility="None">
+                  BorderBrush="Transparent" 
+                  HorizontalGridLinesBrush="{StaticResource QuestionsFontColor}" VerticalGridLinesBrush="{StaticResource QuestionsFontColor}"
+                  >
 
-        <DataGrid.CellStyle>
-            <Style TargetType="DataGridCell" BasedOn="{StaticResource DatagridQuestionCell}">
-                <Setter Property="Width" Value="1920"/>
-                <Setter Property="Height" Value="146"/>
-                <Setter Property="BorderBrush" Value="Yellow"/>
-                <Setter Property="BorderThickness" Value="0,2,0,2"/>
-            </Style>
-        </DataGrid.CellStyle>
-        <DataGrid.Columns>            
-            <DataGridTemplateColumn > 
-                <DataGridTemplateColumn.CellTemplate>                    
-                    <DataTemplate >
-                        <StackPanel Orientation="Horizontal"  Width="1900"
-                                    >
-                            <TextBlock Text="{Binding Name}" Padding="100,0,0,0" VerticalAlignment="Center" Width="500"
-                                       Style="{StaticResource TopicHeaderTextBlock}"/>
-                            <DataGrid x:Name="QuestionsDataGrid"                  
-                                      ItemsSource="{Binding Questions,UpdateSourceTrigger=PropertyChanged}"                                               
-                                      Style="{StaticResource InsideQuestionsGrid}" Height="2100"
-                                      BorderBrush="Yellow"
-                                      BorderThickness="0,2,0,0"
-                                      HeadersVisibility="None"
-                                      Background="Transparent"
-                                      RowBackground="Transparent"
-                                      GridLinesVisibility="None"
-                                      HorizontalGridLinesBrush="Yellow"
-                                      >
-                                <DataGrid.RowStyle>
-                                    <Style TargetType="DataGridRow">
-                                        <Setter Property="BorderThickness" Value="0,2,0,2"/>
-                                        <Setter Property="BorderBrush" Value="Yellow"/>
-                                    </Style>
-                                </DataGrid.RowStyle>
-  
+                <DataGrid.Columns >
+                <DataGridTemplateColumn Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource TopicTextBlockStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Questions[0].Price}" 
+                                           Margin="20"
+                                           FontSize="20"
+                                           Foreground="{StaticResource QuestionsFontColor}"
+                                           Visibility="{Binding Questions[0].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Questions[1].Price}" 
+                                           Padding="10"
+                                           Visibility="{Binding Questions[1].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                            <TextBlock Text="{Binding Questions[2].Price}" 
+                                       Padding="10"
+                                       Visibility="{Binding Questions[2].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Questions[3].Price}" 
+                                           Padding="10"
+                                           Visibility="{Binding Questions[3].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Margin" Value="0,0,-1.2,0"/>
+                            </Style>
+                            
+                        </DataGridTemplateColumn.CellStyle>
+                        <DataGridTemplateColumn.CellTemplate>                            
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Questions[4].Price}" 
+                                           Padding="10"
+                                           Visibility="{Binding Questions[4].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }"  />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
-                                <DataGrid.Columns>
-                                    <DataGridTemplateColumn >
-                                        <DataGridTemplateColumn.CellTemplate>                                            
-                                            <DataTemplate >
-                                                    <StackPanel Style="{StaticResource QuestionsPrices}" Width="277" Height="140" VerticalAlignment="Center">                                                    
-                                                        <Button Style="{StaticResource PriceButton}"                                                             
-                                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window}, Path=DataContext.OpenQuestionCommand}"/>
-                                                        <TextBlock  Style="{StaticResource PriceTextBlock}" 
-                                                                    VerticalAlignment="Center" 
-                                                                    Padding="50" 
-                                                                    HorizontalAlignment="Center"/>
-                                                    </StackPanel>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn >
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </StackPanel>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-
-        </DataGrid.Columns>
-
-    </DataGrid>
-
-
-
-
-
+                </DataGrid.Columns>
+            </DataGrid>
+   
 </UserControl>

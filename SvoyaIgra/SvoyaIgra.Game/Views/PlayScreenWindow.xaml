@@ -12,7 +12,8 @@
         mc:Ignorable="d"
         Title="PlayScreenWindow" Height="1080" Width="1920"
         Background="{StaticResource MainGameBackground}"
-        WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}">
+        WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}"
+        Topmost="True">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
         <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>
@@ -23,7 +24,7 @@
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" x:Name="PlayerScoreGrid">
+        <Viewbox Grid.Row="0" x:Name="PlayerScoreGrid">
             <DataGrid x:Name="mainDatagrid"
                       ItemsSource="{Binding Players,UpdateSourceTrigger=PropertyChanged}" 
                       IsReadOnly="True"
@@ -59,21 +60,19 @@
                 </DataGrid.Columns>
                 
             </DataGrid>
-        </Grid>
-        <DockPanel Grid.Row="1" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" Width="auto" Height="auto">            
-            <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
-            <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
-            <gf:NormalRound WhichScreenLocation="PlayScreen"                Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
+        </Viewbox>
 
-
-            <gf:SecondRoundIntro            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRoundIntro}}"/>
-            <gf:NormalRound    WhichScreenLocation="PlayScreen"             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
-            <gf:ThirdRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}}"/>
-            <gf:NormalRound    WhichScreenLocation="PlayScreen"             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
-            <gf:FinalRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRoundIntro}}"/>
-            <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRound}}"/>
-            <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>            
-        </DockPanel>
-
+            <DockPanel Grid.Row="1" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
+                <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
+                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>
+                <gf:SecondRoundIntro            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRoundIntro}}"/>
+                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}"/>
+                <gf:ThirdRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}}"/>
+                <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}"/>
+                <gf:FinalRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRoundIntro}}"/>
+                <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FinalRound}}"/>
+                <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
+            </DockPanel>       
     </Grid>
 </Window>

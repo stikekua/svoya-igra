@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SvoyaIgra.Game.ViewModels.Helpers;
 
 namespace SvoyaIgra.Game.Metadata
 {
-    public class Topic:INotifyPropertyChanged
+    public class Topic
     {
         public List<Question> Questions { get; set; } = new List<Question>();
         public string Name { get; set; }
@@ -15,13 +17,7 @@ namespace SvoyaIgra.Game.Metadata
             Questions = questions;
             Name = name;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
+      
     }
 
 }

@@ -5,6 +5,7 @@ namespace SvoyaIgra.Game.Metadata
     public class Question : ViewModelBase
     {
         public string QuestionText { get; set; } = "";
+        public string QuestionAnswer { get; set; } = "";
         public int Price { get; set; } = 0;
         bool _notYetAsked;
         public bool NotYetAsked 
@@ -28,9 +29,10 @@ namespace SvoyaIgra.Game.Metadata
         //Musical = 4
         //Video = 5
        
-        public Question(string questionText, int price, int questionType = 1, bool notYetAsked = true )
+        public Question(string questionText, string questionAnswer, int price, int questionType = 1, bool notYetAsked = true )
         {
             QuestionText = questionText;
+            QuestionAnswer = questionAnswer;
             Price = price;
             NotYetAsked = notYetAsked;
             QuestionType = questionType;
