@@ -20,49 +20,7 @@
         <helpers:VisibilityHiddenConverter x:Key="visibilityHiddenConverter"/>
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Viewbox Grid.Row="0" x:Name="PlayerScoreGrid">
-            <DataGrid x:Name="mainDatagrid"
-                      ItemsSource="{Binding Players,UpdateSourceTrigger=PropertyChanged}" 
-                      IsReadOnly="True"
-                      HorizontalAlignment="Center"
-                      AutoGenerateColumns="False" 
-                      
-                      Height="auto"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserResizeColumns="False"
-                      CanUserSortColumns="False"
-                      HeadersVisibility="None"
-                      HorizontalScrollBarVisibility="Hidden">
-                <DataGrid.LayoutTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="-90"/>
-                    </TransformGroup>
-                </DataGrid.LayoutTransform>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="100">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Background="{Binding ColorCode}" Margin="5" Width="200" VerticalAlignment="Center">
-                                    <StackPanel.LayoutTransform>
-                                        <RotateTransform Angle="90"/>
-                                    </StackPanel.LayoutTransform>
-                                    <TextBlock Text="{Binding Name}"/>
-                                    <TextBlock Text="{Binding Score}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-                
-            </DataGrid>
-        </Viewbox>
-
-            <DockPanel Grid.Row="1" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <DockPanel Grid.Row="0" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" >
                 <gf:GameIntro                   Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.GameIntro}}"/>
                 <gf:FirstRoundIntro             Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRoundIntro}}"/>
                 <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}"/>

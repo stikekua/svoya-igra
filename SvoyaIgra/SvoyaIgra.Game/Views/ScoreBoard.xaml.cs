@@ -18,9 +18,9 @@ namespace SvoyaIgra.Game.Views
     /// <summary>
     /// Interaction logic for TestView.xaml
     /// </summary>
-    public partial class TestView : UserControl
+    public partial class ScoreBoard : UserControl
     {
-        public TestView()
+        public ScoreBoard()
         {
             InitializeComponent();
         }

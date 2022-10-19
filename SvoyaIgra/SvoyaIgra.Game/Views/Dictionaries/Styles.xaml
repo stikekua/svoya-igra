@@ -6,7 +6,7 @@
     <helpers:VisibilityHiddenConverter      x:Key="visibilityHiddenConverter"/>
     <helpers:VisibilityParameterConverter   x:Key="visibilityParameterConverter"/>
 
-    <FontFamily x:Key="PlayscreenFont">Microsoft YaHei Light</FontFamily>
+    <FontFamily x:Key="PlayscreenFont">Segoe UI</FontFamily>
 
     <Style TargetType="DataGrid" x:Key="MainQuestionsGrid">
         <Setter Property="HeadersVisibility" Value="None"/>

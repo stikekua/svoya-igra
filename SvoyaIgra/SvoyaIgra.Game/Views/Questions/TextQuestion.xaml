@@ -10,8 +10,11 @@
              d:Background="White">
     <Grid>
         <StackPanel VerticalAlignment="Center">
-            <Label Content="I am Text" FontSize="20"/>
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding CurrentQuestion.QuestionText}" FontSize="30"/>
+            <TextBlock VerticalAlignment="Center" 
+                       HorizontalAlignment="Center" 
+                       Text="{Binding CurrentQuestion.QuestionText}" 
+                       Foreground="{StaticResource QuestionsFontColor}"
+                       FontSize="30"/>
         </StackPanel>
 
     </Grid>

@@ -4,5 +4,6 @@
     <BooleanToVisibilityConverter           x:Key="visibilityCollapsedConverter"/>
     <helpers:VisibilityHiddenConverter      x:Key="visibilityHiddenConverter"/>
     <helpers:VisibilityParameterConverter   x:Key="visibilityParameterConverter"/>
+    <helpers:BoolParameterConverter         x:Key="boolParameterConverter"/>
 
 </ResourceDictionary>

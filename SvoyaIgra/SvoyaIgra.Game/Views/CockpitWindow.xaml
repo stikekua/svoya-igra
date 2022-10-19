@@ -178,14 +178,19 @@
                 <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Grid.Column="1">
                     <Button Content="Get Questions" Command="{Binding GetQuestions}"
                             Width="150" Height="50"/>
-                    <Button Content="CloseQuestion" Command="{Binding ChangeGamePhaseCommand}" CommandParameter="{Binding PreviousGamePhase, UpdateSourceTrigger=PropertyChanged}"
-                            IsEnabled="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter} ,ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"
-                            Width="150" Height="50"/>
+                    <Button Content="CloseQuestion" 
+                            Command="{Binding ChangeGamePhaseCommand}" 
+                            CommandParameter="{Binding PreviousGamePhase, UpdateSourceTrigger=PropertyChanged}"
+                            Width="150" 
+                            Height="50"
+                            IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
+
+
                     <StackPanel>
                         <TextBox Text="{Binding ScoreBoardText}"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="+" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="30"/>
-                            <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="30"/>
+                            <Button Content="+" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
+                            <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
