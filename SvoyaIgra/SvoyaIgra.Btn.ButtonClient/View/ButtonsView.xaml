@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="SvoyaIgra.Btn.ButtonClient.View.ButtonsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SvoyaIgra.Btn.ButtonClient.View"
+      xmlns:behaviors="clr-namespace:SvoyaIgra.Btn.ButtonClient.Behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" FontSize="32" Text="Players Buttons"/>
+            <!--<Button Grid.Column="1" Content="Exit" FontSize="16"/>-->
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock FontSize="16" FontWeight="Bold" Text="WS Server" Margin="0 0 10 0" VerticalAlignment="Center"/>
+            <TextBlock FontSize="16" Text="Address:" Margin="10 0 5 0" VerticalAlignment="Center"/>
+            <TextBox MinWidth="150" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding Path=ServerAddress}"></TextBox>
+            <Button Content="Connect" Padding="10 5" Margin="0 0 10 0" Command="{Binding Path=ConnectCommand}" />
+            <Button Content="Disconnect" Padding="10 5" Margin="0 0 10 0" Command="{Binding Path=DisconnectCommand}" />
+        </StackPanel>
+
+        <Grid Grid.Row="2" Margin="0 20 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.3*"/>
+                <RowDefinition Height="0.7*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" BorderBrush="{StaticResource BorderPrimary}" BorderThickness="1" CornerRadius="10">
+
+                <Grid Margin="10">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Margin" Value="10 0 0 0 "/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Style.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="10" />
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="Red" Margin="0"
+                            Command="{Binding Path=PlayerButtonCommand}" CommandParameter="Red">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" >
+                                <GradientStop Color="#F26D61" Offset="0.1" />
+                                <GradientStop Color="#EC1F26" Offset="0.9" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Button Grid.Column="1" Content="Green"
+                            Command="{Binding Path=PlayerButtonCommand}" CommandParameter="Green">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" >
+                                <GradientStop Color="#27E0BE" Offset="0.1" />
+                                <GradientStop Color="#025B5F" Offset="0.9" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Button Grid.Column="2" Content="Blue"
+                            Command="{Binding Path=PlayerButtonCommand}" CommandParameter="Blue">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" >
+                                <GradientStop Color="#27A4DC" Offset="0.1" />
+                                <GradientStop Color="#01253F" Offset="0.9" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Button Grid.Column="3" Content="Yellow" Foreground="Black"
+                            Command="{Binding Path=PlayerButtonCommand}" CommandParameter="Yellow">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" >
+                                <GradientStop Color="#FBE789" Offset="0.1" />
+                                <GradientStop Color="#FAB240" Offset="0.9" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1" BorderBrush="{StaticResource BorderPrimary}" BorderThickness="1" CornerRadius="10" Margin="0 10 0 0">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <ListBox Grid.Row="0" ItemsSource="{Binding Path=LogList}"
+                             behaviors:ListBoxBehavior.AutoScroll="True"
+                             Background="White">
+                    </ListBox>
+                    <Button Grid.Row="1" Content="Clear" VerticalAlignment="Center" 
+                            Padding="15 5" Margin="0 10 0 0"
+                            Command="{Binding Path=ClearButtonCommand}"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>

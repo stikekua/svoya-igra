@@ -4,6 +4,7 @@ using log4net;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.Btn.WSTestClient.ViewModel
 {
@@ -84,20 +85,20 @@ namespace SvoyaIgra.Btn.WSTestClient.ViewModel
         private void OnNextButtonPressed(object obj)
         {
             _log.Info("OnNextButtonPressed");
-            if (_globalData.WebSocketClient.Send("Next"))
+            if (_globalData.WebSocketClient.Send(WsMessages.NextCommand))
             {
-                NotificationText += $"C: Next\r\n";
-                addToLogList($"C: Next");
+                NotificationText += $"C: {WsMessages.NextCommand}\r\n";
+                addToLogList($"C: {WsMessages.NextCommand}");
             }
         }
 
         private void OnResetButtonPressed(object obj)
         {
             _log.Info("OnResetButtonPressed");
-            if (_globalData.WebSocketClient.Send("Reset"))
+            if (_globalData.WebSocketClient.Send(WsMessages.ResetCommand))
             {
-                NotificationText += $"C: Reset\r\n";
-                addToLogList($"C: Reset");
+                NotificationText += $"C: {WsMessages.NextCommand}\r\n";
+                addToLogList($"C: {WsMessages.NextCommand}");
             }
         }
         private bool Connected(object obj)

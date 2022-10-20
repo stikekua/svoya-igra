@@ -27,18 +27,18 @@ namespace SvoyaIgra.WebSocketProvider.Server
         public event MessageReceivedEventHandler? Received;
 
         private readonly WebSocketServer _wssv;
-        private string _wsUri = "ws://localhost:81";
+        private readonly string _wsUri;
 
-        public WebSocketServerProvider(string uri) : this()
+        public WebSocketServerProvider(string uri)
         {
             _wsUri = uri;
-        }
-
-        public WebSocketServerProvider()
-        {
             _wssv = new WebSocketServer(_wsUri);
             _wssv.AddWebSocketService<MyWebSocketBehavior>("/", () => new MyWebSocketBehavior(this));
             _wssv.AddWebSocketService<Echo>("/Echo", () => new Echo(this));
+        }
+
+        public WebSocketServerProvider(): this("ws://localhost:81")
+        {
 
         }
 
@@ -47,13 +47,18 @@ namespace SvoyaIgra.WebSocketProvider.Server
             _wssv.Start();
             if (_wssv.IsListening)
             {
-                _log.Debug("The server started successfully");
+                _log.Debug($"The server started successfully {_wssv.Address}:{_wssv.Port}");
                 Started?.Invoke();
                 foreach (var path in _wssv.WebSocketServices.Paths)
                 {
                     _log.Debug($"\t{path}");
                 }
             }
+        }
+
+        public void Brodcast(string message)
+        {
+            _wssv.WebSocketServices["/"].Sessions.Broadcast(message);
         }
 
         public void FireEvent(string eventType, string message)

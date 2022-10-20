@@ -19,16 +19,12 @@ namespace SvoyaIgra.WebSocketProvider.Client
         public event MessageReceivedEventHandler? Received;
 
         private readonly WebSocket _ws;
-        private string _wsUri = "ws://localhost:81";
+        private readonly string _wsUri;
 
-        public WebSocketClientProvider(string uri) : this()
+        public WebSocketClientProvider(string uri)
         {
             _wsUri = uri;
-        }
-
-        public WebSocketClientProvider()
-        {
-            _ws = new WebSocket(_wsUri);
+            _ws = new WebSocket(uri);
 
             _ws.OnOpen += OnWebsocketOpen;
             _ws.OnClose += OnWebsocketClose;
@@ -36,13 +32,18 @@ namespace SvoyaIgra.WebSocketProvider.Client
             _ws.OnMessage += OnWebsocketReceived;
         }
 
+        public WebSocketClientProvider() : this("ws://localhost:81")
+        {
+            
+        }
+        
         public bool Connect()
         {
             try
             {
                 _log.Debug($"Try to connect to the server {_wsUri}");
                 _ws.Connect();
-                _log.Debug($"Conneected to the server {_wsUri}");
+                _log.Debug($"Connected to the server {_wsUri}");
                 return true;
             }
             catch (Exception e)
@@ -77,7 +78,7 @@ namespace SvoyaIgra.WebSocketProvider.Client
 
         private void OnWebsocketClose(object sender, CloseEventArgs e)
         {
-            _log.Info($"Websocket closed");
+            _log.Info($"Websocket closed. Code: {e.Code}, Reason: {e.Reason}");
             Closed?.Invoke();
         }
 
