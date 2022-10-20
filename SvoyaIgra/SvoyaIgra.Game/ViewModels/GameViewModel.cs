@@ -97,7 +97,9 @@ namespace SvoyaIgra.Game.ViewModels
             get { return _gamePhase; }
             set
             {
-                PreviousGamePhase = _gamePhase;
+                if (_gamePhase==(int)GamePhaseEnum.FirstRound || _gamePhase == (int)GamePhaseEnum.SecondRound || _gamePhase == (int)GamePhaseEnum.ThirdRound)
+                    PreviousGamePhase = _gamePhase;
+
                 if (_gamePhase != value)
                 {
                     _gamePhase = value;
