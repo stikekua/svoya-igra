@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Btn.WSTestServer"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Btn.WSTestClient", "SvoyaIgra.Btn.WSTestClient\SvoyaIgra.Btn.WSTestClient.csproj", "{03365EEC-CAEB-415F-A799-BEE2B7749970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.Game", "SvoyaIgra.Game\SvoyaIgra.Game.csproj", "{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.Game", "SvoyaIgra.Game\SvoyaIgra.Game.csproj", "{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +61,10 @@ Global
 		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03365EEC-CAEB-415F-A799-BEE2B7749970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C9F3EE7-3E6B-4B48-B012-D066A9E6DE7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,7 +73,6 @@ Global
 		{64DDFE0C-AEE5-4876-B886-F6B3DC810E40} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
 		{CC4D3136-AD0F-477C-A39A-C2F19D7AE3C9} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
 		{03365EEC-CAEB-415F-A799-BEE2B7749970} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
-		{18C35C5D-75B7-4095-A081-676312C4C498} = {CFE1024D-739B-40D7-B32D-DA9E7ECD3D2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {345BEA43-5C4A-4720-9A0F-886F36BDD4A7}

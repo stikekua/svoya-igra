@@ -18,9 +18,28 @@
             <RowDefinition Height="100"/>
             <RowDefinition Height="900"/>
         </Grid.RowDefinitions>
-        <Viewbox VerticalAlignment="Top" Height="100">
-            <views:ScoreBoard Grid.Row="0" VerticalAlignment="Top" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
-        </Viewbox>
+        <!--<Viewbox VerticalAlignment="Top" Height="100">-->
+
+        <Border         Background="{StaticResource QuestionsFontColor}" 
+                        Width="100"
+                        Height="100" HorizontalAlignment="Left" Margin="10,0,0,0"
+                        Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ReadyToCollectAnswers, Converter={StaticResource visibilityCollapsedConverter}}">
+            <Border.Resources>
+                <Style TargetType="helpers:OutlinedTextBlock">
+                    <Setter Property="FontSize" Value="40"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="Fill"  Value="{StaticResource QuestionsFontColor}"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Stroke" Value="Black"/>
+                    <Setter Property="StrokeThickness" Value="2"/>
+                </Style>
+            </Border.Resources>
+                <helpers:OutlinedTextBlock Text="Go!"/>            
+        </Border>
+
+
+        <views:ScoreBoard Grid.Row="0" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        <!--</Viewbox>-->
         
     
         <Viewbox Grid.Row="1" Stretch="Uniform" StretchDirection="Both"  Margin="200">

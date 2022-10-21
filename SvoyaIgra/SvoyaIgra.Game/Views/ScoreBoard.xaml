@@ -64,29 +64,8 @@
 
         </StackPanel.Resources>
 
-        <!--<Border Style="{StaticResource WholePlayerBorder}" 
-                        Background="{Binding Players[0].ColorCode}"
-                        Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
-                <StackPanel>
-                    <Border Style="{StaticResource PlayerNameBorder}">
-                        <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
-                    </Border>
-                    <helpers:OutlinedTextBlock Text="{Binding Players[0].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
-                </StackPanel>
-            <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Players[0].isSelected}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource AnimateFlicker}"/>
-                            </DataTrigger.EnterActions>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            </Border>-->
 
-        <Border                         Background="{Binding Players[0].ColorCode}"
+        <Border         Background="{Binding Players[0].ColorCode}"
                         Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
             <StackPanel>
                 <Border Style="{StaticResource PlayerNameBorder}">

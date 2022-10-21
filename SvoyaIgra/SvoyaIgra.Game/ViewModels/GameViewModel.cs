@@ -1,16 +1,13 @@
 ﻿using SvoyaIgra.Game.Metadata;
 using SvoyaIgra.Game.ViewModels.Helpers;
 using SvoyaIgra.Game.Views;
-using SvoyaIgra.Game.Views.GamePhases;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Reflection.Metadata;
 using System.Windows;
-using System.Windows.Documents;
 using System.Linq;
+using System.Threading;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -38,6 +35,22 @@ namespace SvoyaIgra.Game.ViewModels
         PictureSeries = 3,
         Musical = 4,
         Video = 5
+    }
+
+    public enum PlayerColorEnum
+    {
+        Red = 1,
+        Green = 2,
+        Blue = 4,
+        Yellow = 8
+    }
+
+    public enum PlayerIndexEnum
+    {
+        Red = 0,
+        Green = 1,
+        Blue = 2,
+        Yellow = 3
     }
 
     public class GameViewModel:ViewModelBase
@@ -98,27 +111,28 @@ namespace SvoyaIgra.Game.ViewModels
             set
             {
                 if (_gamePhase==(int)GamePhaseEnum.FirstRound || _gamePhase == (int)GamePhaseEnum.SecondRound || _gamePhase == (int)GamePhaseEnum.ThirdRound)
-                    PreviousGamePhase = _gamePhase;
+                    ActualRoundGamePhase = _gamePhase;
 
                 if (_gamePhase != value)
                 {
                     _gamePhase = value;
                     OnPropertyChanged(nameof(GamePhase));
+                    OnPropertyChanged(nameof(IsAvailableForScoreChange));
                     GamePhaseUpdate();
                 }
             }
         }
 
-        private int _previousGamePhase = 0;
-        public int PreviousGamePhase
+        private int _actualRoundGamePhase = 0;
+        public int ActualRoundGamePhase
         {
-            get { return _previousGamePhase; }
+            get { return _actualRoundGamePhase; }
             set
             {
-                if (_previousGamePhase != value)
+                if (_actualRoundGamePhase != value)
                 {
-                    _previousGamePhase = value;
-                    OnPropertyChanged(nameof(PreviousGamePhase));
+                    _actualRoundGamePhase = value;
+                    OnPropertyChanged(nameof(ActualRoundGamePhase));
                 }
             }
         }
@@ -172,7 +186,6 @@ namespace SvoyaIgra.Game.ViewModels
         #endregion
 
         #endregion
-
 
         #region Questions
 
@@ -249,18 +262,16 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         int _selectedPlayerIndex = -1;
-        int SelectedPlayerIndex
+        public int SelectedPlayerIndex
         {
-            get
-            {
-                return _selectedPlayerIndex;
-            }
+            get  { return _selectedPlayerIndex; }
             set
             {
                 if (_selectedPlayerIndex != value)
                 {
                     _selectedPlayerIndex = value;
                     OnPropertyChanged(nameof(SelectedPlayerIndex));
+                    OnPropertyChanged(nameof(IsAvailableForScoreChange));
                 }
             }
         }
@@ -301,11 +312,118 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        public bool IsAvailableForScoreChange
+        {
+            get
+            {
+                if (SelectedPlayerIndex != -1 && GamePhase == (int)GamePhaseEnum.Question) return true;
+                return false;
+            }
+        }
 
+
+        string _buttonsMessageText ="1;0;0;0;0";
+        public string ButtonsMessageText
+        {
+            get { return _buttonsMessageText; }
+            set
+            {
+                if (_buttonsMessageText != value)
+                {
+                    _buttonsMessageText = value;
+                    OnPropertyChanged(nameof(ButtonsMessageText));
+
+                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(_buttonsMessageText));
+                }
+            }
+        }
+
+        string _buttonsConnectionStatus = "Connected";
+        public string ButtonsConnectionStatus
+        {
+            get { return _buttonsConnectionStatus; }
+            set
+            {
+                if (_buttonsConnectionStatus != value)
+                {
+                    _buttonsConnectionStatus = value;
+                    OnPropertyChanged(nameof(ButtonsConnectionStatus));
+                }
+            }
+        }
+
+        
+        public bool AutoPlayerSelection
+        {
+            get {  return AutoPlayerSelectionIndex==0 ? true: false; }
+
+        }
+
+        int _autoPlayerSelectionIndex = 0; //0 = auto, 1=manual
+        public int AutoPlayerSelectionIndex
+        {
+            get { return _autoPlayerSelectionIndex; }
+            set
+            {
+                if (_autoPlayerSelectionIndex != value)
+                {
+                    _autoPlayerSelectionIndex = value;
+                    OnPropertyChanged(nameof(AutoPlayerSelectionIndex));
+                    OnPropertyChanged(nameof(AutoPlayerSelection));
+
+                    if (_autoPlayerSelectionIndex==1)
+                    {
+                        ButtonsMessageText = "1;0;0;0;0";
+                        SelectPlayerMethod(-1);
+                    }
+                        
+                }
+            }
+        }
 
 
         public RelayCommand ChangePlayerScoreCommand { get; set; }
         public RelayCommand SelectPlayerCommand { get; set; }
+
+
+
+        #region Buttons control
+
+        bool _readyToCollectAnswers = false;
+        public bool ReadyToCollectAnswers
+        {
+            get { return _readyToCollectAnswers; }
+            set
+            {
+                if (_readyToCollectAnswers != value)
+                {
+                    _readyToCollectAnswers = value;
+                    OnPropertyChanged(nameof(ReadyToCollectAnswers));
+
+                    if (value)
+                    {
+                        Debug.WriteLine("Ready to collect answers");
+                        ResetButtonsStateMethod(null);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Not Ready to collect answers");
+                    }
+                }
+            }
+        }
+
+
+        public RelayCommand ConnectButtonsServerCommand { get; set; }
+        public RelayCommand DisconnectButtonsServerCommand { get; set; }
+        public RelayCommand RequestNextPlayerCommand { get; set; }
+        public RelayCommand ResetButtonsStateCommand { get; set; }
+
+        public RelayCommand SetReadyForAnswersCommand { get; set; }
+
+
+        #endregion
+
 
         #endregion
 
@@ -329,8 +447,58 @@ namespace SvoyaIgra.Game.ViewModels
             ///test
             GetQuestionsMethod(null);
             GetPlayers();
-            OpenPresentScreenMethod(null);
+            //OpenPresentScreenMethod(null);
             ///
+
+            #region Buttons control
+
+            ConnectButtonsServerCommand = new RelayCommand(ConnectButtonsServerMethod);
+            DisconnectButtonsServerCommand = new RelayCommand(DisconnectButtonsServerMethod);
+            RequestNextPlayerCommand = new RelayCommand(RequestNextPlayerMethod);
+            ResetButtonsStateCommand = new RelayCommand(ResetButtonsStateMethod);
+            SetReadyForAnswersCommand = new RelayCommand(SetReadyForAnswersMethod);
+
+            #endregion
+
+    }
+
+
+
+        private int DecodeButtonMessage(string message)
+        {
+            char[] separator = ";".ToCharArray();
+            string[] buttonsIndexes = message.Split(separator);
+
+            int qIndex = Convert.ToInt32(buttonsIndexes[0]);
+
+            List<int> queue = new List<int>() 
+            { 
+                Convert.ToInt32(buttonsIndexes[1]), 
+                Convert.ToInt32(buttonsIndexes[2]), 
+                Convert.ToInt32(buttonsIndexes[3]),
+                Convert.ToInt32(buttonsIndexes[4]) 
+            };
+            bool allZeros = queue.TrueForAll(x => x==0);
+
+            if (allZeros) return -1;
+            else
+            {
+                switch (queue[qIndex-1])
+                {
+                    case (int)PlayerColorEnum.Red://1
+                        return (int)PlayerIndexEnum.Red;
+                    case (int)PlayerColorEnum.Green://2
+                        return (int)PlayerIndexEnum.Green;
+                    case (int)PlayerColorEnum.Blue://4
+                        return (int)PlayerIndexEnum.Blue;
+                    case (int)PlayerColorEnum.Yellow://8
+                        return (int)PlayerIndexEnum.Yellow;
+
+                    default:
+                        return -1;
+                }
+            }
+
 
         }
 
@@ -376,7 +544,8 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     case "+":
                         Players[SelectedPlayerIndex].Score += ScoreToChange;
-                        if (GamePhase==(int)GamePhaseEnum.Question) ChangeGamePhaseMethod(PreviousGamePhase);    
+                        if (GamePhase == (int)GamePhaseEnum.Question) ChangeGamePhaseMethod(ActualRoundGamePhase);
+                        ScoreBoardText = "0";
                         break;
                     case "-":
                         Players[SelectedPlayerIndex].Score -= ScoreToChange;
@@ -392,9 +561,23 @@ namespace SvoyaIgra.Game.ViewModels
         private void SelectPlayerMethod(object obj)
         {
             int index = Convert.ToInt32(obj);
-            for (int i = 0; i < Players.Count; i++)
+
+
+            if (index != -1)
             {
-                if (i!=index) Players[i].isSelected = false;
+                if (Players[index].isSelected)
+                {
+                    Players[index].isSelected = false;
+                }
+                else
+                {
+                    for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;                    
+                    Players[index].isSelected = true;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
             }
 
             OnPropertyChanged(nameof(Players));
@@ -403,13 +586,48 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Methods
 
+
+        #region Player buttons methods
+
+        private void SetReadyForAnswersMethod(object obj)
+        {
+            if (GamePhase==(int)GamePhaseEnum.Question) ReadyToCollectAnswers = true;
+        }
+
+        private void ResetButtonsStateMethod(object obj)
+        {
+            Debug.WriteLine("Buttons State Resetted");
+        }
+
+        private void RequestNextPlayerMethod(object obj)
+        {
+            Debug.WriteLine("Next Player in Queue requested");
+        }
+
+        private void DisconnectButtonsServerMethod(object obj)
+        {
+            Debug.WriteLine("Buttons Server Disconnected");
+        }
+
+        private void ConnectButtonsServerMethod(object obj)
+        {
+            Debug.WriteLine("Buttons Server Disconnected");
+        }
+
+        #endregion
+
         void GamePhaseUpdate()
         { 
             if      (GamePhase == (int)GamePhaseEnum.FirstRound)    CurrentRoundQuestions = AllRoundsQuestions[0];
             else if (GamePhase == (int)GamePhaseEnum.SecondRound)   CurrentRoundQuestions = AllRoundsQuestions[1];
             else if (GamePhase == (int)GamePhaseEnum.ThirdRound)    CurrentRoundQuestions = AllRoundsQuestions[2];
 
-            if (GamePhase != (int)GamePhaseEnum.Question) SelectPlayerMethod(-1);
+            if (GamePhase != (int)GamePhaseEnum.Question)
+            {
+                SelectPlayerMethod(-1);
+                ReadyToCollectAnswers = false;
+            }
+                
         }
 
         private void GetQuestionsMethod(object obj)
@@ -433,7 +651,7 @@ namespace SvoyaIgra.Game.ViewModels
         }
         private void GetPlayers()
         {
-            string[] colors = { "#FF0000", "#00FF00", "#FFFF00", "#0000FF" };
+            string[] colors = { "#FF0000", "#00FF00", "#0000FF" , "#FFFF00" };
             for (int i = 0; i < 4; i++)
             {
                 Players.Add(new Player("Player " + i.ToString(), colors[i]));
@@ -505,8 +723,6 @@ namespace SvoyaIgra.Game.ViewModels
             ScoreBoardText = CurrentQuestion.Price.ToString();
             OnPropertyChanged(nameof(CurrentRoundQuestions));
         }
-
-
 
         private void CloseAppMethod(object obj)
         {
