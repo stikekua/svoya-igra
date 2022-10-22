@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SvoyaIgra.Dal.Bo;
+using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.DbMigrations.Data
 {
@@ -20,7 +21,7 @@ namespace SvoyaIgra.DbMigrations.Data
                 {
                     Id = 1,
                     Name = "Tema1",
-                    Difficulty = TopicDifficulty.Round1
+                    Difficulty = TopicDifficulty.Round
                 }
             );
 

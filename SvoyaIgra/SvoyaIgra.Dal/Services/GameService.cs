@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Dto;
+using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.Dal.Services;
 
@@ -16,19 +17,21 @@ public class GameService<TContext> : IGameService where TContext : DbContext
     public async Task<IEnumerable<TopicDto>> GetTopicsAsync()
     {
         var topics = new List<TopicDto>();
-        var rounds = new [] { TopicDifficulty.Round1, TopicDifficulty.Round2, TopicDifficulty.Round3 };
+        
+        topics.AddRange(_dbContext.Set<Topic>()
+            .Where(t => t.Difficulty == TopicDifficulty.Round)
+            .OrderBy(x => Guid.NewGuid()).Take(18)
+            .Select(t => t.ToDto())
+        );
 
-        foreach (var round in rounds)
-        {
-            topics.AddRange(_dbContext.Set<Topic>()
-                .Where(t => t.Difficulty == round)
-                .OrderBy(x => Guid.NewGuid()).Take(6)
-                .Select(t => t.ToDto())
-            );
-        }
+        var qLevels = new[] { 
+            QuestionDifficulty.Level1, 
+            QuestionDifficulty.Level2, 
+            QuestionDifficulty.Level3,
+            QuestionDifficulty.Level4, 
+            QuestionDifficulty.Level5
+        };
 
-        var qLevels = new[] { QuestionDifficulty.Level1, QuestionDifficulty.Level2, QuestionDifficulty.Level3,
-            QuestionDifficulty.Level4, QuestionDifficulty.Level5 };
         foreach (var topic in topics)
         {
             var questions = new List<QuestionDto>();
@@ -50,7 +53,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
     {
         var topics = new List<TopicDto>();
         topics.AddRange(_dbContext.Set<Topic>()
-            .Where(t => t.Difficulty == TopicDifficulty.FinalRound)
+            .Where(t => t.Difficulty == TopicDifficulty.Final)
             .OrderBy(x => Guid.NewGuid()).Take(6)
             .Select(t => t.ToDto())
         );

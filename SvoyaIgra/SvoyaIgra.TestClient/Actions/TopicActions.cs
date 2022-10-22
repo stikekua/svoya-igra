@@ -1,5 +1,6 @@
 ﻿using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Services;
+using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.TestClient.Actions;
 

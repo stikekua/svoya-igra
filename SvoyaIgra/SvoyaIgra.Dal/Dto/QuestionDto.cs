@@ -1,5 +1,6 @@
 ﻿using SvoyaIgra.Dal.Bo;
 using System.Text.Json.Serialization;
+using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.Dal.Dto
 {

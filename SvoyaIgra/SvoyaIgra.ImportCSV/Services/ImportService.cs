@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
-using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Dto;
 using SvoyaIgra.ImportCSV.Dto;
+using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.ImportCSV.Services;
 

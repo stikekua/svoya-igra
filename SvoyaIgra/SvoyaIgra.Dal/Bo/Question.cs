@@ -1,4 +1,6 @@
-﻿namespace SvoyaIgra.Dal.Bo
+﻿using SvoyaIgra.Shared.Entities;
+
+namespace SvoyaIgra.Dal.Bo
 {
     public class Question
     {

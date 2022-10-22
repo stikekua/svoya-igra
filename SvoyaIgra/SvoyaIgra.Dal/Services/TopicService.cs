@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Dto;
+using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.Dal.Services;
 
