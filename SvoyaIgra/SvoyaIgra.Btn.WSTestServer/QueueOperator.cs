@@ -62,7 +62,7 @@ namespace SvoyaIgra.Btn.WSTestServer
         {
             Console.WriteLine("next>>");
 
-            if (queueSelector < 3 && queue[queueSelector + 1] != 0)
+            if (queueSelector < 3 && queue[queueSelector] != 0)
             {
                 //select next in queue
                 queueSelector++;
@@ -72,7 +72,7 @@ namespace SvoyaIgra.Btn.WSTestServer
                 Console.WriteLine("End of the queue");
                 queueSelector = 3;
             }
-            else if (queue[queueSelector + 1] == 0)
+            else if (queue[queueSelector] == 0)
             {
                 Console.WriteLine("Nobody else in the queue");
             }
