@@ -1,18 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using SvoyaIgra.Game.ViewModels.Helpers;
 
 namespace SvoyaIgra.Game.Metadata
 {
-    public class Topic
+    public class Topic:ViewModelBase
     {
-        public List<Question> Questions { get; set; } = new List<Question>();
+        private List<Question> _questions = new List<Question>();
+        public List<Question> Questions 
+        { 
+            get
+            {
+                return _questions;
+            }
+            set
+            {
+                if (_questions != value)
+                {
+                    _questions = value;
+                    OnPropertyChanged(nameof(Questions));
+                }
+                
+            }
+        } 
         public string Name { get; set; }
 
-    public Topic(List<Question> questions, string name)
+        public Topic(List<Question> questions, string name)
         {
             Questions = questions;
             Name = name;

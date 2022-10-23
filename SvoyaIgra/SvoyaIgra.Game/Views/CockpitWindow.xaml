@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game"
+        xmlns:mtd ="clr-namespace:System.Reflection;assembly=System.Reflection.Metadata"
         xmlns:gf="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
         xmlns:questions="clr-namespace:SvoyaIgra.Game.Views.Questions"        
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
@@ -174,8 +175,10 @@
             </Grid>
             <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
                 <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Grid.Column="1">
-                    <Button Content="Get Questions" Command="{Binding GetQuestions}"
-                            Width="150" Height="50"/>
+                    <Button Content="Open Questions setup" 
+                            Command="{Binding OpenQuestionsSetupWindowCommand}" 
+                            Width="150" 
+                            Height="50"/>
                     <Button Content="CloseQuestion" 
                             Command="{Binding ChangeGamePhaseCommand}" 
                             CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
@@ -193,7 +196,9 @@
                                     MinWidth="100"/>
                             <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
                         </StackPanel>
+                        
                     </StackPanel>
+                    <Button Content="CloseIntro" Margin="5,0,0,0" Command="{Binding CloseSpecialIntroCommand}"/>
                 </StackPanel>
             </Grid>
         </Grid>
@@ -330,13 +335,13 @@
                                 <DataTemplate>
                                     <Button Content="{Binding Questions[0].Price}"                                            
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
-                                            CommandParameter="{Binding Questions[0]}"                                            >
+                                            CommandParameter="{Binding Questions[0]}" 
+                                            Foreground="{Binding Questions[0].SpecialityType,Converter={StaticResource specialityColorConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[0].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -350,13 +355,13 @@
                                 <DataTemplate>
                                     <Button Content="{Binding Questions[1].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
-                                            CommandParameter="{Binding Questions[1]}">
+                                            CommandParameter="{Binding Questions[1]}"
+                                            Foreground="{Binding Questions[1].SpecialityType,Converter={StaticResource specialityColorConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[1].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -371,14 +376,15 @@
                                     <Button Content="{Binding Questions[2].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[2]}"
+                                            Foreground="{Binding Questions[2].SpecialityType,Converter={StaticResource specialityColorConverter}}"
                                             >
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[2].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
                                                     </DataTrigger>
+  
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -391,14 +397,15 @@
                                 <DataTemplate>
                                     <Button Content="{Binding Questions[3].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
-                                            CommandParameter="{Binding Questions[3]}">
+                                            CommandParameter="{Binding Questions[3]}"
+                                            Foreground="{Binding Questions[3].SpecialityType,Converter={StaticResource specialityColorConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[3].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
                                                     </DataTrigger>
+ 
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -412,14 +419,14 @@
                                     <Button Content="{Binding Questions[4].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[4]}"
+                                            Foreground="{Binding Questions[4].SpecialityType,Converter={StaticResource specialityColorConverter}}"
                                             >
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[4].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
+                                                    </DataTrigger> 
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -439,10 +446,21 @@
                         
                 </Viewbox>
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Price: "/>
-                    <TextBlock Text="{Binding CurrentQuestion.Price}"/>
-                    <Label Content="Answer: " Margin="5,0,5,0"/>
-                    <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}"/>
+
+                    <StackPanel>
+                        <Label Content="Price: "/>
+                        <TextBlock Text="{Binding CurrentQuestion.Price}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Answer: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="speciality: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"/>
+                    </StackPanel>
+
+
                 </StackPanel>
             </StackPanel>
 

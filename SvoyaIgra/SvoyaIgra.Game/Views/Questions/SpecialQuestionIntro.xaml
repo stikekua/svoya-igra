@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="SvoyaIgra.Game.Views.Questions.SpecialQuestionIntro"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SvoyaIgra.Game.Views.Questions"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TextBlock FontSize="40">
+            <TextBlock.Resources>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SpecialityType}">
+                            <DataTrigger.Value>
+                                <system:Int32>1</system:Int32>
+                            </DataTrigger.Value>
+                            <Setter Property="Text" Value="I am Cat intro"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SpecialityType}">
+                            <DataTrigger.Value>
+                                <system:Int32>2</system:Int32>
+                            </DataTrigger.Value>
+                            <Setter Property="Text" Value="I am Auction intro"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Resources>
+            
+
+        </TextBlock>
+    </Grid>
+</UserControl>

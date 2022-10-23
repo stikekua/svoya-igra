@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using System.Threading;
+using SvoyaIgra.Game.Views.Questions;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -51,6 +52,13 @@ namespace SvoyaIgra.Game.ViewModels
         Green = 1,
         Blue = 2,
         Yellow = 3
+    }
+
+    public enum SpecialityTypesEnum
+    {
+        NotSpecial = 0,
+        Cat = 1,
+        Auction = 2
     }
 
     public class GameViewModel:ViewModelBase
@@ -189,7 +197,31 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Questions
 
-        private List<ObservableCollection<Topic>> AllRoundsQuestions { get; set; } = new List<ObservableCollection<Topic>>();
+        #region Setup window
+
+        
+
+        #endregion
+
+
+
+        private ObservableCollection<ObservableCollection<Topic>> _allRoundsQuestions { get; set; } = new ObservableCollection<ObservableCollection<Topic>>();
+        public ObservableCollection<ObservableCollection<Topic>> AllRoundsQuestions
+        {
+            get { return _allRoundsQuestions; }
+            set
+            {
+                if (_allRoundsQuestions != value)
+                {
+                    _allRoundsQuestions = value;
+                    OnPropertyChanged(nameof(AllRoundsQuestions));
+                }
+            }
+        }
+
+
+
+
 
         private ObservableCollection<Topic> _currentRoundQuestions;
         public ObservableCollection<Topic> CurrentRoundQuestions
@@ -219,11 +251,15 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        public bool QuestionsArePrepared
+        {
+            get { return AllRoundsQuestions.Count > 0 ? true : false; }
+        }
 
 
-        public RelayCommand GetQuestions { get; set; }
+
+        public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
-        public RelayCommand OpenQuestionCommandExtended { get; set; }
         public RelayCommand CloseQuestion { get; set; }
 
         private Question _currentQuestion = new Question();
@@ -239,10 +275,13 @@ namespace SvoyaIgra.Game.ViewModels
             } 
         }
 
+
+        public RelayCommand CloseSpecialIntroCommand { get; set; }
+
         #endregion
 
         #region Players
-              
+
 
         ObservableCollection<Player> _players = new ObservableCollection<Player>();
         public ObservableCollection<Player> Players
@@ -316,8 +355,7 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                if (SelectedPlayerIndex != -1 && GamePhase == (int)GamePhaseEnum.Question) return true;
-                return false;
+                return (SelectedPlayerIndex != -1 && GamePhase == (int)GamePhaseEnum.Question) ? true:false;
             }
         }
 
@@ -421,6 +459,9 @@ namespace SvoyaIgra.Game.ViewModels
 
         public RelayCommand SetReadyForAnswersCommand { get; set; }
 
+        
+        
+
 
         #endregion
 
@@ -436,16 +477,18 @@ namespace SvoyaIgra.Game.ViewModels
             OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
             ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
 
-            ChangeGamePhaseCommand = new RelayCommand(ChangeGamePhaseMethod);
+            OpenQuestionsSetupWindowCommand = new RelayCommand(OpenQuestionsSetupWindowMethod);
 
-            GetQuestions = new RelayCommand(GetQuestionsMethod);
+            ChangeGamePhaseCommand = new RelayCommand(ChangeGamePhaseMethod);
+            CloseSpecialIntroCommand = new RelayCommand(CloseSpecialIntroMethod);
+
+
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
-            OpenQuestionCommandExtended = new RelayCommand(OpenQuestionMethodExtended);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
 
             ///test
-            GetQuestionsMethod(null);
+            //GetTestQuestionsMethod(null);
             GetPlayers();
             //OpenPresentScreenMethod(null);
             ///
@@ -502,38 +545,7 @@ namespace SvoyaIgra.Game.ViewModels
 
         }
 
-        private void OpenQuestionMethodExtended(object obj)
-        {
-            Question q = (Question)obj;
-            int topicIndex = -2;
-            int questionIndex = -2;
-            for (int i = 0; i < CurrentRoundQuestionsTest.Count; i++)
-            {
-                questionIndex = CurrentRoundQuestionsTest[i].Questions.IndexOf(q);
-                if (questionIndex > -1)
-                {
-                    topicIndex = i;
-                    break;
-                }
-
-            }
-            questionIndex = CurrentRoundQuestionsTest[topicIndex].Questions.IndexOf(q);
-
-
-
-            CurrentQuestion = CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex];
-
-            GamePhase = (int)GamePhaseEnum.Question;
-
-            CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex].NotYetAsked = false;
-
-            OnPropertyChanged(nameof(CurrentRoundQuestionsTest));
-
-            Debug.WriteLine("topicIndex "+ topicIndex.ToString() + "questionIndex "+ questionIndex.ToString());
-            Debug.WriteLine("NotYetAsked "+ CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex].NotYetAsked.ToString());
-
-            ScoreBoardText = CurrentRoundQuestionsTest[topicIndex].Questions[questionIndex].Price.ToString();
-        }
+        
 
         private void ChangePlayerScoreMethod(object obj)
         {
@@ -618,9 +630,9 @@ namespace SvoyaIgra.Game.ViewModels
 
         void GamePhaseUpdate()
         { 
-            if      (GamePhase == (int)GamePhaseEnum.FirstRound)    CurrentRoundQuestions = AllRoundsQuestions[0];
-            else if (GamePhase == (int)GamePhaseEnum.SecondRound)   CurrentRoundQuestions = AllRoundsQuestions[1];
-            else if (GamePhase == (int)GamePhaseEnum.ThirdRound)    CurrentRoundQuestions = AllRoundsQuestions[2];
+            if      (GamePhase == (int)GamePhaseEnum.FirstRound)    CurrentRoundQuestions = _allRoundsQuestions[0];
+            else if (GamePhase == (int)GamePhaseEnum.SecondRound)   CurrentRoundQuestions = _allRoundsQuestions[1];
+            else if (GamePhase == (int)GamePhaseEnum.ThirdRound)    CurrentRoundQuestions = _allRoundsQuestions[2];
 
             if (GamePhase != (int)GamePhaseEnum.Question)
             {
@@ -630,25 +642,7 @@ namespace SvoyaIgra.Game.ViewModels
                 
         }
 
-        private void GetQuestionsMethod(object obj)
-        {
-            for (int z = 0; z < 3; z++)//rounds
-            {
-                var topics = new ObservableCollection<Topic>();
-                for (int i = 0; i < 6; i++) //topics
-                {
-                    var listOfQuestions = new List<Question>();
-                    for (int k = 0; k < 5; k++) //questions
-                    {
-                        string questionText = "Topic " + i.ToString() + " question " + k.ToString();
-                        listOfQuestions.Add(new Question(questionText,"Answer for "+questionText ,(k * 100 + 100) * (z + 1),k+1));
-                    }
-                    topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
-
-                }
-                AllRoundsQuestions.Add(topics);
-            }
-        }
+        
         private void GetPlayers()
         {
             string[] colors = { "#FF0000", "#00FF00", "#0000FF" , "#FFFF00" };
@@ -698,6 +692,15 @@ namespace SvoyaIgra.Game.ViewModels
             
         }
 
+        private void OpenQuestionsSetupWindowMethod(object obj)
+        {
+            var questionsSetupWindow = new QuestionsSetupWindow();
+            questionsSetupWindow.DataContext = new QuestionsSetupViewModel(AllRoundsQuestions);
+            bool? result = questionsSetupWindow.ShowDialog();
+
+        }
+
+
         private void OpenQuestionMethod(object obj)
         {
             Question q = (Question)obj;
@@ -720,8 +723,21 @@ namespace SvoyaIgra.Game.ViewModels
 
 
             GamePhase = (int)GamePhaseEnum.Question;
-            ScoreBoardText = CurrentQuestion.Price.ToString();
+            if (CurrentQuestion.SpecialityType==(int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
+            else ScoreBoardText = CurrentQuestion.Price.ToString();
+
+            
             OnPropertyChanged(nameof(CurrentRoundQuestions));
+        }
+
+        private void CloseSpecialIntroMethod(object obj)
+        {
+            if(CurrentQuestion!=null)
+            {
+                CurrentQuestion.SpecialIntroWasNotPlayed = false;
+                OnPropertyChanged(nameof(CurrentQuestion));
+                OnPropertyChanged(nameof(CurrentRoundQuestions));
+            }
         }
 
         private void CloseAppMethod(object obj)
