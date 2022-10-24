@@ -108,6 +108,20 @@ namespace SvoyaIgra.TestClient
             } while (true);
         }
 
+        public static Guid ReadGuid(string text)
+        {
+            do
+            {
+                Console.Write($"{text}: ");
+                var str = Console.ReadLine();
+
+                if (Guid.TryParse(str, out Guid result))
+                    return result;
+                else
+                    WriteWarning($"Invalid guid. Try again.");
+            } while (true);
+        }
+
         public static void Error(string text)
         {
             WriteError(text);

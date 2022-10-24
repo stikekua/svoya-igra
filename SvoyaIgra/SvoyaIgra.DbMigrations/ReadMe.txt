@@ -12,6 +12,7 @@ set project SvoyaIgra.DbMigrations as deafult in PackageManagerConsole
 Templates
 ------------------------------------------------------
 Add-Migration <migration_name> -Context QBankDbMigrationContext -Output Migrations/QBank
+Add-Migration <migration_name> -Context GameDbMigrationContext -Output Migrations/Game
 
 Update-Database -Context QBankDbMigrationContext
 

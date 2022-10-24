@@ -14,13 +14,11 @@ public class TopicService<TContext> : ITopicService where TContext : DbContext
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<TopicDto>> GetAllTopicsAsync()
+    public IEnumerable<TopicDto> GetAllTopics()
     {
-        var topics = _dbContext.Set<Topic>()
-            .AsNoTracking()
-            .ToList();
+        var topics = _dbContext.Set<Topic>().ToList();
 
-        return topics.Select(t => t.ToDto());
+        return topics.ToList().Select(t => t.ToDto());
     }
 
     public async Task<TopicDto?> GetTopicAsync(int id)

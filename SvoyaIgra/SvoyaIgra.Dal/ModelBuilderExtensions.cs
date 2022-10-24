@@ -21,5 +21,12 @@ namespace SvoyaIgra.Dal
 
             return modelBuilder;
         }
+
+        public static ModelBuilder AddGameModel(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GameSession>().ToTable("GameSessions", DbConstants.SchemaGame).HasKey(x => x.Id);
+
+            return modelBuilder;
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Dto;
+using SvoyaIgra.Dal.Helpers;
 using SvoyaIgra.Shared.Entities;
+using System.Linq;
+using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.Dal.Services;
 
@@ -14,15 +17,51 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<TopicDto>> GetTopicsAsync()
+    public async Task<Guid> CreateGameAsync()
     {
+        var game = new GameSession();
+        game.CreatedAt = DateTime.Now;
+
+        //TODO save game parameters
+
+        _dbContext.Set<GameSession>().Add(game);
+        await _dbContext.SaveChangesAsync();
+        return game.Id;
+    }
+
+    public async Task<IEnumerable<TopicDto>> GetTopicsAsync(Guid gameId)
+    {
+        var game = _dbContext.Set<GameSession>().FirstOrDefault(g => g.Id == gameId);
         var topics = new List<TopicDto>();
-        
-        topics.AddRange(_dbContext.Set<Topic>()
-            .Where(t => t.Difficulty == TopicDifficulty.Round)
-            .OrderBy(x => Guid.NewGuid()).Take(18)
-            .Select(t => t.ToDto())
-        );
+
+        if (game == null) return topics; //game does not exist
+
+        var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
+
+        if (game.TopicsConfig != null && topicConfig?.RoundTopicIds != null && topicConfig?.RoundTopicIds.Count() == GameConstants.RoundTopicsCount) //topic once generated, return it
+        {
+            topics.AddRange(_dbContext.Set<Topic>()
+                .Where(t => topicConfig.RoundTopicIds.Contains(t.Id))                
+                .Select(t => t.ToDto())
+            );
+
+            var idsList = topicConfig.RoundTopicIds.ToList();
+            topics = topics.OrderBy(t => idsList.IndexOf(t.Id)).ToList();
+        }
+        else //new topic set  
+        {
+            topics.AddRange(_dbContext.Set<Topic>()
+                .Where(t => t.Difficulty == TopicDifficulty.Round)
+                .OrderBy(x => Guid.NewGuid()).Take(GameConstants.RoundTopicsCount)
+                .Select(t => t.ToDto())
+            );
+
+            if (topicConfig == null) topicConfig = new TopicConfig();
+            topicConfig.RoundTopicIds = topics.Select(t => t.Id);
+            game.TopicsConfig = TopicConfigParser.ToString(topicConfig);
+            _dbContext.Set<GameSession>().Update(game);
+            await _dbContext.SaveChangesAsync();
+        }
 
         var qLevels = new[] { 
             QuestionDifficulty.Level1, 
@@ -49,15 +88,40 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         return topics;
     }
     
-    public async Task<IEnumerable<TopicDto>> GetTopicsFinalAsync()
+    public async Task<IEnumerable<TopicDto>> GetTopicsFinalAsync(Guid gameId)
     {
+        var game = _dbContext.Set<GameSession>().FirstOrDefault(g => g.Id == gameId);
         var topics = new List<TopicDto>();
-        topics.AddRange(_dbContext.Set<Topic>()
-            .Where(t => t.Difficulty == TopicDifficulty.Final)
-            .OrderBy(x => Guid.NewGuid()).Take(6)
-            .Select(t => t.ToDto())
-        );
 
+        if (game == null) return topics; //game does not exist
+
+        var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
+
+        if (game.TopicsConfig != null && topicConfig?.FinalTopicIds != null && topicConfig?.FinalTopicIds.Count() == GameConstants.FinalTopicsCount) //topic once generated, return it
+        {
+            topics.AddRange(_dbContext.Set<Topic>()
+                .Where(t => topicConfig.FinalTopicIds.Contains(t.Id))
+                .Select(t => t.ToDto())
+            );
+
+            var idsList = topicConfig.FinalTopicIds.ToList();
+            topics = topics.OrderBy(t => idsList.IndexOf(t.Id)).ToList();
+        }
+        else
+        {
+            topics.AddRange(_dbContext.Set<Topic>()
+                .Where(t => t.Difficulty == TopicDifficulty.Final)
+                .OrderBy(x => Guid.NewGuid()).Take(GameConstants.FinalTopicsCount)
+                .Select(t => t.ToDto())
+            );
+
+            if (topicConfig == null) topicConfig = new TopicConfig();
+            topicConfig.FinalTopicIds = topics.Select(t => t.Id);
+            game.TopicsConfig = TopicConfigParser.ToString(topicConfig);
+            _dbContext.Set<GameSession>().Update(game);
+            await _dbContext.SaveChangesAsync();
+        }
+        
         foreach (var topic in topics)
         {
             var questions = new List<QuestionDto>();
@@ -70,5 +134,10 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         }
 
         return topics;
+    }
+
+    public Task<QuestionDto> GetCatQuestionAsync(Guid gameId)
+    {
+        throw new NotImplementedException();
     }
 }

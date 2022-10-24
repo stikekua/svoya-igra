@@ -36,9 +36,12 @@ public class TopicActions : ITopicActions
                     CreateTopicAsync().Wait();
                     break;
                 case 4:
-                    ListGameTopicsAsync().Wait();
+                    CreateGameAsync().Wait();
                     break;
                 case 5:
+                    ListGameTopicsAsync().Wait();
+                    break;
+                case 6:
                     ListGameFinalTopicsAsync().Wait();
                     break;
                 default:
@@ -55,17 +58,18 @@ public class TopicActions : ITopicActions
         Ui.Write(" 1. List all topics");
         Ui.Write(" 2. List topic");
         Ui.Write(" 3. Create");
-        Ui.Write(" 4. Game topics");
-        Ui.Write(" 5. Game final topics");
+        Ui.Write(" 4. Create game");
+        Ui.Write(" 5. Game topics");
+        Ui.Write(" 6. Game final topics");
         Ui.Write(" 0. <- BACK");
-        return Ui.Choice(5);
+        return Ui.Choice(6);
     }
 
     private async Task ListTopicsAsync()
     {
         Ui.Clear();
         Ui.Write("Topic -> List all topics");
-        var topics = await _topicService.GetAllTopicsAsync();
+        var topics = _topicService.GetAllTopics();
         Ui.Write(FormatTopic("Name", "Difficulty"));
         foreach (var topic in topics)
         {
@@ -137,14 +141,29 @@ public class TopicActions : ITopicActions
         Ui.PressKey();
     }
 
+    private async Task CreateGameAsync()
+    {
+        Ui.Clear();
+        Ui.Write("Topic -> Create game");
+        var gameId = await _gameService.CreateGameAsync();
+        Ui.Write();
+        Ui.Write("Game created:");
+        Ui.Write(gameId.ToString());
+        Ui.Write();
+        Ui.PressKey();
+    }
+
     private async Task ListGameTopicsAsync()
     {
         Ui.Clear();
         Ui.Write("Topic -> List game topics");
-        var topics = await _gameService.GetTopicsAsync();
+        var gameId = Ui.ReadGuid("Enter GameId");
+        Ui.Write();
+        var topics = await _gameService.GetTopicsAsync(gameId);
         Ui.Write(FormatTopic("Name", "Difficulty"));
         foreach (var topic in topics)
         {
+            Ui.Write("--------------------------------------------------");
             Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
             Ui.Write();
             Ui.Write("Questions of the topic:");
@@ -162,7 +181,9 @@ public class TopicActions : ITopicActions
     {
         Ui.Clear();
         Ui.Write("Topic -> List game final topics");
-        var topics = await _gameService.GetTopicsFinalAsync();
+        var gameId = Ui.ReadGuid("Enter GameId");
+        Ui.Write();
+        var topics = await _gameService.GetTopicsFinalAsync(gameId);
         Ui.Write(FormatTopic("Name", "Difficulty"));
         foreach (var topic in topics)
         {

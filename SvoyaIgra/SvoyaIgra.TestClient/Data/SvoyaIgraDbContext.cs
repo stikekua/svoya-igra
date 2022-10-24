@@ -11,6 +11,7 @@ namespace SvoyaIgra.TestClient.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.AddQBankModel();
+            modelBuilder.AddGameModel();
         }
     }
 }

@@ -11,5 +11,5 @@ public interface ITopicService
     public Task<TopicDto?> UpdateTopicAsync(int id, string name, TopicDifficulty difficulty);
     public Task<TopicDto?> DeleteTopicAsync(int id);
 
-    public Task<IEnumerable<TopicDto>> GetAllTopicsAsync();
+    public IEnumerable<TopicDto> GetAllTopics();
 }
