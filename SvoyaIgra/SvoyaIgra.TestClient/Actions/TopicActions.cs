@@ -44,6 +44,9 @@ public class TopicActions : ITopicActions
                 case 6:
                     ListGameFinalTopicsAsync().Wait();
                     break;
+                case 7:
+                    GameGetCatInBagAsync().Wait();
+                    break;
                 default:
                     continue;
             }
@@ -61,8 +64,9 @@ public class TopicActions : ITopicActions
         Ui.Write(" 4. Create game");
         Ui.Write(" 5. Game topics");
         Ui.Write(" 6. Game final topics");
+        Ui.Write(" 7. Game get cat");
         Ui.Write(" 0. <- BACK");
-        return Ui.Choice(6);
+        return Ui.Choice(7);
     }
 
     private async Task ListTopicsAsync()
@@ -163,7 +167,7 @@ public class TopicActions : ITopicActions
         Ui.Write(FormatTopic("Name", "Difficulty"));
         foreach (var topic in topics)
         {
-            Ui.Write("--------------------------------------------------");
+            Ui.Write("------------------------------------------------------------------------");
             Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
             Ui.Write();
             Ui.Write("Questions of the topic:");
@@ -187,6 +191,7 @@ public class TopicActions : ITopicActions
         Ui.Write(FormatTopic("Name", "Difficulty"));
         foreach (var topic in topics)
         {
+            Ui.Write("------------------------------------------------------------------------");
             Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
             Ui.Write();
             Ui.Write("Questions of the topic:");
@@ -196,6 +201,25 @@ public class TopicActions : ITopicActions
                 Ui.Write(FormatQuestion(question.Type.ToString(), question.Difficulty.ToString(), question.Text));
             }
             Ui.Write();
+        }
+        Ui.Write();
+        Ui.PressKey();
+    }
+
+    private async Task GameGetCatInBagAsync()
+    {
+        Ui.Clear();
+        Ui.Write("Topic -> List game final topics");
+        var gameId = Ui.ReadGuid("Enter GameId");
+        Ui.Write();
+        var topic = await _gameService.GetCatQuestionAsync(gameId);
+        Ui.Write(FormatTopic("Name", "Difficulty"));
+        Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+        Ui.Write("Questions of the topic:");
+        Ui.Write(FormatQuestion("Type", "Difficulty", "Text"));
+        foreach (var question in topic.Questions)
+        {
+            Ui.Write(FormatQuestion(question.Type.ToString(), question.Difficulty.ToString(), question.Text));
         }
         Ui.Write();
         Ui.PressKey();

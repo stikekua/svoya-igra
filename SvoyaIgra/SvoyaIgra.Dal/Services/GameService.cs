@@ -38,7 +38,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
 
-        if (game.TopicsConfig != null && topicConfig?.RoundTopicIds != null && topicConfig?.RoundTopicIds.Count() == GameConstants.RoundTopicsCount) //topic once generated, return it
+        if (topicConfig?.RoundTopicIds != null && topicConfig?.RoundTopicIds.Count() == GameConstants.RoundTopicsCount) //topic once generated, return it
         {
             topics.AddRange(_dbContext.Set<Topic>()
                 .Where(t => topicConfig.RoundTopicIds.Contains(t.Id))                
@@ -97,7 +97,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
 
-        if (game.TopicsConfig != null && topicConfig?.FinalTopicIds != null && topicConfig?.FinalTopicIds.Count() == GameConstants.FinalTopicsCount) //topic once generated, return it
+        if (topicConfig?.FinalTopicIds != null && topicConfig?.FinalTopicIds.Count() == GameConstants.FinalTopicsCount) //topic once generated, return it
         {
             topics.AddRange(_dbContext.Set<Topic>()
                 .Where(t => topicConfig.FinalTopicIds.Contains(t.Id))
@@ -136,8 +136,29 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         return topics;
     }
 
-    public Task<QuestionDto> GetCatQuestionAsync(Guid gameId)
+    public async Task<TopicDto> GetCatQuestionAsync(Guid gameId)
     {
-        throw new NotImplementedException();
+        var game = _dbContext.Set<GameSession>().FirstOrDefault(g => g.Id == gameId);
+        if (game == null) return null; //game does not exist
+
+        var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
+        if (topicConfig?.RoundTopicIds == null) return null; //topics not generated
+
+        var topic = new TopicDto();
+        topic = _dbContext.Set<Topic>()
+            .Where(t => !topicConfig.RoundTopicIds.Contains(t.Id) && t.Difficulty == TopicDifficulty.Round)
+            .OrderBy(x => Guid.NewGuid()).Take(1)
+            .First().ToDto();
+        
+        var questions = new List<QuestionDto>();
+        questions.Add(_dbContext.Set<Question>()
+            .Where(q => q.TopicId == topic.Id)
+            .OrderBy(x => Guid.NewGuid()).Take(1)
+            .First().ToDto()
+        );
+        
+        topic.Questions = questions;
+
+        return topic;
     }
 }

@@ -11,22 +11,22 @@ namespace SvoyaIgra.Dal.Services
         public Task<Guid> CreateGameAsync();
 
         /// <summary>
-        /// returns randomly 18 topics
+        /// returns randomly 18(GameConstants.RoundTopicsCount) topics 
         /// </summary>
         /// <returns></returns>
         public Task<IEnumerable<TopicDto>> GetTopicsAsync(Guid gameId);
-        
+
         /// <summary>
-        /// returns randomly 7 topics for final round
+        /// returns randomly 7(GameConstants.FinalTopicsCount) topics for final round 
         /// </summary>
         /// <returns></returns>
         public Task<IEnumerable<TopicDto>> GetTopicsFinalAsync(Guid gameId);
 
         /// <summary>
-        /// returns random question for "Cat in a bag"
+        /// returns random topic with 1 question for "Cat in a bag", with the exception of topics from game
         /// </summary>
         /// <returns></returns>
-        public Task<QuestionDto> GetCatQuestionAsync(Guid gameId);
+        public Task<TopicDto> GetCatQuestionAsync(Guid gameId);
 
     }
 }
