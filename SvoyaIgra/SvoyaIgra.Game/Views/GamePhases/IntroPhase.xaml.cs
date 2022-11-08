@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SvoyaIgra.Game.Views.GamePhases
 {
     /// <summary>
-    /// Interaction logic for SecondRoundIntro.xaml
+    /// Interaction logic for IntroPhase.xaml
     /// </summary>
-    public partial class SecondRoundIntro : UserControl
+    public partial class IntroPhase : UserControl
     {
-        public SecondRoundIntro()
+        public IntroPhase()
         {
             InitializeComponent();
         }

@@ -9,11 +9,15 @@ using System.Windows;
 using System.Linq;
 using System.Threading;
 using SvoyaIgra.Game.Views.Questions;
+using System.Windows.Controls;
+using System.Reflection;
+using System.IO;
 
 namespace SvoyaIgra.Game.ViewModels
 {
     public enum GamePhaseEnum
     {
+        PreGame = -1,
         GameIntro = 0,
         FirstRoundIntro = 1,
         FirstRound = 2,
@@ -110,46 +114,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        #region Game phase
-
-        private int _gamePhase = 0;
-        public int GamePhase
-        {
-            get { return _gamePhase; }
-            set
-            {
-                if (_gamePhase==(int)GamePhaseEnum.FirstRound || _gamePhase == (int)GamePhaseEnum.SecondRound || _gamePhase == (int)GamePhaseEnum.ThirdRound)
-                    ActualRoundGamePhase = _gamePhase;
-
-                if (_gamePhase != value)
-                {
-                    _gamePhase = value;
-                    OnPropertyChanged(nameof(GamePhase));
-                    OnPropertyChanged(nameof(IsAvailableForScoreChange));
-                    GamePhaseUpdate();
-                }
-            }
-        }
-
-        private int _actualRoundGamePhase = 0;
-        public int ActualRoundGamePhase
-        {
-            get { return _actualRoundGamePhase; }
-            set
-            {
-                if (_actualRoundGamePhase != value)
-                {
-                    _actualRoundGamePhase = value;
-                    OnPropertyChanged(nameof(ActualRoundGamePhase));
-                }
-            }
-        }
-
-        public bool IsQuestion
-        {
-            get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
-        }
-        #endregion
+       
 
 
 
@@ -195,11 +160,65 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
+        #region Game phase
+
+        private int _gamePhase = (int)GamePhaseEnum.PreGame;
+        public int GamePhase
+        {
+            get { return _gamePhase; }
+            set
+            {
+                if (_gamePhase == (int)GamePhaseEnum.FirstRound || _gamePhase == (int)GamePhaseEnum.SecondRound || _gamePhase == (int)GamePhaseEnum.ThirdRound)
+                    ActualRoundGamePhase = _gamePhase;
+
+                if (_gamePhase != value)
+                {
+                    _gamePhase = value;
+                    OnPropertyChanged(nameof(GamePhase));
+                    OnPropertyChanged(nameof(IsAvailableForScoreChange));
+                    OnPropertyChanged(nameof(isIntroOnScreen));
+                    GamePhaseUpdate();
+                }
+            }
+        }
+        public bool isIntroOnScreen
+        {
+            get
+            {
+                if     ((GamePhase == (int)GamePhaseEnum.GameIntro)         ||
+                        (GamePhase == (int)GamePhaseEnum.FirstRoundIntro)   ||
+                        (GamePhase == (int)GamePhaseEnum.SecondRoundIntro)  ||
+                        (GamePhase == (int)GamePhaseEnum.ThirdRoundIntro)   ||
+                        (GamePhase == (int)GamePhaseEnum.FinalRoundIntro))      return true;
+                return  false;
+            }
+        }
+
+        private int _actualRoundGamePhase = 0;
+        public int ActualRoundGamePhase
+        {
+            get { return _actualRoundGamePhase; }
+            set
+            {
+                if (_actualRoundGamePhase != value)
+                {
+                    _actualRoundGamePhase = value;
+                    OnPropertyChanged(nameof(ActualRoundGamePhase));
+                }
+            }
+        }
+
+        public bool IsQuestion
+        {
+            get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
+        }
+        #endregion
+
         #region Questions
 
         #region Setup window
 
-        
+
 
         #endregion
 
@@ -459,12 +478,48 @@ namespace SvoyaIgra.Game.ViewModels
 
         public RelayCommand SetReadyForAnswersCommand { get; set; }
 
-        
-        
+
+
 
 
         #endregion
 
+
+        #endregion
+
+        #region Media elements
+
+        MediaElement _videoMediaElement = new MediaElement();
+        public MediaElement VideoMediaElement
+        {
+            get { return _videoMediaElement; }
+            set
+            {
+                if (_videoMediaElement != value)
+                {
+                    _videoMediaElement = value;
+                    OnPropertyChanged(nameof(VideoMediaElement));
+                }
+            }
+        }
+
+        string _videoMediaElementSource = "/SvoyaIgra.Game;component/Resources/Videos/Intro.wmv";
+        public string VideoMediaElementSource
+        {
+            get { return _videoMediaElementSource; }
+            set
+            {
+                if (_videoMediaElementSource != value)
+                {
+                    _videoMediaElementSource = value;
+                    OnPropertyChanged(nameof(VideoMediaElementSource));
+                }
+            }
+        }
+
+
+
+        public RelayCommand MediaElementLoadedCommand { get; set; }
 
         #endregion
 
@@ -486,6 +541,9 @@ namespace SvoyaIgra.Game.ViewModels
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
+
+
+            MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
 
             ///test
             //GetTestQuestionsMethod(null);
@@ -629,10 +687,53 @@ namespace SvoyaIgra.Game.ViewModels
         #endregion
 
         void GamePhaseUpdate()
-        { 
-            if      (GamePhase == (int)GamePhaseEnum.FirstRound)    CurrentRoundQuestions = _allRoundsQuestions[0];
-            else if (GamePhase == (int)GamePhaseEnum.SecondRound)   CurrentRoundQuestions = _allRoundsQuestions[1];
-            else if (GamePhase == (int)GamePhaseEnum.ThirdRound)    CurrentRoundQuestions = _allRoundsQuestions[2];
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+
+            switch (GamePhase)
+            {
+                case (int)GamePhaseEnum.GameIntro:
+                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Intro.wmv", UriKind.Relative);
+                    VideoMediaElement.Play();
+                    break;
+
+                case (int)GamePhaseEnum.FirstRoundIntro:
+                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FirstRound.wmv", UriKind.RelativeOrAbsolute);
+                    VideoMediaElement.Play();
+                    break;
+
+                case (int)GamePhaseEnum.FirstRound:
+                    CurrentRoundQuestions = _allRoundsQuestions[0];
+                    break;
+
+                case (int)GamePhaseEnum.SecondRoundIntro:
+                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/SecondRound.wmv", UriKind.RelativeOrAbsolute);
+                    VideoMediaElement.Play();
+                    break;
+
+                case (int)GamePhaseEnum.SecondRound:
+                    CurrentRoundQuestions = _allRoundsQuestions[1];
+                    break;
+
+                case (int)GamePhaseEnum.ThirdRoundIntro:
+                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/ThirdRound.wmv", UriKind.RelativeOrAbsolute);
+                    VideoMediaElement.Play();
+                    break;
+
+                case (int)GamePhaseEnum.ThirdRound:
+                    CurrentRoundQuestions = _allRoundsQuestions[2];
+                    break;
+
+                case (int)GamePhaseEnum.FinalRoundIntro:
+                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FinalRound.wmv", UriKind.RelativeOrAbsolute);
+                    VideoMediaElement.Play();
+                    break;
+
+
+                default:
+                    break;
+            }
 
             if (GamePhase != (int)GamePhaseEnum.Question)
             {
@@ -723,7 +824,7 @@ namespace SvoyaIgra.Game.ViewModels
 
 
             GamePhase = (int)GamePhaseEnum.Question;
-            if (CurrentQuestion.SpecialityType==(int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
+            if (CurrentQuestion.SpecialityType == (int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
             else ScoreBoardText = CurrentQuestion.Price.ToString();
 
             
@@ -744,6 +845,18 @@ namespace SvoyaIgra.Game.ViewModels
         {
             App.Current.Shutdown();
         }
+
+
+        #region Media element method
+
+        private void MediaElementLoadedMethod(object obj)
+        {
+            VideoMediaElement = (MediaElement)obj;
+            //element.Source = new Uri("videos/Intro.wmv", UriKind.Relative);
+            //element.Play();
+        }
+
+        #endregion
 
         #endregion
     }

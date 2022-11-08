@@ -132,10 +132,15 @@
                             VerticalAlignment="Top"
                             IsEnabled="{Binding PlayScreenRunning}">
                         <RadioButton GroupName="GamePhase" 
+                                 Content="PreGame" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.PreGame}"
+                                 IsChecked="True"/>
+                        <RadioButton GroupName="GamePhase" 
                                  Content="Game Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static viewModels:GamePhaseEnum.GameIntro}"
-                                 IsChecked="True"/>
+                                 />
                         <RadioButton GroupName="GamePhase" 
                                  Content="First round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
