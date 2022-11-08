@@ -10,12 +10,17 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Content="Get Test Questions" Command="{Binding GetTestQuestions}"
+            <Button Content="Get Test Questions" Command="{Binding GetTestQuestionsCommand}"
                             Width="150" Height="50"/>
+            <Button Content="Get Real Questions" Command="{Binding GetRealQuestionsFromDbCommand}"
+                            Width="150" Height="50"/>
+
+
+            
         </StackPanel>
 
         <Grid Grid.Row="1">
@@ -93,6 +98,8 @@
                 <GroupBox Header="New">
                     <StackPanel >
                         <StackPanel>
+                            <Button Content="Get Cat" Command="{Binding GetRealQuestionsFromDbCommand}"
+                            Width="150" />
                             <Label Content="new text"/>
                             <TextBox Text="{Binding NewQuestionText}" TextWrapping="Wrap" Height="50"/>
                         </StackPanel>
@@ -124,6 +131,17 @@
                                     <ComboBoxItem>Auction</ComboBoxItem>
                                 </ComboBox>
                             </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+                                <Label Content="Cat Topic Name"/>
+                                <TextBox Text="{Binding NewCatTopicName}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="MediaLink"/>
+                                <TextBox Text="{Binding NewQuestionMediaLink}" TextWrapping="Wrap"/>
+                            </StackPanel>
+
                         </StackPanel>
                         <Button Content="Apply changes" Margin="10" Command="{Binding ApplyQuestionChangesCommand}"></Button>
                         

@@ -97,6 +97,36 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private string _newQuestionMediaLink = "";
+        public string NewQuestionMediaLink
+        {
+            get { return _newQuestionMediaLink; }
+            set
+            {
+                if (_newQuestionMediaLink != value)
+                {
+                    _newQuestionMediaLink = value;
+                    OnPropertyChanged(nameof(NewQuestionMediaLink));
+                }
+            }
+        }
+
+        private string _newCatTopicName = "";
+        public string NewCatTopicName
+        {
+            get { return _newCatTopicName; }
+            set
+            {
+                if (_newCatTopicName != value)
+                {
+                    _newCatTopicName = value;
+                    OnPropertyChanged(nameof(NewCatTopicName));
+                }
+            }
+        }
+
+
+
         private string _newQuestionSpecialityCatPrice = "100";
         public string NewQuestionSpecialityCatPrice
         {
@@ -141,7 +171,6 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
 
-
         private ObservableCollection<ObservableCollection<Topic>> _allRoundsQuestions { get; set; } = new ObservableCollection<ObservableCollection<Topic>>();
         public ObservableCollection<ObservableCollection<Topic>> AllRoundsQuestions
         {
@@ -158,7 +187,9 @@ namespace SvoyaIgra.Game.ViewModels
 
 
         public RelayCommand ApplyQuestionChangesCommand { get; set; }
-        public RelayCommand GetTestQuestions { get; set; }
+        public RelayCommand GetTestQuestionsCommand { get; set; }
+        public RelayCommand GetRealQuestionsFromDbCommand { get; set; }
+        public RelayCommand GetRandomCatQuestionsCommand { get; set; }
 
 
         public QuestionsSetupViewModel(ObservableCollection<ObservableCollection<Topic>> allRoundsQuestions)
@@ -166,11 +197,24 @@ namespace SvoyaIgra.Game.ViewModels
             AllRoundsQuestions = allRoundsQuestions;
 
             ApplyQuestionChangesCommand = new RelayCommand(ApplyQuestionChangesMethod);
-            GetTestQuestions = new RelayCommand(GetTestQuestionsMethod);
-
+            GetTestQuestionsCommand = new RelayCommand(GetTestQuestionsMethod);
+            GetRealQuestionsFromDbCommand = new RelayCommand(GetRealQuestionsFromDbMethod);
+            GetRandomCatQuestionsCommand = new RelayCommand(GetRandomCatQuestionsMethod);
         }
 
+        private void GetRandomCatQuestionsMethod(object obj)
+        {
+            Question questionFromDb = new Question();
+            NewQuestionText = questionFromDb.QuestionText;
+            NewQuestionAnswer = questionFromDb.QuestionAnswer;
+            NewQuestionSpecialityTypeIndex = 1;//Cat
+            NewCatTopicName = questionFromDb.SpecialityCatTopicName;
+        }
 
+        private void GetRealQuestionsFromDbMethod(object obj)
+        {
+            throw new NotImplementedException();
+        }
 
         private void ApplyQuestionChangesMethod(object obj)
         {
@@ -178,10 +222,21 @@ namespace SvoyaIgra.Game.ViewModels
             if(!NewQuestionAnswer.Equals(string.Empty) && !NewQuestionText.Equals(string.Empty) && Int32.TryParse(NewQuestionSpecialityCatPrice, out newCatPrice))
             {
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
+                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;                
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityTypeIndex;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionTypeIndex+1;
+               // AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionTypeIndex+1; //conversion between question type in combobox and question type in enum(first index there is 1)
+                //AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
+
+                if (NewQuestionTypeIndex + 1 > (int)QuestionTypeEnum.Text) //if not text
+                {
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
+                }
+                if (NewQuestionSpecialityTypeIndex==1)
+                {                   
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatTopicName = cat;
+
+                }
             }
             OnPropertyChanged(nameof(AllRoundsQuestions));
 
@@ -193,7 +248,6 @@ namespace SvoyaIgra.Game.ViewModels
             if (AllRoundsQuestions.Count>0)
             {
                 CurrentQuestion = AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex];
-                Debug.WriteLine($"CurrentQuestion text is {CurrentQuestion.QuestionText}");
             }
 
             

@@ -33,7 +33,10 @@ namespace SvoyaIgra.Game.Metadata
         }
 
 
+
         public int SpecialityCatPrice { get; set; } = 0;
+        public string SpecialityCatTopicName { get; set; } = "Cat topic";
+
 
         bool _notYetAsked;
         public bool NotYetAsked 
