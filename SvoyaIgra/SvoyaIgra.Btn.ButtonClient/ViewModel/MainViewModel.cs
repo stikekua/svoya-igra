@@ -1,73 +1,54 @@
 ﻿using log4net;
 using SvoyaIgra.Btn.ButtonClient.Helpers;
-using SvoyaIgra.Btn.ButtonClient.ViewModel.Base;
 using SvoyaIgra.WebSocketProvider.Client;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace SvoyaIgra.Btn.ButtonClient.ViewModel;
 
-public sealed class MainViewModel : ViewModelBase, IMainViewModel
+[INotifyPropertyChanged]
+public partial class MainViewModel : IMainViewModel
 {
     // Logging support
-    private static readonly ILog _log = LogManager.GetLogger(typeof(MainViewModel));
+    private static readonly ILog Log = LogManager.GetLogger(typeof(MainViewModel));
 
     private readonly IGlobalData _globalData;
 
+    [ObservableProperty]
     private string _serverAddress;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DisconnectCommand))]
     private bool _isConnect;
 
-    public string ServerAddress
-    {
-        get => _serverAddress;
-        set => SetProperty(ref _serverAddress, value);
-    }
+    [ObservableProperty]
+    private ObservableCollection<string> _logList = new ();
 
-    public bool IsConnect
-    {
-        get => _isConnect;
-        set
-        {
-            SetProperty(ref _isConnect, value);
-            ConnectCommand?.OnCanExecuteChanged();
-            DisconnectCommand?.OnCanExecuteChanged();
-        }
-    }
-
-    public DelegateCommand ConnectCommand { get; set; }
-    public DelegateCommand DisconnectCommand { get; set; }
-
-    public ObservableCollection<string> LogList { get; private set; } = new ObservableCollection<string>();
-    private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
-
-    public DelegateCommand PlayerButtonCommand { get; set; }
-    public DelegateCommand ClearButtonCommand { get; set; }
-
-
+    private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
+    
     public MainViewModel(IGlobalData globalData)
     {
         _globalData = globalData;
 
-        ServerAddress = "ws://localhost:81";
-
-        IsConnect = false;
-
-        ConnectCommand = new DelegateCommand(OnConnectButtonPressed, CanConnectButtonPress);
-        DisconnectCommand = new DelegateCommand(OnDisconnectButtonPressed, CanDisconnectButtonPress);
-
-        PlayerButtonCommand = new DelegateCommand(OnPlayerButtonPressed);
-        ClearButtonCommand = new DelegateCommand(OnClearButtonPressed);
+        _serverAddress = "ws://localhost:81";
+        _isConnect = false;
+        
     }
 
-    private void OnClearButtonPressed(object obj)
+    [RelayCommand]
+    private void Clear(object obj)
     {
         LogList.Clear();
     }
 
-    private void OnPlayerButtonPressed(object obj)
+    [RelayCommand]
+    private void PlayerButton(object obj)
     {
-        _log.Info($"ButtonPressed: {obj}");
+        Log.Info($"ButtonPressed: {obj}");
         if (_globalData.WebSocketClient != null)
         {
             if (_globalData.WebSocketClient.Send($"{obj}"))
@@ -77,7 +58,8 @@ public sealed class MainViewModel : ViewModelBase, IMainViewModel
         }
     }
 
-    private void OnConnectButtonPressed(object obj)
+    [RelayCommand(CanExecute = nameof(CanConnect))]
+    private void Connect(object obj)
     {
         // WebSocketClient
         _globalData.WebSocketClient = new WebSocketClientProvider(ServerAddress);
@@ -87,64 +69,69 @@ public sealed class MainViewModel : ViewModelBase, IMainViewModel
         _globalData.WebSocketClient.Error += Wss_Error;
         _globalData.WebSocketClient.Received += Wss_NewMessage;
 
-        _log.Info($"wsClient connecting to {ServerAddress}");
+        Log.Info($"wsClient connecting to {ServerAddress}");
         AddToLogList($"wsClient connecting to {ServerAddress}");
         if (_globalData.WebSocketClient.Connect())
         {
-            _log.Info("wsClient connected");
+            Log.Info("wsClient connected");
             AddToLogList($"Info wsClient connected");
             IsConnect = true;
         }
         else
         {
-            _log.Error("wsClient error");
+            Log.Error("wsClient error");
             AddToLogList($"Error wsClient error");
         }
     }
-    private void OnDisconnectButtonPressed(object obj)
+    public bool CanConnect(object obj)
     {
-        _log.Info("WebSocketClient disconnecting");
+        return !IsConnect;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanDisconnect))]
+    private void Disconnect(object obj)
+    {
+        Log.Info("WebSocketClient disconnecting");
         AddToLogList($"Info wsClient disconnecting");
         _globalData.WebSocketClient.Dispose();
         IsConnect = false;
     }
 
-    public bool CanDisconnectButtonPress(object obj)
+    public bool CanDisconnect(object obj)
     {
         return IsConnect;
     }
-
-    public bool CanConnectButtonPress(object obj)
-    {
-        return !IsConnect;
-    }
-
+    
+    #region WebSocket
+    
     private void Wss_Opened()
     {
-        _log.Info("Wss_Opened");
+        Log.Info("Wss_Opened");
         AddToLogList($"Opened");
     }
 
     private void Wss_Closed()
     {
-        _log.Info("Wss_Closed");
+        Log.Info("Wss_Closed");
         AddToLogList($"Closed");
     }
 
     private void Wss_Error(string message)
     {
-        _log.Info($"Wss_Error: {message}");
+        Log.Info($"Wss_Error: {message}");
         AddToLogList($"Error {message}");
 
     }
     private void Wss_NewMessage(string message)
     {
-        _log.Info($"Wss_NewMessage: {message}");
+        Log.Info($"Wss_NewMessage: {message}");
         AddToLogList($"S: {message}");
     }
 
+    #endregion
+
     private void AddToLogList(string message)
     {
-        dispatcher.Invoke(() => LogList.Add($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}\t {message}"));
+        _dispatcher.Invoke(() => LogList.Add($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}\t {message}"));
     }
 }
