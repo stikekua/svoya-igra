@@ -2,7 +2,7 @@
 
 namespace SvoyaIgra.MultimediaProvider.Stores;
 
-internal interface IMultimediaStore
+public interface IMultimediaStore
 {
     Stream GetMultimedia(string multimediaId, MultimediaForEnum multimediaFor, string fileName);
     Task SaveMultimedia(string multimediaId, MultimediaForEnum multimediaFor, string fileName, Stream fileStream);

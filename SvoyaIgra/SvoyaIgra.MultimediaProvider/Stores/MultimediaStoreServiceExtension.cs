@@ -3,7 +3,7 @@ using Microsoft.Extensions.FileProviders;
 
 namespace SvoyaIgra.MultimediaProvider.Stores;
 
-static class MultimediaStoreServiceExtension
+public static class MultimediaStoreServiceExtension
 {
     public static IServiceCollection AddMultimediaStore(this IServiceCollection services, MultimediaStoreOptions options)
     {

@@ -5,7 +5,7 @@ using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.MultimediaProvider.Services;
 
-internal class MultimediaService : IMultimediaService
+public class MultimediaService : IMultimediaService
 {
     private readonly IMultimediaStore _multimediaStore;
     public MultimediaService(IMultimediaStore multimediaStore)

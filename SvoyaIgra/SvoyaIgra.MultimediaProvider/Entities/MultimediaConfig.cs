@@ -2,6 +2,6 @@
 
 public class MultimediaConfig
 {
-    public string QuestionFile { get; set; }
-    public string AnswerFile { get; set; }
+    public string? QuestionFile { get; set; }
+    public string? AnswerFile { get; set; }
 }

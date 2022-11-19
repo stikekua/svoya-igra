@@ -1,0 +1,78 @@
+﻿<Window x:Class="SvoyaIgra.MultimediaViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SvoyaIgra.MultimediaViewer"
+        xmlns:viewModel="clr-namespace:SvoyaIgra.MultimediaViewer.ViewModel"
+        mc:Ignorable="d"
+        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" AllowsTransparency="True"
+        Title="MainWindow" Height="600" Width="920"
+        DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
+        >
+
+    <Border Background="#272537"
+            CornerRadius="20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="75"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="MultimediaViewer"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="White"
+                       FontSize="22" 
+                       MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown"
+                       />
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+
+                    <RadioButton Content="Viewer"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 IsChecked="True"
+                                 Command="{Binding ViewerViewCommand}"
+                    />
+
+                    <RadioButton Content="Editor"
+                                 Style="{StaticResource MenuButtonTheme}"
+                                 Command="{Binding EditorViewCommand}"
+                    />
+
+                </StackPanel>
+
+                <Button Grid.Row="1"
+                        Content="Close" 
+                        Click="Button_Click"
+                        Style="{StaticResource CloseButtonTheme}"/>
+            </Grid>
+            
+
+            <TextBox Grid.Column="1"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Left"
+                     Margin="5"
+                     Width="250" Height="40" 
+                     Style="{StaticResource ModernTextBox}"/>
+
+            <ContentControl Grid.Column="1" 
+                            Grid.Row="1"
+                            Margin="10"
+                            Content="{Binding CurrentView}">
+
+            </ContentControl>
+        </Grid>
+    </Border>
+</Window>

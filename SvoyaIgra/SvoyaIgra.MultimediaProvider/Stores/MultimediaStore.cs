@@ -4,7 +4,7 @@ using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.MultimediaProvider.Stores;
 
-internal class MultimediaStore: IMultimediaStore
+public class MultimediaStore: IMultimediaStore
 {
     private readonly IFileProvider _fileProvider;
     private readonly MultimediaStoreOptions _multimediaStoreOptions;

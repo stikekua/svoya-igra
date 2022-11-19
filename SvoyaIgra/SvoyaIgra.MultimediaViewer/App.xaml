@@ -1,0 +1,30 @@
+﻿<Application x:Class="SvoyaIgra.MultimediaViewer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SvoyaIgra.MultimediaViewer"
+             xmlns:viewModel="clr-namespace:SvoyaIgra.MultimediaViewer.ViewModel"
+             xmlns:view="clr-namespace:SvoyaIgra.MultimediaViewer.View"
+             >
+    <Application.Resources>
+         <ResourceDictionary>
+             <viewModel:ViewModelLocator x:Key="Locator" />
+
+             <DataTemplate DataType="{x:Type viewModel:ViewerViewModel}">
+                 <view:ViewerView/>
+             </DataTemplate>
+
+             <DataTemplate DataType="{x:Type viewModel:EditorViewModel}">
+                 <view:EditorView/>
+             </DataTemplate>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/CloseButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TextboxTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+             
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
