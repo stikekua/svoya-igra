@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -24,6 +26,15 @@ public partial class ViewerViewModel
     [ObservableProperty]
     private MultimediaForEnum _multimedia_for;
 
+    [ObservableProperty]
+    private string _selected;
+
+    [ObservableProperty]
+    private IEnumerable<string> _qfiles;
+
+    [ObservableProperty]
+    private IEnumerable<string> _afiles;
+
     public ViewerViewModel(IMultimediaService multimediaService)
     {
         _multimediaService = multimediaService;
@@ -43,19 +54,24 @@ public partial class ViewerViewModel
     {
         var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
 
-        var fileName = mutimediaCfg.QuestionFile;
-        switch (Multimedia_for)
+        Qfiles = mutimediaCfg.QuestionFiles;
+        Afiles = mutimediaCfg.AnswerFiles;
+    }
+
+    [RelayCommand]
+    private void LoadPicture(object obj)
+    {
+        if (Qfiles.Contains(Selected))
         {
-            case MultimediaForEnum.Question:
-                fileName = mutimediaCfg.QuestionFile;
-                break;
-            case MultimediaForEnum.Answer:
-                fileName = mutimediaCfg.AnswerFile;
-                break;
+            Multimedia_for = MultimediaForEnum.Question;
+        }
+        else if (Afiles.Contains(Selected))
+        {
+            Multimedia_for = MultimediaForEnum.Answer;
         }
 
         var mutimediaStream =
-            _multimediaService.GetMultimedia(Id, Multimedia_for, fileName);
+            _multimediaService.GetMultimedia(Id, Multimedia_for, Selected);
 
         SetImageSource(mutimediaStream.stream);
     }

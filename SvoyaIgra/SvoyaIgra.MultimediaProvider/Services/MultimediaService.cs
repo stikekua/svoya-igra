@@ -18,8 +18,8 @@ public class MultimediaService : IMultimediaService
         var files = _multimediaStore.ListMultimedia(multimediaId).ToList();
         return new MultimediaConfig
         {
-            QuestionFile = files.FirstOrDefault(f=>f.Item1 == MultimediaForEnum.Question).Item2,
-            AnswerFile = files.FirstOrDefault(f => f.Item1 == MultimediaForEnum.Answer).Item2
+            QuestionFiles = files.Where(f=>f.Item1 == MultimediaForEnum.Question).Select(x=>x.Item2),
+            AnswerFiles = files.Where(f => f.Item1 == MultimediaForEnum.Answer).Select(x => x.Item2),
         };
     }
 

@@ -46,7 +46,7 @@
                             />
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal"
+                        <!--<StackPanel Orientation="Horizontal"
                                     >
                             <TextBlock Text="Multimedia for"
                                        Foreground="White"
@@ -64,18 +64,64 @@
                                          Command="{Binding SetMultimediaForCommand}"
                                          CommandParameter="Answer"
                             />
-                    </StackPanel>
+                        </StackPanel>-->
                     </StackPanel>
                 
-                    <Button Content="Load"
+                    <Button Content="Load cfg"
                             Margin="15,0,0,0"
                             Width="100"
                             Command="{Binding LoadMutimediaCommand}"/>
 
                 </StackPanel>
 
-            <Image Grid.Row="2" Stretch="Uniform" Source="{Binding Image, Mode=OneWay}"></Image>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+
+
+                    <StackPanel Grid.Row="0"
+                                Margin="0,0,0,5">
+                        <TextBlock Text="Question files:"
+                                   Foreground="White"/>
+                        <ListView ItemsSource="{Binding Qfiles}"
+                                  Height="150"
+                                  SelectedItem="{Binding Selected}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1"
+                                Margin="0,0,0,5">
+                        <TextBlock Text="Answer files:"
+                                   Foreground="White"/>
+                        <ListView ItemsSource="{Binding Afiles}"
+                                  Height="150"
+                                  SelectedItem="{Binding Selected}"/>
+                    </StackPanel>
+
+                    <Button Grid.Row="2"
+                            Content="Load"
+                            Height="35"
+                            Command="{Binding LoadPictureCommand}"/>
+
+                </Grid>
+
+                <Image Grid.Column="1" 
+                       Margin="10,0,0,0"
+                       Stretch="Uniform" 
+                       Source="{Binding Image, Mode=OneWay}"/>
             </Grid>
+
+        </Grid>
         
     </Grid>
 </UserControl>

@@ -14,7 +14,7 @@ public partial class MainViewModel
 
     public MainViewModel()
     {
-        var ViewModelLocator = new ViewModelLocator();
+        ViewModelLocator = new ViewModelLocator();
         CurrentView = ViewModelLocator.ViewerViewModel;
     }
 
