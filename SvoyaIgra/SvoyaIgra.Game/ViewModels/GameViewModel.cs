@@ -12,6 +12,9 @@ using SvoyaIgra.Game.Views.Questions;
 using System.Windows.Controls;
 using System.Reflection;
 using System.IO;
+using SvoyaIgra.WebSocketProvider.Client;
+using log4net;
+using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -67,7 +70,29 @@ namespace SvoyaIgra.Game.ViewModels
 
     public class GameViewModel:ViewModelBase
     {
+        public WindowLocator WindowLocator { get; set; }
+
+        public WebSocketClientProvider WebSocketClient { get; set; }
+
         #region Properties
+
+        //for WS
+        string _notificationText = "";
+        public string NotificationText
+        {
+            get
+            {
+                return _notificationText;
+            }
+            set
+            {
+                if (_notificationText != value)
+                {
+                    _notificationText = value;
+                    OnPropertyChanged(nameof(NotificationText));
+                }
+            }
+        }
 
         #region Cockpit window control
 
@@ -79,6 +104,7 @@ namespace SvoyaIgra.Game.ViewModels
 
 
         #endregion
+
 
         #region PlayScreen
 
@@ -236,6 +262,7 @@ namespace SvoyaIgra.Game.ViewModels
                     OnPropertyChanged(nameof(AllRoundsQuestions));
                     OnPropertyChanged(nameof(QuestionsArePrepared));
                     Debug.WriteLine($"AllRoundsQuestions changed");
+                    Debug.WriteLine($"Count: {AllRoundsQuestions.Count}");
                 }
             }
         }
@@ -529,6 +556,14 @@ namespace SvoyaIgra.Game.ViewModels
 
         public GameViewModel()
         {
+            WindowLocator = new WindowLocator();
+
+            WebSocketClient = new WebSocketClientProvider();
+            WebSocketClient.Opened += Wss_Opened;
+            WebSocketClient.Closed += Wss_Closed;
+            WebSocketClient.Error += Wss_Error;
+            WebSocketClient.Received += Wss_NewMessage;
+
             CloseAppCommand  = new RelayCommand(CloseAppMethod);
             OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
             ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
@@ -665,21 +700,46 @@ namespace SvoyaIgra.Game.ViewModels
         private void ResetButtonsStateMethod(object obj)
         {
             Debug.WriteLine("Buttons State Resetted");
+            //_log.Info("OnResetButtonPressed");
+            if (WebSocketClient.Send(WsMessages.ResetCommand))
+            {
+                NotificationText += $"C: {WsMessages.ResetCommand}\r\n";
+                //addToLogList($"C: {WsMessages.NextCommand}");
+            }
         }
 
         private void RequestNextPlayerMethod(object obj)
         {
             Debug.WriteLine("Next Player in Queue requested");
+            //_log.Info("OnNextButtonPressed");
+            if (WebSocketClient.Send(WsMessages.NextCommand))
+            {
+                NotificationText += $"C: {WsMessages.NextCommand}\r\n";
+                //addToLogList($"C: {WsMessages.NextCommand}");
+            }
         }
 
         private void DisconnectButtonsServerMethod(object obj)
         {
             Debug.WriteLine("Buttons Server Disconnected");
+            WebSocketClient.Dispose();
+            //IsConnect = false;
+
         }
 
         private void ConnectButtonsServerMethod(object obj)
         {
-            Debug.WriteLine("Buttons Server Disconnected");
+            Debug.WriteLine("Buttons Server connected");
+
+            if (WebSocketClient.Connect())
+            {
+                //_log.Info("WebSocketClient Connect");
+                //IsConnect = true;
+            }
+            else
+            {
+                //_log.Error("WebSocketClient Error");
+            }
         }
 
         #endregion
@@ -812,8 +872,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void OpenPresentScreenMethod(object obj)
         {
-            PlayScreenWindow  = new PlayScreenWindow();
-            PlayScreenWindow.DataContext = this;
+            PlayScreenWindow  = WindowLocator.PlayScreenWindow;
+            //PlayScreenWindow.DataContext = this;
             PlayScreenWindow.WindowState = WindowState.Maximized;
             PlayScreenWindow.Show();       
             
@@ -821,13 +881,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void OpenQuestionsSetupWindowMethod(object obj)
         {
-            var questionsSetupWindow = new QuestionsSetupWindow();
-           // questionsSetupWindow.DataContext = new QuestionsSetupViewModel(AllRoundsQuestions,FinalQuestion);
-
-            questionsSetupWindow.DataContext = new QuestionsSetupViewModel(this);
-
-            bool? result = questionsSetupWindow.ShowDialog();
-
+            var questionsSetupWindow = WindowLocator.QuestionsSetupWindow;            
+            questionsSetupWindow.ShowDialog();
         }
 
         private void OpenQuestionMethod(object obj)
@@ -887,6 +942,31 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         #endregion
+
+        #endregion
+
+        #region WS
+
+        private void Wss_Opened()
+        {
+            NotificationText += $"Opened\r\n";
+        }
+
+        private void Wss_Closed()
+        {
+            NotificationText += $"Closed\r\n";
+        }
+
+        private void Wss_Error(string message)
+        {
+            NotificationText += $"Error {message}\r\n";
+
+        }
+        private void Wss_NewMessage(string message)
+        {
+            NotificationText += $"S: {message}\r\n";
+            ButtonsMessageText = message;
+        }
 
         #endregion
     }

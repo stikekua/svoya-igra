@@ -1,27 +1,26 @@
-﻿using SvoyaIgra.Game.Metadata;
+﻿using SvoyaIgra.Dal.Services;
+using SvoyaIgra.Game.Metadata;
 using SvoyaIgra.Game.ViewModels.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 
 namespace SvoyaIgra.Game.ViewModels
 {
     public class QuestionsSetupViewModel:ViewModelBase
     {
+        private readonly ITopicService _topicService;
+        private readonly IQuestionService _questionService;
+        private readonly IGameService _gameService;
+
+        public ViewModelLocator ViewModelLocator { get; set; }
 
         #region Properties
 
-        public GameViewModel GameViewModelInstance { get; set; }
-
-
-        //ToDo
-        #region DB model
-
-
-
-        #endregion
+        public Guid GameId { get; set; }
 
         #region All questions
 
@@ -35,11 +34,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _allRoundsQuestions = value;
                     OnPropertyChanged(nameof(AllRoundsQuestions));
-                    if (GameViewModelInstance!=null)
-                    {
-                        GameViewModelInstance.AllRoundsQuestions = AllRoundsQuestions;
-                    }
-                    
+                    ViewModelLocator.GameViewModel.AllRoundsQuestions = AllRoundsQuestions;
                 }
             }
         }
@@ -234,10 +229,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _finalQuestionSetup = value;
                     OnPropertyChanged(nameof(FinalQuestionSetup));
-                    if (GameViewModelInstance!=null)
-                    {
-                        GameViewModelInstance.FinalQuestion = FinalQuestionSetup;
-                    }
+                    ViewModelLocator.GameViewModel.FinalQuestion = FinalQuestionSetup;
                 }
             }
         }
@@ -294,9 +286,13 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
-        public QuestionsSetupViewModel(GameViewModel vm)
+        public QuestionsSetupViewModel(ITopicService topicService, IQuestionService questionService, IGameService gameService)
         {
-            GameViewModelInstance = vm;
+            ViewModelLocator = new ViewModelLocator();
+
+            _topicService = topicService;
+            _questionService = questionService;
+            _gameService = gameService;
 
             ApplyQuestionChangesCommand = new RelayCommand(ApplyQuestionChangesMethod);
             GetTestQuestionsCommand = new RelayCommand(GetTestQuestionsMethod);
@@ -312,6 +308,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void GetTestQuestionsMethod(object obj)
         {
+            var rounds = new ObservableCollection<ObservableCollection<Topic>>();
+
             for (int z = 0; z < 3; z++)//rounds
             {
                 var topics = new ObservableCollection<Topic>();
@@ -326,9 +324,11 @@ namespace SvoyaIgra.Game.ViewModels
                     topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
 
                 }
-                AllRoundsQuestions.Add(topics);
+
+                rounds.Add(topics);                
             }
 
+            AllRoundsQuestions = rounds;
 
             FinalQuestionSetup = new Question("some final question text", "some final question answer", 0,1,true,"Just Final question");
 
@@ -336,10 +336,43 @@ namespace SvoyaIgra.Game.ViewModels
             GetCurrentQuestion();
         }
 
-        //ToDo
-        private void GetRealQuestionsFromDbMethod(object obj)
+        private async void GetRealQuestionsFromDbMethod(object obj)
         {
-            throw new NotImplementedException();
+            //create game
+            GameId = await _gameService.CreateGameAsync();
+
+            //get round topics
+            var topicsFromDB = await _gameService.GetTopicsAsync(GameId);
+
+            var rounds = new ObservableCollection<ObservableCollection<Topic>>();
+
+            var topics = new ObservableCollection<Topic>();
+
+            topicsFromDB.ToList().ForEach(t =>
+            {
+                var listOfQuestions = new List<Question>();
+                listOfQuestions.AddRange(
+                    t.Questions!.Select(q => new Question(q.Text, q.Answer, (int)q.Difficulty, 1, true, t.Name)));
+
+                topics.Add(new Topic(listOfQuestions, t.Name));
+            });
+
+            rounds.Add(new ObservableCollection<Topic>(topics.Take(6)));
+            rounds.Add(new ObservableCollection<Topic>(topics.Skip(6).Take(6)));
+            rounds.Add(new ObservableCollection<Topic>(topics.Skip(12).Take(6)));
+
+            AllRoundsQuestions = rounds;
+
+            //get final topics
+            var finaltopicsFromDB = await _gameService.GetTopicsFinalAsync(GameId);
+            //TODO 
+
+            //temp
+            FinalQuestionSetup = new Question("some final question text", "some final question answer", 0, 1, true, "Just Final question");
+            //end temp
+
+            GetCurrentQuestion();
+
         }
         void GetCurrentQuestion()
         {
@@ -393,7 +426,6 @@ namespace SvoyaIgra.Game.ViewModels
         private void ApplyFinalQuestionChangesMethod(object obj)
         {
             FinalQuestionSetup = new Question(NewFinalQuestionText, NewFinalQuestionAnswer,0,1,true,NewTopicName);
-            GameViewModelInstance.FinalQuestion = FinalQuestionSetup;            
         }
 
         //ToDo

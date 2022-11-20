@@ -2,10 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SvoyaIgra.Game"
-             StartupUri="Views/CockpitWindow.xaml"
+             xmlns:viewModel="clr-namespace:SvoyaIgra.Game.ViewModels"
              xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers">
     <Application.Resources>
         <ResourceDictionary>
+            <viewModel:ViewModelLocator x:Key="Locator" />
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/SvoyaIgra.Game;component/Views/Dictionaries/Styles.xaml"/>
                 <ResourceDictionary Source="/SvoyaIgra.Game;component/Views/Dictionaries/Converters.xaml"/>

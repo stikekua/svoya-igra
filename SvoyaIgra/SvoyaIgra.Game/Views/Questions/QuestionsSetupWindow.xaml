@@ -6,7 +6,9 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game.Views.Questions"
         mc:Ignorable="d"
-        Title="QuestionsSetupWindow" Height="900" Width="1020">
+        Title="QuestionsSetupWindow" Height="900" Width="1020"
+        DataContext="{Binding Source={StaticResource Locator}, Path=QuestionsSetupViewModel}">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.4*"/>

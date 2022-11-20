@@ -14,7 +14,9 @@
         MinHeight="1080" MinWidth="1920"
         Background="{StaticResource MainGameBackground}"
         WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}"
-        Topmost="True">
+        Topmost="True"
+        DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
+
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
         <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>

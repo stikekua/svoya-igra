@@ -15,10 +15,8 @@
         Title="CockpitWindow" 
         Height="800"         
         Width="900"
-        WindowStyle="SingleBorderWindow" >
-    <Window.DataContext>
-        <viewModels:GameViewModel/>
-    </Window.DataContext>
+        WindowStyle="SingleBorderWindow" 
+        DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
