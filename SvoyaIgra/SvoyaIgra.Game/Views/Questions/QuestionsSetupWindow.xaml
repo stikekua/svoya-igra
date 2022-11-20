@@ -6,7 +6,7 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game.Views.Questions"
         mc:Ignorable="d"
-        Title="QuestionsSetupWindow" Height="600" Width="800">
+        Title="QuestionsSetupWindow" Height="900" Width="1020">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.4*"/>
@@ -65,6 +65,10 @@
                     <GroupBox Header="Selected question">
                         <StackPanel>
                             <StackPanel>
+                                <Label Content="Question topic"/>
+                                <TextBlock Text="{Binding CurrentQuestion.TopicName}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <StackPanel>
                                 <Label Content="Question text"/>
                                 <TextBlock Text="{Binding CurrentQuestion.QuestionText}" TextWrapping="Wrap"/>
                             </StackPanel>
@@ -95,9 +99,35 @@
             <StackPanel Grid.Column="1">
                 <GroupBox Header="New">
                     <StackPanel >
-                        <StackPanel>
-                            <Button Content="Get Cat" Command="{Binding GetRealQuestionsFromDbCommand}"
-                            Width="150" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                            <StackPanel x:Name="Specility"  HorizontalAlignment="Center" >
+                                <Label Content="new speciality type" />
+                                <ComboBox x:Name="NewSpecialityTypeCombobox" SelectedIndex="{Binding NewQuestionSpecialityTypeIndex, UpdateSourceTrigger=PropertyChanged}">
+                                    <ComboBoxItem IsSelected="True">simple question</ComboBoxItem>
+                                    <ComboBoxItem>Cat</ComboBoxItem>
+                                    <ComboBoxItem>Auction</ComboBoxItem>
+                                </ComboBox>
+                            </StackPanel>
+                            <Button Content="Get Cat" Margin="10,0,0,0"
+                                    Command="{Binding GetRealQuestionsFromDbCommand}" 
+                                    VerticalAlignment="Center"                                    
+                                    Width="100">
+                                <Button.Resources>
+                                    <Style TargetType="Button">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox, Path=SelectedIndex}" Value="1">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+  
+                        <StackPanel Margin="0,10,0,0">
+
                             <Label Content="new text"/>
                             <TextBox Text="{Binding NewQuestionText}" TextWrapping="Wrap" Height="50"/>
                         </StackPanel>
@@ -106,7 +136,55 @@
                                 <Label Content="new answer"/>
                                 <TextBox Text="{Binding NewQuestionAnswer}" TextWrapping="Wrap"/>
                             </StackPanel>
-                            <StackPanel Margin="5,0,5,0">
+
+                            
+                            <StackPanel>
+                                <Label Content="new type"/>
+                                <ComboBox SelectedIndex="{Binding NewQuestionTypeIndex}">
+                                    <ComboBoxItem   IsSelected="True">Text</ComboBoxItem>
+                                    <ComboBoxItem>Picture</ComboBoxItem>
+                                    <ComboBoxItem>Picture series</ComboBoxItem>
+                                    <ComboBoxItem>Music</ComboBoxItem>
+                                    <ComboBoxItem>Video</ComboBoxItem>
+                                </ComboBox>
+                            </StackPanel>
+
+                            
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel>
+                                    <Label Content="New Topic Name"/>
+                                    <TextBox TextWrapping="Wrap" Width="200">
+                                        <TextBox.Resources>
+                                            <Style TargetType="TextBox">
+                                                <Style.Setters>
+                                                    <Setter Property="Text" Value="{Binding NewTopicName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                </Style.Setters>
+                                                <Style.Triggers>
+                                                    <DataTrigger  Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="1">
+                                                        <Setter Property="IsEnabled" Value="True"/>
+
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="0">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Text" Value="{Binding CurrentQuestion.TopicName}"/>
+
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="2">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Text"  Value="{Binding CurrentQuestion.TopicName}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Resources>
+                                    </TextBox>
+                                </StackPanel>
+
+
+                            </StackPanel>
+                            <StackPanel Margin="10,0,0,0">
                                 <Label Content="new Cat price"/>
                                 <TextBox TextWrapping="Wrap">
                                     <TextBox.Resources>
@@ -133,60 +211,11 @@
                                             </Style.Triggers>
                                         </Style>
                                     </TextBox.Resources>
-   
+
                                 </TextBox>
                             </StackPanel>
-                            <StackPanel>
-                                <Label Content="new type"/>
-                                <ComboBox SelectedIndex="{Binding NewQuestionTypeIndex}">
-                                    <ComboBoxItem   IsSelected="True">Text</ComboBoxItem>
-                                    <ComboBoxItem>Picture</ComboBoxItem>
-                                    <ComboBoxItem>Picture series</ComboBoxItem>
-                                    <ComboBoxItem>Music</ComboBoxItem>
-                                    <ComboBoxItem>Video</ComboBoxItem>
-                                </ComboBox>
-                            </StackPanel>
-
-                            <StackPanel>
-                                <Label Content="new speciality type" />
-                                <ComboBox x:Name="NewSpecialityTypeCombobox" SelectedIndex="{Binding NewQuestionSpecialityTypeIndex, UpdateSourceTrigger=PropertyChanged}">
-                                    <ComboBoxItem IsSelected="True">simple question</ComboBoxItem>
-                                    <ComboBoxItem>Cat</ComboBoxItem>
-                                    <ComboBoxItem>Auction</ComboBoxItem>
-                                </ComboBox>
-                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel>
-                                <Label Content="New Topic Name"/>
-                                <TextBox TextWrapping="Wrap" Width="350">
-                                    <TextBox.Resources>
-                                        <Style TargetType="TextBox">
-                                            <Style.Setters>
-                                                <Setter Property="Text" Value="{Binding NewTopicName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                            </Style.Setters>
-                                            <Style.Triggers>
-                                                <DataTrigger  Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="1">
-                                                    <Setter Property="IsEnabled" Value="True"/>
-                                                    
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="0">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                    <Setter Property="Text" Value="{Binding CurrentQuestion.TopicName}"/>
 
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="2">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                    <Setter Property="Text"  Value="{Binding CurrentQuestion.TopicName}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Resources>
-                                </TextBox>
-                            </StackPanel>
-                            
-
-                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
                                 <Label Content="MediaLink"/>
@@ -215,7 +244,7 @@
                             </StackPanel>
                             <StackPanel Height="70">
                                 <Label Content="Question text"/>
-                                <TextBlock Text="{Binding FinalQuestionSetup.QuestionText}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding FinalQuestionSetup.QuestionText}" TextWrapping="Wrap" Height="40"/>
                             </StackPanel>
                             <StackPanel >
                                 <Label Content="Answer"/>
@@ -229,15 +258,15 @@
                         <StackPanel>
                             <StackPanel >
                                 <Label Content="Topic"/>
-                                <TextBlock Text="{Binding NewFinalQuestionTopicName}" TextWrapping="Wrap"/>
+                                <TextBox Text="{Binding NewFinalQuestionTopicName}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <StackPanel Height="70">
                                 <Label Content="Question text"/>
-                                <TextBlock Text="{Binding NewFinalQuestionText}" TextWrapping="Wrap"/>
+                                <TextBox Text="{Binding NewFinalQuestionText}" TextWrapping="Wrap" Height="40"/>
                             </StackPanel>
                             <StackPanel >
                                 <Label Content="Answer"/>
-                                <TextBlock Text="{Binding NewFinalQuestionAnswer}" TextWrapping="Wrap"/>
+                                <TextBox Text="{Binding NewFinalQuestionAnswer}" TextWrapping="Wrap"/>
                             </StackPanel>
                             <Button Content="Apply changes" 
                                     Command="{Binding ApplyFinalQuestionChangesCommand}"/>
