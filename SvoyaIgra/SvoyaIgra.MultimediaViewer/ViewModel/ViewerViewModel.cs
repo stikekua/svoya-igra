@@ -17,6 +17,8 @@ public partial class ViewerViewModel
 {
     private readonly IMultimediaService _multimediaService;
 
+    private MediaPlayer _mediaPlayer;
+
     [ObservableProperty] 
     private ImageSource _image;
 
@@ -38,6 +40,7 @@ public partial class ViewerViewModel
     public ViewerViewModel(IMultimediaService multimediaService)
     {
         _multimediaService = multimediaService;
+        _mediaPlayer = new MediaPlayer();
 
         Id = "29FDBD16-9DA1-4495-B67A-87BCF0942881";
         Multimedia_for = MultimediaForEnum.Question;
@@ -73,17 +76,30 @@ public partial class ViewerViewModel
         var mutimediaStream =
             _multimediaService.GetMultimedia(Id, Multimedia_for, Selected);
 
-        SetImageSource(mutimediaStream.stream);
+        if (mutimediaStream.mediaType == MediaType.Image)
+        {
+            var ms = ConverToMemoryStream(mutimediaStream.stream);
+            SetImageSource(ms);
+        }
+        else if (mutimediaStream.mediaType == MediaType.Audio)
+        {
+            var ms = ConverToMemoryStream(mutimediaStream.stream);
+            _mediaPlayer.Open(new Uri(@"C:\SvoyaIgra\MultimediaStore\29FDBD16-9DA1-4495-B67A-87BCF0942881\Answer\Sinitana - No Rules.mp3"));
+            _mediaPlayer.Play();
+        }
+        else if (mutimediaStream.mediaType == MediaType.Video)
+        {
+            
+        }
+
+
+        
     }
 
+    
 
-    private void SetImageSource(Stream stream)
+    private void SetImageSource(MemoryStream ms)
     {
-        MemoryStream ms = new MemoryStream();
-        stream.CopyTo(ms);
-        ms.Seek(0, SeekOrigin.Begin);
-        stream.Close();
-
         var imgsrc = new BitmapImage();
         imgsrc.BeginInit();
         imgsrc.StreamSource = ms;
@@ -91,5 +107,14 @@ public partial class ViewerViewModel
         Image = imgsrc;
     }
 
+    private MemoryStream ConverToMemoryStream(Stream stream)
+    {
+        MemoryStream ms = new MemoryStream();
+        stream.CopyTo(ms);
+        ms.Seek(0, SeekOrigin.Begin);
+        stream.Close();
+
+        return ms;
+    }
 
 }
