@@ -68,8 +68,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" MinHeight="150"/>
+            <RowDefinition Height="1.2*"/>
             <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" x:Name="ThisWindowPanelGrid">
@@ -179,12 +179,13 @@
 
             </Grid>
             <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
-                <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" Grid.Column="1">
-                    <Button Content="Open Questions setup" 
+                <StackPanel Grid.Column="1">
+                    <StackPanel  Orientation="Horizontal" >
+                        <Button Content="Open Questions setup" 
                             Command="{Binding OpenQuestionsSetupWindowCommand}" 
                             Width="150" 
                             Height="50"/>
-                    <Button Content="CloseQuestion" 
+                        <Button Content="CloseQuestion" 
                             Command="{Binding ChangeGamePhaseCommand}" 
                             CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
                             Width="150" 
@@ -192,19 +193,24 @@
                             IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
 
 
-                    <StackPanel>
-                        <TextBox Text="{Binding ScoreBoardText}"/>
-                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
-                            <Button Content="+" 
+                        <StackPanel>
+                            <TextBox Text="{Binding ScoreBoardText}"/>
+                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
+                                <Button Content="+" 
                                     Command="{Binding ChangePlayerScoreCommand}" 
                                     CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
                                     MinWidth="100"/>
-                            <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
+                                <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
+                            </StackPanel>
+
                         </StackPanel>
-                        
+                        <Button Content="CloseIntro" Margin="5,0,0,0" Command="{Binding CloseSpecialIntroCommand}"/>
                     </StackPanel>
-                    <Button Content="CloseIntro" Margin="5,0,0,0" Command="{Binding CloseSpecialIntroCommand}"/>
+                    <StackPanel Orientation="Horizontal">
+
+                    </StackPanel>
                 </StackPanel>
+                
             </Grid>
         </Grid>
         <Grid Grid.Row="2" x:Name="PlayerControl">
@@ -328,11 +334,7 @@
                 <DataGrid ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
                           CanUserAddRows="False"
                           HeadersVisibility="None"
-                          AutoGenerateColumns="False"
-                          >
-                    <DataGrid.Resources>
-
-                    </DataGrid.Resources>
+                          AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}"/>
                         <DataGridTemplateColumn>
@@ -444,12 +446,7 @@
                 </DataGrid>
             </Viewbox>
             <StackPanel Grid.Column="1" Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}">
-                <Viewbox  Width="auto" Stretch="Uniform" >
-                    <Border Padding="20" BorderBrush="Black" BorderThickness="3" Background="{StaticResource MainGameBackground}">
-                        <questions:QuestionPlaceHolder  />
-                    </Border>
-                        
-                </Viewbox>
+                
                 <StackPanel Orientation="Horizontal">
 
                     <StackPanel>
@@ -460,9 +457,21 @@
                         <Label Content="Answer: " Margin="5,0,5,0"/>
                         <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}"/>
                     </StackPanel>
+                    <StackPanel>
+                        <Label Content="Answer: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.QuestionText}"/>
+                    </StackPanel>
                     <StackPanel Margin="10,0,0,0">
                         <Label Content="speciality: " Margin="5,0,5,0"/>
                         <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="topic: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.TopicName}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="topic: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"/>
                     </StackPanel>
 
 

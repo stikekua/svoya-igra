@@ -10,6 +10,49 @@ namespace SvoyaIgra.Game.ViewModels
 {
     public class QuestionsSetupViewModel:ViewModelBase
     {
+
+        #region Properties
+
+        public GameViewModel GameViewModelInstance { get; set; }
+
+
+        //ToDo
+        #region DB model
+
+
+
+        #endregion
+
+        #region All questions
+
+        private ObservableCollection<ObservableCollection<Topic>> _allRoundsQuestions { get; set; } = new ObservableCollection<ObservableCollection<Topic>>();
+        public ObservableCollection<ObservableCollection<Topic>> AllRoundsQuestions
+        {
+            get { return _allRoundsQuestions; }
+            set
+            {
+                if (_allRoundsQuestions != value)
+                {
+                    _allRoundsQuestions = value;
+                    OnPropertyChanged(nameof(AllRoundsQuestions));
+                    if (GameViewModelInstance!=null)
+                    {
+                        GameViewModelInstance.AllRoundsQuestions = AllRoundsQuestions;
+                    }
+                    
+                }
+            }
+        }
+
+        public RelayCommand GetTestQuestionsCommand { get; set; }
+        public RelayCommand GetRealQuestionsFromDbCommand { get; set; }
+
+        #endregion
+
+        #region Current question
+
+        #region control elements
+
         private int _currentRoundIndex = 0;
         public int CurrentRoundIndex
         {
@@ -55,6 +98,8 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        #endregion
+
         private Question _currentQuestion = new Question();
         public Question CurrentQuestion
         {
@@ -68,6 +113,10 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
+
+        #endregion
+
+        #region New question
 
         private string _newQuestionText = "Some Text";
         public string NewQuestionText
@@ -83,7 +132,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        private string _newQuestionAnswer="Some answer";
+        private string _newQuestionAnswer = "Some answer";
         public string NewQuestionAnswer
         {
             get { return _newQuestionAnswer; }
@@ -111,21 +160,19 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        private string _newCatTopicName = "";
-        public string NewCatTopicName
+        private string _newTopicName = "some new topic name";
+        public string NewTopicName
         {
-            get { return _newCatTopicName; }
+            get { return _newTopicName; }
             set
             {
-                if (_newCatTopicName != value)
+                if (_newTopicName != value)
                 {
-                    _newCatTopicName = value;
-                    OnPropertyChanged(nameof(NewCatTopicName));
+                    _newTopicName = value;
+                    OnPropertyChanged(nameof(NewTopicName));
                 }
             }
         }
-
-
 
         private string _newQuestionSpecialityCatPrice = "100";
         public string NewQuestionSpecialityCatPrice
@@ -170,88 +217,98 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        public RelayCommand GetRandomCatQuestionsCommand { get; set; }
+        public RelayCommand ApplyQuestionChangesCommand { get; set; }
 
-        private ObservableCollection<ObservableCollection<Topic>> _allRoundsQuestions { get; set; } = new ObservableCollection<ObservableCollection<Topic>>();
-        public ObservableCollection<ObservableCollection<Topic>> AllRoundsQuestions
+        #endregion
+
+        #region Final question
+
+        private Question _finalQuestionSetup = new Question();
+        public Question FinalQuestionSetup
         {
-            get { return _allRoundsQuestions; }
+            get { return _finalQuestionSetup; }
             set
             {
-                if (_allRoundsQuestions != value)
+                if (_finalQuestionSetup != value)
                 {
-                    _allRoundsQuestions = value;
-                    OnPropertyChanged(nameof(AllRoundsQuestions));
+                    _finalQuestionSetup = value;
+                    OnPropertyChanged(nameof(FinalQuestionSetup));
+                    if (GameViewModelInstance!=null)
+                    {
+                        GameViewModelInstance.FinalQuestion = FinalQuestionSetup;
+                    }
                 }
             }
         }
 
 
-        public RelayCommand ApplyQuestionChangesCommand { get; set; }
-        public RelayCommand GetTestQuestionsCommand { get; set; }
-        public RelayCommand GetRealQuestionsFromDbCommand { get; set; }
-        public RelayCommand GetRandomCatQuestionsCommand { get; set; }
-
-
-        public QuestionsSetupViewModel(ObservableCollection<ObservableCollection<Topic>> allRoundsQuestions)
+        private string _newFinalQuestionText = "Some Final Text";
+        public string NewFinalQuestionText
         {
-            AllRoundsQuestions = allRoundsQuestions;
+            get { return _newFinalQuestionText; }
+            set
+            {
+                if (_newFinalQuestionText != value)
+                {
+                    _newFinalQuestionText = value;
+                    OnPropertyChanged(nameof(NewFinalQuestionText));
+                }
+            }
+        }
+
+
+        private string _newFinalQuestionAnswer = "Some final answer";
+        public string NewFinalQuestionAnswer
+        {
+            get { return _newFinalQuestionAnswer; }
+            set
+            {
+                if (_newFinalQuestionAnswer != value)
+                {
+                    _newFinalQuestionAnswer = value;
+                    OnPropertyChanged(nameof(NewFinalQuestionAnswer));
+                }
+            }
+        }
+
+
+        private string _newFinalQuestionTopicName = "Some final topic";
+        public string NewFinalQuestionTopicName
+        {
+            get { return _newFinalQuestionTopicName; }
+            set
+            {
+                if (_newFinalQuestionTopicName != value)
+                {
+                    _newFinalQuestionTopicName = value;
+                    OnPropertyChanged(nameof(NewFinalQuestionTopicName));
+                }
+            }
+        }
+
+        public RelayCommand ApplyFinalQuestionChangesCommand { get; set; }
+        public RelayCommand GetNewFinalQuestionCommand { get; set; }
+
+        #endregion
+
+        #endregion
+
+        public QuestionsSetupViewModel(GameViewModel vm)
+        {
+            GameViewModelInstance = vm;
 
             ApplyQuestionChangesCommand = new RelayCommand(ApplyQuestionChangesMethod);
             GetTestQuestionsCommand = new RelayCommand(GetTestQuestionsMethod);
             GetRealQuestionsFromDbCommand = new RelayCommand(GetRealQuestionsFromDbMethod);
             GetRandomCatQuestionsCommand = new RelayCommand(GetRandomCatQuestionsMethod);
+            ApplyFinalQuestionChangesCommand = new RelayCommand(ApplyFinalQuestionChangesMethod);
+            GetNewFinalQuestionCommand = new RelayCommand(GetNewFinalQuestionMethod);
         }
 
-        private void GetRandomCatQuestionsMethod(object obj)
-        {
-            Question questionFromDb = new Question();
-            NewQuestionText = questionFromDb.QuestionText;
-            NewQuestionAnswer = questionFromDb.QuestionAnswer;
-            NewQuestionSpecialityTypeIndex = 1;//Cat
-            NewCatTopicName = questionFromDb.SpecialityCatTopicName;
-        }
+        #region Methods
 
-        private void GetRealQuestionsFromDbMethod(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ApplyQuestionChangesMethod(object obj)
-        {
-            int newCatPrice = 0;
-            if(!NewQuestionAnswer.Equals(string.Empty) && !NewQuestionText.Equals(string.Empty) && Int32.TryParse(NewQuestionSpecialityCatPrice, out newCatPrice))
-            {
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;                
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityTypeIndex;
-               // AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionTypeIndex+1; //conversion between question type in combobox and question type in enum(first index there is 1)
-                //AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
-
-                if (NewQuestionTypeIndex + 1 > (int)QuestionTypeEnum.Text) //if not text
-                {
-                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
-                }
-                if (NewQuestionSpecialityTypeIndex==1)
-                {                   
-                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
-                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatTopicName = cat;
-
-                }
-            }
-            OnPropertyChanged(nameof(AllRoundsQuestions));
-
-            MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed");
-        }
-
-        void GetCurrentQuestion()
-        {
-            if (AllRoundsQuestions.Count>0)
-            {
-                CurrentQuestion = AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex];
-            }
-
-            
-        }
+        #region All questions
 
         private void GetTestQuestionsMethod(object obj)
         {
@@ -264,14 +321,100 @@ namespace SvoyaIgra.Game.ViewModels
                     for (int k = 0; k < 5; k++) //questions
                     {
                         string questionText = "Topic " + i.ToString() + " question " + k.ToString();
-                        listOfQuestions.Add(new Question(questionText, "Answer for " + questionText, (k * 100 + 100) * (z + 1), k + 1));
+                        listOfQuestions.Add(new Question(questionText, "Answer for " + questionText, (k * 100 + 100) * (z + 1), k + 1,true, "Topic " + i.ToString()));
                     }
                     topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
 
                 }
                 AllRoundsQuestions.Add(topics);
             }
+
+
+            FinalQuestionSetup = new Question("some final question text", "some final question answer", 0,1,true,"Just Final question");
+
+
             GetCurrentQuestion();
         }
+
+        //ToDo
+        private void GetRealQuestionsFromDbMethod(object obj)
+        {
+            throw new NotImplementedException();
+        }
+        void GetCurrentQuestion()
+        {
+            if (AllRoundsQuestions.Count > 0)
+            {
+                CurrentQuestion = AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex];
+            }
+        }
+
+        #endregion
+
+        #region Round qustions change
+
+        //ToDo
+        private void GetRandomCatQuestionsMethod(object obj)
+        {
+            Question questionFromDb = new Question(null, null, 0);
+            NewQuestionText = questionFromDb.QuestionText;
+            NewQuestionAnswer = questionFromDb.QuestionAnswer;
+            NewQuestionSpecialityTypeIndex = 1;//Cat
+            NewTopicName = questionFromDb.TopicName;
+        }
+        private void ApplyQuestionChangesMethod(object obj)
+        {
+            int newCatPrice = 0;
+            if (!NewQuestionAnswer.Equals(string.Empty) && !NewQuestionText.Equals(string.Empty) && Int32.TryParse(NewQuestionSpecialityCatPrice, out newCatPrice))
+            {
+                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
+                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;
+                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityTypeIndex;
+
+                if (NewQuestionTypeIndex + 1 > (int)QuestionTypeEnum.Text) //if not text
+                {
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
+                }
+                if (NewQuestionSpecialityTypeIndex == 1)
+                {
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].TopicName = NewTopicName;
+
+                }
+            }
+            OnPropertyChanged(nameof(AllRoundsQuestions));
+
+            MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed");
+        }
+
+        #endregion
+
+        #region Final question
+        private void ApplyFinalQuestionChangesMethod(object obj)
+        {
+            FinalQuestionSetup = new Question(NewFinalQuestionText, NewFinalQuestionAnswer,0,1,true,NewTopicName);
+            GameViewModelInstance.FinalQuestion = FinalQuestionSetup;            
+        }
+
+        //ToDo
+        private void GetNewFinalQuestionMethod(object obj)
+        {
+
+        }
+
+
+
+        #endregion
+
+        #endregion
+
+
+
+
+
+
+
+
+
     }
 }

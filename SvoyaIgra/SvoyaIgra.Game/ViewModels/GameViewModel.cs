@@ -15,6 +15,8 @@ using System.IO;
 
 namespace SvoyaIgra.Game.ViewModels
 {
+
+    #region enums
     public enum GamePhaseEnum
     {
         PreGame = -1,
@@ -32,7 +34,6 @@ namespace SvoyaIgra.Game.ViewModels
         Question = 10
 
     }
-
     public enum QuestionTypeEnum
     {
         Text = 1,
@@ -41,7 +42,6 @@ namespace SvoyaIgra.Game.ViewModels
         Musical = 4,
         Video = 5
     }
-
     public enum PlayerColorEnum
     {
         Red = 1,
@@ -49,7 +49,6 @@ namespace SvoyaIgra.Game.ViewModels
         Blue = 4,
         Yellow = 8
     }
-
     public enum PlayerIndexEnum
     {
         Red = 0,
@@ -57,13 +56,14 @@ namespace SvoyaIgra.Game.ViewModels
         Blue = 2,
         Yellow = 3
     }
-
     public enum SpecialityTypesEnum
     {
         NotSpecial = 0,
         Cat = 1,
         Auction = 2
     }
+
+    #endregion
 
     public class GameViewModel:ViewModelBase
     {
@@ -234,12 +234,11 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _allRoundsQuestions = value;
                     OnPropertyChanged(nameof(AllRoundsQuestions));
+                    OnPropertyChanged(nameof(QuestionsArePrepared));
+                    Debug.WriteLine($"AllRoundsQuestions changed");
                 }
             }
         }
-
-
-
 
 
         private ObservableCollection<Topic> _currentRoundQuestions;
@@ -256,26 +255,10 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        private ObservableCollection<Topic> _currentRoundQuestionsTest = new ObservableCollection<Topic>();
-        public ObservableCollection<Topic> CurrentRoundQuestionsTest
-        {
-            get { return _currentRoundQuestionsTest; }
-            set
-            {
-                if (_currentRoundQuestionsTest != value)
-                {
-                    _currentRoundQuestionsTest = value;
-                    OnPropertyChanged(nameof(CurrentRoundQuestionsTest));
-                }
-            }
-        }
-
         public bool QuestionsArePrepared
         {
             get { return AllRoundsQuestions.Count > 0 ? true : false; }
         }
-
-
 
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
@@ -294,8 +277,26 @@ namespace SvoyaIgra.Game.ViewModels
             } 
         }
 
+        private Question _finalQuestion = new Question();
+        public Question FinalQuestion
+        {
+            get { return _finalQuestion; }
+            set
+            {
 
-        public RelayCommand CloseSpecialIntroCommand { get; set; }
+                Debug.WriteLine($"trying to change FinalQuestion changed, text is {FinalQuestion.QuestionText}");
+                if (_finalQuestion != value)
+                {
+                    _finalQuestion = value;
+                    OnPropertyChanged(nameof(FinalQuestion));
+
+                    Debug.WriteLine($"FinalQuestion changed, text is {FinalQuestion.QuestionText}");
+                }
+            }
+        }
+
+
+
 
         #endregion
 
@@ -503,23 +504,23 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        string _videoMediaElementSource = "/SvoyaIgra.Game;component/Resources/Videos/Intro.wmv";
-        public string VideoMediaElementSource
+        MediaElement _specialtyVideoMediaElement = new MediaElement();
+        public MediaElement SpecialtyVideoMediaElement
         {
-            get { return _videoMediaElementSource; }
+            get { return _specialtyVideoMediaElement; }
             set
             {
-                if (_videoMediaElementSource != value)
+                if (_specialtyVideoMediaElement != value)
                 {
-                    _videoMediaElementSource = value;
-                    OnPropertyChanged(nameof(VideoMediaElementSource));
+                    _specialtyVideoMediaElement = value;
+                    OnPropertyChanged(nameof(SpecialtyVideoMediaElement));
                 }
             }
         }
 
-
-
+        public RelayCommand SpecialtyVideoMediaElementLoadedCommand { get; set; }
         public RelayCommand MediaElementLoadedCommand { get; set; }
+        public RelayCommand CloseSpecialIntroCommand { get; set; }
 
         #endregion
 
@@ -544,7 +545,7 @@ namespace SvoyaIgra.Game.ViewModels
 
 
             MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
-
+            SpecialtyVideoMediaElementLoadedCommand = new RelayCommand(SpecialtyVideoMediaElementLoadedMethod);
             ///test
             //GetTestQuestionsMethod(null);
             GetPlayers();
@@ -562,7 +563,6 @@ namespace SvoyaIgra.Game.ViewModels
             #endregion
 
     }
-
 
 
         private int DecodeButtonMessage(string message)
@@ -602,8 +602,6 @@ namespace SvoyaIgra.Game.ViewModels
 
 
         }
-
-        
 
         private void ChangePlayerScoreMethod(object obj)
         {
@@ -704,7 +702,7 @@ namespace SvoyaIgra.Game.ViewModels
                     break;
 
                 case (int)GamePhaseEnum.FirstRound:
-                    CurrentRoundQuestions = _allRoundsQuestions[0];
+                    CurrentRoundQuestions = AllRoundsQuestions[0];
                     break;
 
                 case (int)GamePhaseEnum.SecondRoundIntro:
@@ -713,7 +711,7 @@ namespace SvoyaIgra.Game.ViewModels
                     break;
 
                 case (int)GamePhaseEnum.SecondRound:
-                    CurrentRoundQuestions = _allRoundsQuestions[1];
+                    CurrentRoundQuestions = AllRoundsQuestions[1];
                     break;
 
                 case (int)GamePhaseEnum.ThirdRoundIntro:
@@ -722,7 +720,7 @@ namespace SvoyaIgra.Game.ViewModels
                     break;
 
                 case (int)GamePhaseEnum.ThirdRound:
-                    CurrentRoundQuestions = _allRoundsQuestions[2];
+                    CurrentRoundQuestions = AllRoundsQuestions[2];
                     break;
 
                 case (int)GamePhaseEnum.FinalRoundIntro:
@@ -730,6 +728,29 @@ namespace SvoyaIgra.Game.ViewModels
                     VideoMediaElement.Play();
                     break;
 
+                case (int)GamePhaseEnum.FinalRound:
+                    CurrentQuestion = FinalQuestion;
+                    Debug.WriteLine(FinalQuestion.QuestionText);
+                    Debug.WriteLine(CurrentQuestion.QuestionText);
+                    GamePhase = (int)GamePhaseEnum.Question;
+                    break;
+
+                case (int)GamePhaseEnum.Question:
+                    if (CurrentQuestion.SpecialityType==(int)SpecialityTypesEnum.Cat)
+                    {
+                        SpecialtyVideoMediaElement.Source= new Uri(projectDirectory + "/Resources/Videos/Cat.wmv", UriKind.RelativeOrAbsolute);
+                        SpecialtyVideoMediaElement.Play();
+                    }
+                    else if (CurrentQuestion.SpecialityType==(int)SpecialityTypesEnum.Auction)
+                    {
+                        SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Auction.wmv", UriKind.RelativeOrAbsolute);
+                        SpecialtyVideoMediaElement.Play();
+                    }
+                    else
+                    {
+                        SpecialtyVideoMediaElement.Source = null;
+                    }
+                    break;
 
                 default:
                     break;
@@ -756,6 +777,9 @@ namespace SvoyaIgra.Game.ViewModels
         private void ChangeGamePhaseMethod(object obj)
         {
             GamePhase = Convert.ToInt32(obj);
+            CurrentQuestion.SpecialIntroWasNotPlayed = true;
+            OnPropertyChanged(nameof(CurrentQuestion));
+
         }
 
         private void LockPresentScreenMethod(bool parameter)
@@ -764,8 +788,10 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 if (parameter)
                 {
-                    PlayScreenWindowState = WindowState.Maximized;                    
+                    PlayScreenWindowState = WindowState.Normal;
                     PlayScreenWindow.WindowStyle = WindowStyle.None;
+                    PlayScreenWindowState = WindowState.Maximized;                    
+                    
                     PlayScreenWindow.Topmost = true;
                 }
                 else
@@ -796,16 +822,17 @@ namespace SvoyaIgra.Game.ViewModels
         private void OpenQuestionsSetupWindowMethod(object obj)
         {
             var questionsSetupWindow = new QuestionsSetupWindow();
-            questionsSetupWindow.DataContext = new QuestionsSetupViewModel(AllRoundsQuestions);
+           // questionsSetupWindow.DataContext = new QuestionsSetupViewModel(AllRoundsQuestions,FinalQuestion);
+
+            questionsSetupWindow.DataContext = new QuestionsSetupViewModel(this);
+
             bool? result = questionsSetupWindow.ShowDialog();
 
         }
 
-
         private void OpenQuestionMethod(object obj)
         {
             Question q = (Question)obj;
-            Debug.WriteLine(q.QuestionText + " " + q.Price.ToString());
 
             int topicIndex = -2;
             int questionIndex = -2;
@@ -831,16 +858,6 @@ namespace SvoyaIgra.Game.ViewModels
             OnPropertyChanged(nameof(CurrentRoundQuestions));
         }
 
-        private void CloseSpecialIntroMethod(object obj)
-        {
-            if(CurrentQuestion!=null)
-            {
-                CurrentQuestion.SpecialIntroWasNotPlayed = false;
-                OnPropertyChanged(nameof(CurrentQuestion));
-                OnPropertyChanged(nameof(CurrentRoundQuestions));
-            }
-        }
-
         private void CloseAppMethod(object obj)
         {
             App.Current.Shutdown();
@@ -849,11 +866,24 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Media element method
 
+        private void SpecialtyVideoMediaElementLoadedMethod(object obj)
+        {
+            SpecialtyVideoMediaElement = (MediaElement)obj;
+        }
+
         private void MediaElementLoadedMethod(object obj)
         {
             VideoMediaElement = (MediaElement)obj;
-            //element.Source = new Uri("videos/Intro.wmv", UriKind.Relative);
-            //element.Play();
+        }
+
+        private void CloseSpecialIntroMethod(object obj)
+        {
+            if (CurrentQuestion != null)
+            {
+                CurrentQuestion.SpecialIntroWasNotPlayed = false;
+                OnPropertyChanged(nameof(CurrentQuestion));
+                OnPropertyChanged(nameof(CurrentRoundQuestions));
+            }
         }
 
         #endregion

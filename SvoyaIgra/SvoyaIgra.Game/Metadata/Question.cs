@@ -8,6 +8,7 @@ namespace SvoyaIgra.Game.Metadata
     {
         public string QuestionText { get; set; } = "";
         public string QuestionAnswer { get; set; } = "";
+        public string TopicName { get; set; } = "";
         public string MediaLink { get; set; } = "";
         public int Price { get; set; } = 0;
 
@@ -35,7 +36,6 @@ namespace SvoyaIgra.Game.Metadata
 
 
         public int SpecialityCatPrice { get; set; } = 0;
-        public string SpecialityCatTopicName { get; set; } = "Cat topic";
 
 
         bool _notYetAsked;
@@ -75,21 +75,19 @@ namespace SvoyaIgra.Game.Metadata
         //Musical = 4
         //Video = 5
        
-        public Question(string questionText, string questionAnswer, int price, int questionType = 1, bool notYetAsked = true )
+        public Question(string questionText, string questionAnswer, int price, int questionType = 1, bool notYetAsked = true, string topicName="" )
         {
             QuestionText = questionText;
             QuestionAnswer = questionAnswer;
             Price = price;
             NotYetAsked = notYetAsked;
             QuestionType = questionType;
+            TopicName=topicName;
         }
-
         public Question()
         {
 
         }
-
-
 
     }
 }

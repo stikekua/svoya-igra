@@ -37,13 +37,10 @@
         </Border>
 
 
-        <views:ScoreBoard Grid.Row="0" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
-        <!--</Viewbox>-->
-        
-    
-        <Viewbox Grid.Row="1" Stretch="Uniform" StretchDirection="Both"  Margin="200">
+        <views:ScoreBoard Grid.Row="0" VerticalAlignment="Center" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>       
+        <Viewbox Grid.Row="1" Stretch="Uniform" >
             <StackPanel>
-                <questions:SpecialQuestionIntro x:Name="SpecialityIntro" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.CurrentQuestion}"
+                <questions:SpecialQuestionIntro x:Name="SpecialityIntro" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"
                     Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.CurrentQuestion,
                     Converter={StaticResource specialityIntroConverter}}"/>
                 <DockPanel VerticalAlignment="Center">

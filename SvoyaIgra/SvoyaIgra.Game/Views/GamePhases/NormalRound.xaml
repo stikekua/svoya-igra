@@ -19,11 +19,11 @@
             <Setter Property="FontWeight" Value="ExtraBold"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontSize" Value="40"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="QuestionTextBlockStyle">
-            <Setter Property="Height" Value="150"/>
-            <Setter Property="Padding" Value="40"/>
+            <Setter Property="Height" Value="155"/>
+            <Setter Property="Padding" Value="50"/>
             <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
             <Setter Property="FontSize" Value="50"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -37,7 +37,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Viewbox Grid.Row="0">
+        <Viewbox Grid.Row="0" >
             <StackPanel Orientation="Horizontal" >
                 <StackPanel.Resources>
 
@@ -166,7 +166,7 @@
         </Viewbox>
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
-                  Margin="10"
+                  Margin="10,10,10,30"
                   CanUserAddRows="False"
                   HeadersVisibility="None"
                   AutoGenerateColumns="False"
@@ -175,6 +175,7 @@
                   Background="Transparent"
                   RowBackground="Transparent"
                   BorderBrush="Transparent" 
+                  VerticalScrollBarVisibility="Hidden"
                   HorizontalGridLinesBrush="{StaticResource QuestionsFontColor}" VerticalGridLinesBrush="{StaticResource QuestionsFontColor}"
                   >
             <DataGrid.Resources>

@@ -10,7 +10,8 @@
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
         xmlns:questions="clr-namespace:SvoyaIgra.Game.Views.Questions"
         mc:Ignorable="d"
-        Title="PlayScreenWindow" Height="1080" Width="1920"
+        Title="PlayScreenWindow" 
+        MinHeight="1080" MinWidth="1920"
         Background="{StaticResource MainGameBackground}"
         WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}"
         Topmost="True">
