@@ -418,7 +418,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _buttonsMessageText = value;
                     OnPropertyChanged(nameof(ButtonsMessageText));
 
-                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(_buttonsMessageText));
+                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(ButtonsMessageText));
                 }
             }
         }
@@ -665,10 +665,9 @@ namespace SvoyaIgra.Game.ViewModels
         {
             int index = Convert.ToInt32(obj);
 
-
             if (index != -1)
             {
-                if (Players[index].isSelected)
+                if (Players[index].isSelected && !AutoPlayerSelection)
                 {
                     Players[index].isSelected = false;
                 }
