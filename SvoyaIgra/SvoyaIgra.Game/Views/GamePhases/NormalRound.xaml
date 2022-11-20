@@ -1,0 +1,262 @@
+﻿<UserControl x:Class="SvoyaIgra.Game.Views.GamePhases.NormalRound"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
+             xmlns:local="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
+             mc:Ignorable="d" 
+             Height="1080"
+             Width="1920"
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             
+             d:Background="White">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="TopicTextBlockStyle">
+            <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
+            <Setter Property="FontFamily" Value="{StaticResource PlayscreenFont}"/>
+            <Setter Property="FontWeight" Value="ExtraBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="40"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="QuestionTextBlockStyle">
+            <Setter Property="Height" Value="155"/>
+            <Setter Property="Padding" Value="50"/>
+            <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
+            <Setter Property="FontSize" Value="50"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Viewbox Grid.Row="0" >
+            <StackPanel Orientation="Horizontal" >
+                <StackPanel.Resources>
+
+                    <Style TargetType="helpers:OutlinedTextBlock" x:Key="PlayerNameOutlinedTextBlock">
+                        <Setter Property="FontSize" Value="30"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Fill"  Value="{StaticResource QuestionsFontColor}"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Stroke" Value="Black"/>
+                        <Setter Property="StrokeThickness" Value="2"/>
+                    </Style>
+
+
+                    <Style TargetType="helpers:OutlinedTextBlock" x:Key="PlayerScoreOutlinedTextBlock">
+                        <Setter Property="FontSize" Value="40"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                        <Setter Property="Fill"  Value="{StaticResource QuestionsFontColor}"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Stroke" Value="Black"/>
+                        <Setter Property="StrokeThickness" Value="2"/>
+                    </Style>
+
+                    <Style TargetType="Border" x:Key="WholePlayerBorder">
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                        <Setter Property="CornerRadius" Value="5"/>
+                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Margin" Value="10,0,10,0"/>
+                    </Style>
+                    <Style TargetType="Border" x:Key="PlayerNameBorder">
+                        <Setter Property="BorderBrush" Value="Black"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                        <Setter Property="CornerRadius" Value="7"/>
+                        <Setter Property="Margin" Value="-2"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Border Style="{StaticResource WholePlayerBorder}" 
+                        Background="{Binding Players[0].ColorCode}"
+                        Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                    <StackPanel>
+                        <Border Style="{StaticResource PlayerNameBorder}">
+                            <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                        </Border>
+                        <helpers:OutlinedTextBlock Text="{Binding Players[0].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource WholePlayerBorder}" 
+                        Background="{Binding Players[1].ColorCode}"
+                        Visibility="{Binding Players[1].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                    <StackPanel>
+                        <Border Style="{StaticResource PlayerNameBorder}">
+                            <helpers:OutlinedTextBlock Text="{Binding Players[1].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                        </Border>
+                        <helpers:OutlinedTextBlock Text="{Binding Players[1].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource WholePlayerBorder}" 
+                        Background="{Binding Players[2].ColorCode}"
+                        Visibility="{Binding Players[2].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                    <StackPanel>
+                        <Border Style="{StaticResource PlayerNameBorder}">
+                            <helpers:OutlinedTextBlock Text="{Binding Players[2].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                        </Border>
+                        <helpers:OutlinedTextBlock Text="{Binding Players[2].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource WholePlayerBorder}" 
+                        Background="{Binding Players[3].ColorCode}"
+                        Visibility="{Binding Players[3].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                    <StackPanel>
+                        <Border Style="{StaticResource PlayerNameBorder}">
+                            <helpers:OutlinedTextBlock Text="{Binding Players[3].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                        </Border>
+                        <helpers:OutlinedTextBlock Text="{Binding Players[3].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                    </StackPanel>
+                </Border>
+
+
+
+
+                <DataGrid x:Name="mainDatagrid"
+
+                      
+                      Visibility="Collapsed"
+                      ItemsSource="{Binding Players,UpdateSourceTrigger=PropertyChanged}" 
+                      IsReadOnly="True"
+                      HorizontalAlignment="Center"
+                      AutoGenerateColumns="False" 
+                      
+                      Height="auto"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserResizeColumns="False"
+                      CanUserSortColumns="False"
+                      HeadersVisibility="None"
+                      HorizontalScrollBarVisibility="Hidden">
+                    <DataGrid.LayoutTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="-90"/>
+                        </TransformGroup>
+                    </DataGrid.LayoutTransform>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Background="{Binding ColorCode}" Margin="5" Width="200" VerticalAlignment="Center">
+                                        <StackPanel.LayoutTransform>
+                                            <RotateTransform Angle="90"/>
+                                        </StackPanel.LayoutTransform>
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Score}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
+            </StackPanel>
+        </Viewbox>
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="10,10,10,30"
+                  CanUserAddRows="False"
+                  HeadersVisibility="None"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  IsEnabled="False"
+                  Background="Transparent"
+                  RowBackground="Transparent"
+                  BorderBrush="Transparent" 
+                  VerticalScrollBarVisibility="Hidden"
+                  HorizontalGridLinesBrush="{StaticResource QuestionsFontColor}" VerticalGridLinesBrush="{StaticResource QuestionsFontColor}"
+                  >
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell">
+
+                    <Style.Triggers>
+                        <Trigger Property="DataGridCell.IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Trigger>
+
+                    </Style.Triggers>
+                </Style>
+
+
+            </DataGrid.Resources>
+            <DataGrid.Columns >
+                <DataGridTemplateColumn Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource TopicTextBlockStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="1*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock   Style="{StaticResource QuestionTextBlockStyle}"
+                                            Text="{Binding Questions[0].Price}" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                            Visibility="{Binding Questions[0].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" >
+
+
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="1*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Questions[1].Price}" Style="{StaticResource QuestionTextBlockStyle}"
+                                           Visibility="{Binding Questions[1].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="1*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Questions[2].Price}" 
+                                           Style="{StaticResource QuestionTextBlockStyle}"
+                                           Visibility="{Binding Questions[2].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="1*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Questions[3].Price}" 
+                                           Style="{StaticResource QuestionTextBlockStyle}"
+                                           Visibility="{Binding Questions[3].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="1*">
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Margin" Value="0,0,-1.2,0"/>
+                        </Style>
+
+                    </DataGridTemplateColumn.CellStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Questions[4].Price}" 
+                                   Style="{StaticResource QuestionTextBlockStyle}"
+                                           Visibility="{Binding Questions[4].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }"  />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+    
+        
+   
+</UserControl>

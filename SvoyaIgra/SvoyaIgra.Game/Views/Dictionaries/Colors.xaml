@@ -1,0 +1,6 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="MainGameBackground" Color="#FF001BFF"/>
+    <SolidColorBrush x:Key="QuestionsFontColor" Color="#FFFFF900"/>
+
+</ResourceDictionary>

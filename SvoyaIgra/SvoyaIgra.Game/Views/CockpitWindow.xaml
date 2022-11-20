@@ -1,0 +1,491 @@
+﻿<Window x:Class="SvoyaIgra.Game.CockpitWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:SvoyaIgra.Game"
+        xmlns:mtd ="clr-namespace:System.Reflection;assembly=System.Reflection.Metadata"
+        xmlns:gf="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
+        xmlns:questions="clr-namespace:SvoyaIgra.Game.Views.Questions"        
+        xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
+        xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        mc:Ignorable="d"
+        Title="CockpitWindow" 
+        Height="800"         
+        Width="900"
+        WindowStyle="SingleBorderWindow" >
+    <Window.DataContext>
+        <viewModels:GameViewModel/>
+    </Window.DataContext>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseAppCommand}"  />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
+    <Window.Resources>
+
+        <Style TargetType="Button" x:Key="WindowButtons" >
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="FontFamily" Value="Microsoft YaHei Light"/>
+            <Setter Property="Margin" Value="3,0,3,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="3" 
+                                BorderBrush="Black" 
+                                BorderThickness="1" 
+                                Background="#FF7596ED">
+                                <TextBlock  Text="{TemplateBinding Content}" 
+                                            FontSize="15" 
+                                            TextWrapping="Wrap"
+                                            Foreground="Black"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="CheckBox" x:Key="CheckBoxWindow">
+            <Setter Property="VerticalAlignment" Value="Center"/>            
+        </Style>
+        <Style TargetType="TextBlock" x:Key="DefaultTextBlock">
+            <Setter Property="FontFamily" Value="Microsoft YaHei Light"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="1*" MinHeight="150"/>
+            <RowDefinition Height="1.2*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" x:Name="ThisWindowPanelGrid">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Open Playscreen" 
+                            Command="{Binding OpenPresentScreenCommand}"
+                            Style="{StaticResource WindowButtons}">
+                    <Button.Resources>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PlayScreenRunning}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PlayScreenRunning}" Value="False">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button Content="Close" 
+                            Style="{StaticResource WindowButtons}"
+                            Command="{Binding ClosePresentScreenCommand}"
+                            IsEnabled="{Binding PlayScreenRunning}"/>
+
+                <Border CornerRadius="3" 
+                            BorderThickness="1" 
+                            BorderBrush="Black"
+                            VerticalAlignment="Center"
+                            Height="50"
+                            Padding="2">
+                    <StackPanel Orientation="Horizontal" >
+                        <CheckBox Style="{StaticResource CheckBoxWindow}"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding PlayScreenLocked}"
+                                  IsEnabled="{Binding PlayScreenRunning}"/>
+                        <TextBlock Text="Lock Playscreen" 
+                                       Style="{StaticResource DefaultTextBlock}"/>
+                    </StackPanel>
+                </Border>
+                <Button Content="Close app"
+                        Command="{Binding CloseAppCommand}"
+                        IsEnabled="{Binding PlayScreenRunning}"
+                        Style="{StaticResource WindowButtons}"
+                        >
+                </Button>
+            </StackPanel>
+
+        </Grid>
+        <Grid Grid.Row="1" x:Name="PresentWindowControlGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" x:Name="WindowControlGrid">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" 
+                            Height="auto" 
+                            Width="auto"
+                            VerticalAlignment="Top"
+                            IsEnabled="{Binding PlayScreenRunning}">
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="PreGame" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.PreGame}"
+                                 IsChecked="True"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="Game Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.GameIntro}"
+                                 />
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="First round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}" 
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRoundIntro}"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="First round" 
+                                 Command="{Binding ChangeGamePhaseCommand}" 
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRound}"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="Second round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRoundIntro}"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="Second round" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRound}"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="Third round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}"/>
+                        <RadioButton GroupName="GamePhase" Content="Third round" 
+                                 Command="{Binding ChangeGamePhaseCommand}" 
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRound}"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="Final round Intro" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRoundIntro}"/>
+                        <RadioButton GroupName="GamePhase" 
+                                 Content="Final round" 
+                                 Command="{Binding ChangeGamePhaseCommand}"
+                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRound}"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+
+            </Grid>
+            <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
+                <StackPanel Grid.Column="1">
+                    <StackPanel  Orientation="Horizontal" >
+                        <Button Content="Open Questions setup" 
+                            Command="{Binding OpenQuestionsSetupWindowCommand}" 
+                            Width="150" 
+                            Height="50"/>
+                        <Button Content="CloseQuestion" 
+                            Command="{Binding ChangeGamePhaseCommand}" 
+                            CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
+                            Width="150" 
+                            Height="50"
+                            IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
+
+
+                        <StackPanel>
+                            <TextBox Text="{Binding ScoreBoardText}"/>
+                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
+                                <Button Content="+" 
+                                    Command="{Binding ChangePlayerScoreCommand}" 
+                                    CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
+                                    MinWidth="100"/>
+                                <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                        <Button Content="CloseIntro" Margin="5,0,0,0" Command="{Binding CloseSpecialIntroCommand}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+
+                    </StackPanel>
+                </StackPanel>
+                
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" x:Name="PlayerControl">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" MinHeight="40"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" SelectedIndex="{Binding AutoPlayerSelectionIndex}">
+                <ComboBoxItem Content="Auto" IsSelected="True" />
+                <ComboBoxItem Content="Manual" />
+            </ComboBox>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <StackPanel.Resources>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AutoPlayerSelection, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding AutoPlayerSelection, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Resources>
+                    <ToggleButton Margin="5" Background="{Binding Players[0].ColorCode}" 
+                              IsChecked="{Binding Players[0].isSelected, Mode=OneWay}"
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="0">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[0].Name}"/>
+                            <TextBlock Text="{Binding Players[0].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton Margin="5" Background="{Binding Players[1].ColorCode}" 
+                              IsChecked="{Binding Players[1].isSelected, Mode=OneWay}" 
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="1">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[1].Name}"/>
+                            <TextBlock Text="{Binding Players[1].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton Margin="5" Background="{Binding Players[2].ColorCode}" 
+                              IsChecked="{Binding Players[2].isSelected, Mode=OneWay}" 
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="2">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[2].Name}"/>
+                            <TextBlock Text="{Binding Players[2].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton Margin="5" Background="{Binding Players[3].ColorCode}" 
+                              IsChecked="{Binding Players[3].isSelected, Mode=OneWay}" 
+                              Command="{Binding SelectPlayerCommand}"
+                              CommandParameter="3">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[3].Name}"/>
+                            <TextBlock Text="{Binding Players[3].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" 
+                            IsEnabled="{Binding AutoPlayerSelection}">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Margin" Value="5"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Connect" Command="{Binding ConnectButtonsServerCommand}"/>
+                                <Button Content="Disconnect" Command="{Binding DisconnectButtonsServerCommand}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Connection Status:"/>
+                                <TextBlock Text="{Binding ButtonsConnectionStatus}"/>
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <Button Content="Next" Command="{Binding RequestNextPlayerCommand}"/>
+                        <Button Content="Reset" Command="{Binding ResetButtonsStateCommand}"/>
+                        <Button Content="Ready to collect answers" Command="{Binding SetReadyForAnswersCommand}"/>
+
+
+
+
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Button message"/>
+                        <TextBox Text="{Binding ButtonsMessageText, UpdateSourceTrigger=LostFocus}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Selected Player"/>
+                        <TextBlock Text="{Binding SelectedPlayerIndex}"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </Grid>
+
+            
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Viewbox  Grid.Column="0" Width="auto">
+                <DataGrid ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
+                          CanUserAddRows="False"
+                          HeadersVisibility="None"
+                          AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}"/>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Questions[0].Price}"                                            
+                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
+                                            CommandParameter="{Binding Questions[0]}" 
+                                            Foreground="{Binding Questions[0].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Questions[0].NotYetAsked}" Value="False">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Questions[1].Price}"
+                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
+                                            CommandParameter="{Binding Questions[1]}"
+                                            Foreground="{Binding Questions[1].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Questions[1].NotYetAsked}" Value="False">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Questions[2].Price}"
+                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
+                                            CommandParameter="{Binding Questions[2]}"
+                                            Foreground="{Binding Questions[2].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            >
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Questions[2].NotYetAsked}" Value="False">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+  
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Questions[3].Price}"
+                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
+                                            CommandParameter="{Binding Questions[3]}"
+                                            Foreground="{Binding Questions[3].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Questions[3].NotYetAsked}" Value="False">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+ 
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Questions[4].Price}"
+                                            Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
+                                            CommandParameter="{Binding Questions[4]}"
+                                            Foreground="{Binding Questions[4].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            >
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Questions[4].NotYetAsked}" Value="False">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger> 
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Viewbox>
+            <StackPanel Grid.Column="1" Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}">
+                
+                <StackPanel Orientation="Horizontal">
+
+                    <StackPanel>
+                        <Label Content="Price: "/>
+                        <TextBlock Text="{Binding CurrentQuestion.Price}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Answer: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Answer: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.QuestionText}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="speciality: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="topic: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.TopicName}"/>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="topic: " Margin="5,0,5,0"/>
+                        <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"/>
+                    </StackPanel>
+
+
+                </StackPanel>
+            </StackPanel>
+
+
+        </Grid>
+
+            
+           
+
+       
+
+
+    </Grid>
+</Window>

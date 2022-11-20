@@ -1,0 +1,168 @@
+﻿<UserControl x:Class="SvoyaIgra.Game.Views.ScoreBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SvoyaIgra.Game.Views"
+             xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
+             mc:Ignorable="d" 
+             d:Background="White"
+             d:DesignHeight="1080" d:DesignWidth="1920">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <StackPanel.Resources>
+                <Style TargetType="helpers:OutlinedTextBlock" x:Key="PlayerNameOutlinedTextBlock">
+                    <Setter Property="FontSize" Value="30"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Fill"  Value="{StaticResource QuestionsFontColor}"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Stroke" Value="Black"/>
+                    <Setter Property="StrokeThickness" Value="2"/>
+                </Style>
+                <Style TargetType="helpers:OutlinedTextBlock" x:Key="PlayerScoreOutlinedTextBlock">
+                    <Setter Property="FontSize" Value="40"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="Fill"  Value="{StaticResource QuestionsFontColor}"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Stroke" Value="Black"/>
+                    <Setter Property="StrokeThickness" Value="2"/>
+                </Style>
+
+                <Style TargetType="Border" x:Key="WholePlayerBorder">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="CornerRadius" Value="5"/>
+                    <Setter Property="Width" Value="150"/>
+                    <Setter Property="Margin" Value="10,0,10,0"/>
+                </Style>
+                <Style TargetType="Border" x:Key="PlayerNameBorder">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="CornerRadius" Value="7"/>
+                    <Setter Property="Margin" Value="-2"/>
+                </Style>
+
+            <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                     From="0"
+                     To="1"
+                     AutoReverse="True"
+                     BeginTime="0:0:0"
+                     Duration="0:0:1" />
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                     From="1"
+                     To="1"
+                     AutoReverse="True"
+                     Duration="0:0:0.5" />
+                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                     From="1"
+                     To="0"
+                     AutoReverse="True"
+                     Duration="0:0:1" />
+            </Storyboard>
+
+
+        </StackPanel.Resources>
+
+
+        <Border         Background="{Binding Players[0].ColorCode}"
+                        Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+            <StackPanel>
+                <Border Style="{StaticResource PlayerNameBorder}">
+                    <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                </Border>
+                <helpers:OutlinedTextBlock Text="{Binding Players[0].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+            </StackPanel>
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Players[0].isSelected}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard  BeginStoryboardName="testName"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>    
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+
+        <Border 
+                        Background="{Binding Players[1].ColorCode}"
+                        Visibility="{Binding Players[1].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                <StackPanel>
+                    <Border Style="{StaticResource PlayerNameBorder}">
+                        <helpers:OutlinedTextBlock Text="{Binding Players[1].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                    </Border>
+                    <helpers:OutlinedTextBlock Text="{Binding Players[1].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                </StackPanel>
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Players[1].isSelected}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard  BeginStoryboardName="testName"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+
+            <Border 
+                        Background="{Binding Players[2].ColorCode}"
+                        Visibility="{Binding Players[2].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                <StackPanel>
+                    <Border Style="{StaticResource PlayerNameBorder}">
+                        <helpers:OutlinedTextBlock Text="{Binding Players[2].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                    </Border>
+                    <helpers:OutlinedTextBlock Text="{Binding Players[2].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                </StackPanel>
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Players[2].isSelected}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard  BeginStoryboardName="testName"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+
+            <Border 
+                        Background="{Binding Players[3].ColorCode}"
+                        Visibility="{Binding Players[3].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+                <StackPanel>
+                    <Border Style="{StaticResource PlayerNameBorder}">
+                        <helpers:OutlinedTextBlock Text="{Binding Players[3].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                    </Border>
+                    <helpers:OutlinedTextBlock Text="{Binding Players[3].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
+                </StackPanel>
+            <Border.Style>
+                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Players[3].isSelected}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard  BeginStoryboardName="testName"/>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+
+    </StackPanel>
+</UserControl>
