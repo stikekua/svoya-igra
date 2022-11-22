@@ -279,6 +279,9 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        public List<Question> FinalQuestions { get; set; }
+        public int SelectedFinalQuestionIndex { get; set; } = 0;
+
         public RelayCommand ApplyFinalQuestionChangesCommand { get; set; }
         public RelayCommand GetNewFinalQuestionCommand { get; set; }
 
@@ -354,8 +357,33 @@ namespace SvoyaIgra.Game.ViewModels
                 listOfQuestions.AddRange(
                     t.Questions!.Select(q => new Question(q.Text, q.Answer, (int)q.Difficulty, 1, true, t.Name)));
 
-                topics.Add(new Topic(listOfQuestions, t.Name));
+                topics.Add(new Topic(listOfQuestions, t.Name));                
             });
+
+            for (int i = 0; i < topics.Count; i++)
+            {
+                if (i <= 5)
+                {
+                    for (int k = 0; k < topics[i].Questions.Count; k++)
+                    {
+                        topics[i].Questions[k].Price = topics[i].Questions[k].Price * 100;
+                    }                    
+                }
+                else if (i>=6 && i<=11)
+                {
+                    for (int k = 0; k < topics[i].Questions.Count; k++)
+                    {
+                        topics[i].Questions[k].Price = topics[i].Questions[k].Price * 200;
+                    }
+                }
+                else if (i >= 12)
+                {
+                    for (int k = 0; k < topics[i].Questions.Count; k++)
+                    {
+                        topics[i].Questions[k].Price = topics[i].Questions[k].Price * 300;
+                    }
+                }
+            }
 
             rounds.Add(new ObservableCollection<Topic>(topics.Take(6)));
             rounds.Add(new ObservableCollection<Topic>(topics.Skip(6).Take(6)));
@@ -366,9 +394,16 @@ namespace SvoyaIgra.Game.ViewModels
             //get final topics
             var finaltopicsFromDB = await _gameService.GetTopicsFinalAsync(GameId);
             //TODO 
+            FinalQuestions = new List<Question>();
+            finaltopicsFromDB.ToList().ForEach(q =>
+            {
+                var question = q.Questions!.ToList()[0];
+                FinalQuestions.Add(new Question(question.Text, question.Answer, 0, 1, true, q.Name));
+            }); 
+
 
             //temp
-            FinalQuestionSetup = new Question("some final question text", "some final question answer", 0, 1, true, "Just Final question");
+            FinalQuestionSetup = FinalQuestions[0];
             //end temp
 
             GetCurrentQuestion();
@@ -431,7 +466,10 @@ namespace SvoyaIgra.Game.ViewModels
         //ToDo
         private void GetNewFinalQuestionMethod(object obj)
         {
+            if (SelectedFinalQuestionIndex != FinalQuestions.Count - 1) SelectedFinalQuestionIndex++;
+            else SelectedFinalQuestionIndex = 0;
 
+            FinalQuestionSetup = FinalQuestions[SelectedFinalQuestionIndex];
         }
 
 
