@@ -422,13 +422,23 @@ namespace SvoyaIgra.Game.ViewModels
         #region Round qustions change
 
         //ToDo
-        private void GetRandomCatQuestionsMethod(object obj)
+        private async void GetRandomCatQuestionsMethod(object obj)
         {
-            Question questionFromDb = new Question(null, null, 0);
+
+            var catTopicFromDB = await _gameService.GetCatQuestionAsync(GameId);
+            var questionItself = catTopicFromDB.Questions.ToList()[0];
+            var q = questionItself.Type;
+            
+
+            Question questionFromDb = new Question(questionItself.Text, questionItself.Answer, 0, (int)questionItself.Type,true, catTopicFromDB.Name );
+            questionFromDb.MediaLink = questionItself.MultimediaId;
+
             NewQuestionText = questionFromDb.QuestionText;
             NewQuestionAnswer = questionFromDb.QuestionAnswer;
             NewQuestionSpecialityTypeIndex = 1;//Cat
             NewTopicName = questionFromDb.TopicName;
+            NewQuestionTypeIndex = questionFromDb.QuestionType - 1;
+            NewQuestionMediaLink = questionFromDb.MediaLink;
         }
         private void ApplyQuestionChangesMethod(object obj)
         {

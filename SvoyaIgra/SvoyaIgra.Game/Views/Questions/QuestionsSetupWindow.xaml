@@ -111,7 +111,7 @@
                                 </ComboBox>
                             </StackPanel>
                             <Button Content="Get Cat" Margin="10,0,0,0"
-                                    Command="{Binding GetRealQuestionsFromDbCommand}" 
+                                    Command="{Binding GetRandomCatQuestionsCommand}" 
                                     VerticalAlignment="Center"                                    
                                     Width="100">
                                 <Button.Resources>
@@ -142,7 +142,7 @@
                             
                             <StackPanel>
                                 <Label Content="new type"/>
-                                <ComboBox SelectedIndex="{Binding NewQuestionTypeIndex}">
+                                <ComboBox SelectedIndex="{Binding NewQuestionTypeIndex,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                                     <ComboBoxItem   IsSelected="True">Text</ComboBoxItem>
                                     <ComboBoxItem>Picture</ComboBoxItem>
                                     <ComboBoxItem>Picture series</ComboBoxItem>
