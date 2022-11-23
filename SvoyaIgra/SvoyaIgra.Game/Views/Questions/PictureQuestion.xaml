@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel VerticalAlignment="Center">
         <Viewbox>
-            <MediaElement Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.CurrentQuestion.MediaLink}" 
+            <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.ImageSourceQuestion}" 
                    StretchDirection="UpOnly"
                    Stretch="UniformToFill"/>
         </Viewbox>

@@ -448,6 +448,7 @@ namespace SvoyaIgra.Game.ViewModels
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityTypeIndex;
+                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionTypeIndex+1;
 
                 if (NewQuestionTypeIndex + 1 > (int)QuestionTypeEnum.Text) //if not text
                 {
@@ -462,7 +463,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
             OnPropertyChanged(nameof(AllRoundsQuestions));
 
-            MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed");
+            MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed, new question type is {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType}");
         }
 
         #endregion
