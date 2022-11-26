@@ -224,9 +224,15 @@
                                 <TextBox Width="350" Text="{Binding NewQuestionMediaLink}" TextWrapping="Wrap"/>
                             </StackPanel>
                         </StackPanel>
-                        <Button Content="Apply changes" Margin="10" Command="{Binding ApplyQuestionChangesCommand}"/>
-
-
+                        <Grid>
+                            <Button Content="Apply changes" Command="{Binding ApplyQuestionChangesCommand}" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Refresh"  Command="{Binding RefreshQuestionCommand}" />
+                                <Button Content="Clear fields"  Command="{Binding ClearNewQuestionFieldsCommand}" />
+                            </StackPanel>
+                            
+                        </Grid>
+                       
                     </StackPanel>
                 </GroupBox>
 

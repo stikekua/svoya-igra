@@ -9,7 +9,7 @@ namespace SvoyaIgra.Game.Metadata
         public string QuestionText { get; set; } = "";
         public string QuestionAnswer { get; set; } = "";
         public string TopicName { get; set; } = "";
-        public string MediaLink { get; set; } = "";
+        public string MediaLink { get; set; } = "00000000-0000-0000-0000-000000000000";
         public int Price { get; set; } = 0;
 
         public bool IsSpecial

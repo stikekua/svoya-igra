@@ -214,12 +214,15 @@ namespace SvoyaIgra.Game.ViewModels
 
         public RelayCommand GetRandomCatQuestionsCommand { get; set; }
         public RelayCommand ApplyQuestionChangesCommand { get; set; }
+        public RelayCommand ClearNewQuestionFieldsCommand { get; set; }
+        public RelayCommand RefreshQuestionCommand{ get; set; }
 
-        #endregion
 
-        #region Final question
+    #endregion
 
-        private Question _finalQuestionSetup = new Question();
+    #region Final question
+
+    private Question _finalQuestionSetup = new Question();
         public Question FinalQuestionSetup
         {
             get { return _finalQuestionSetup; }
@@ -303,7 +306,11 @@ namespace SvoyaIgra.Game.ViewModels
             GetRandomCatQuestionsCommand = new RelayCommand(GetRandomCatQuestionsMethod);
             ApplyFinalQuestionChangesCommand = new RelayCommand(ApplyFinalQuestionChangesMethod);
             GetNewFinalQuestionCommand = new RelayCommand(GetNewFinalQuestionMethod);
+            ClearNewQuestionFieldsCommand = new RelayCommand(ClearNewQuestionFieldsMethod);
+            RefreshQuestionCommand = new RelayCommand(RefreshQuestionMethod);
         }
+
+
 
         #region Methods
 
@@ -421,7 +428,6 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Round qustions change
 
-        //ToDo
         private async void GetRandomCatQuestionsMethod(object obj)
         {
 
@@ -464,6 +470,34 @@ namespace SvoyaIgra.Game.ViewModels
             OnPropertyChanged(nameof(AllRoundsQuestions));
 
             MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed, new question type is {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType}");
+            GetCurrentQuestion();
+        }
+
+        private void ClearNewQuestionFieldsMethod(object obj)
+        {
+            NewQuestionText = "";
+            NewQuestionAnswer = "";
+            NewQuestionSpecialityTypeIndex = 0;
+            NewTopicName = "";
+            NewQuestionTypeIndex = 0;
+            NewQuestionMediaLink = "00000000-0000-0000-0000-000000000000";
+        }
+
+        private void RefreshQuestionMethod(object obj)
+        {
+            GetCurrentQuestion();
+            if (CurrentQuestion!=null)
+            {
+                NewQuestionText = CurrentQuestion.QuestionText;
+                NewQuestionAnswer = CurrentQuestion.QuestionAnswer;
+                NewQuestionSpecialityTypeIndex = CurrentQuestion.SpecialityType-1;
+                NewTopicName = CurrentQuestion.TopicName;
+                NewQuestionTypeIndex = CurrentQuestion.QuestionType-1;
+                NewQuestionMediaLink = CurrentQuestion.MediaLink;
+            }
+
+            
+
         }
 
         #endregion

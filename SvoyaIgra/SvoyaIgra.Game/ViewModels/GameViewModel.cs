@@ -7,18 +7,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Linq;
-using System.Threading;
-using SvoyaIgra.Game.Views.Questions;
 using System.Windows.Controls;
-using System.Reflection;
 using System.IO;
 using SvoyaIgra.WebSocketProvider.Client;
-using log4net;
 using SvoyaIgra.Shared.Constants;
 using SvoyaIgra.MultimediaProvider.Services;
 using System.Windows.Media;
-using System.Windows.Controls.Primitives;
-using static System.Net.WebRequestMethods;
 using SvoyaIgra.Shared.Entities;
 using System.Windows.Media.Imaging;
 
@@ -79,11 +73,12 @@ namespace SvoyaIgra.Game.ViewModels
         public WindowLocator WindowLocator { get; set; }
         private readonly IMultimediaService _multimediaService;
 
-        public WebSocketClientProvider WebSocketClient { get; set; }
 
         #region Properties
 
-        //for WS
+
+        public WebSocketClientProvider WebSocketClient { get; set; }
+
         string _notificationText = "";
         public string NotificationText
         {
@@ -97,6 +92,102 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
+
+
+        #region Buttons stuff
+
+        string _buttonsMessageText = "1;0;0;0;0";
+        public string ButtonsMessageText
+        {
+            get { return _buttonsMessageText; }
+            set
+            {
+                if (_buttonsMessageText != value)
+                {
+                    _buttonsMessageText = value;
+                    OnPropertyChanged(nameof(ButtonsMessageText));
+
+                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(ButtonsMessageText));
+                }
+            }
+        }
+
+        string _buttonsConnectionStatus = "Connected";
+        public string ButtonsConnectionStatus
+        {
+            get { return _buttonsConnectionStatus; }
+            set
+            {
+                if (_buttonsConnectionStatus != value)
+                {
+                    _buttonsConnectionStatus = value;
+                    OnPropertyChanged(nameof(ButtonsConnectionStatus));
+                }
+            }
+        }
+
+
+        public bool AutoPlayerSelection
+        {
+            get { return AutoPlayerSelectionIndex == 0 ? true : false; }
+
+        }
+
+        int _autoPlayerSelectionIndex = 0; //0 = auto, 1=manual
+        public int AutoPlayerSelectionIndex
+        {
+            get { return _autoPlayerSelectionIndex; }
+            set
+            {
+                if (_autoPlayerSelectionIndex != value)
+                {
+                    _autoPlayerSelectionIndex = value;
+                    OnPropertyChanged(nameof(AutoPlayerSelectionIndex));
+                    OnPropertyChanged(nameof(AutoPlayerSelection));
+
+                    if (_autoPlayerSelectionIndex == 1)
+                    {
+                        ButtonsMessageText = "1;0;0;0;0";
+                        SelectPlayerMethod(-1);
+                    }
+
+                }
+            }
+        }
+
+        #region Buttons control
+
+        bool _readyToCollectAnswers = false;
+        public bool ReadyToCollectAnswers
+        {
+            get { return _readyToCollectAnswers; }
+            set
+            {
+                if (_readyToCollectAnswers != value)
+                {
+                    _readyToCollectAnswers = value;
+                    OnPropertyChanged(nameof(ReadyToCollectAnswers));
+                    if (value) ResetButtonsStateMethod(null);
+                }
+            }
+        }
+
+
+        public RelayCommand ConnectButtonsServerCommand { get; set; }
+        public RelayCommand DisconnectButtonsServerCommand { get; set; }
+        public RelayCommand RequestNextPlayerCommand { get; set; }
+        public RelayCommand ResetButtonsStateCommand { get; set; }
+        public RelayCommand SetReadyForAnswersCommand { get; set; }
+        #endregion
+
+
+        public RelayCommand ChangePlayerScoreCommand { get; set; }
+        public RelayCommand SelectPlayerCommand { get; set; }
+
+        #endregion
+
+        //for WS
+
 
         #region Cockpit window control
 
@@ -204,9 +295,9 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _gamePhase = value;
                     OnPropertyChanged(nameof(GamePhase));
-                    OnPropertyChanged(nameof(IsAvailableForScoreChange));
                     OnPropertyChanged(nameof(isIntroOnScreen));
                     GamePhaseUpdate();
+                   
                 }
             }
         }
@@ -280,9 +371,7 @@ namespace SvoyaIgra.Game.ViewModels
             get { return AllRoundsQuestions.Count > 0 ? true : false; }
         }
 
-        public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
-        public RelayCommand OpenQuestionCommand { get; set; }
-        public RelayCommand CloseQuestion { get; set; }
+
 
         private Question _currentQuestion = new Question();
         public Question CurrentQuestion 
@@ -311,8 +400,6 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        #region Media In Question
-
         private ImageSource _imageSourceQuestion;
         public ImageSource ImageSourceQuestion
         {
@@ -329,7 +416,11 @@ namespace SvoyaIgra.Game.ViewModels
 
 
 
-        #endregion
+        public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
+        public RelayCommand OpenQuestionCommand { get; set; }
+        public RelayCommand CloseQuestion { get; set; }
+
+        
 
 
         #endregion
@@ -369,6 +460,15 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+
+
+
+
+
+        #endregion
+
+        #region Scores
+
         string _scoreBoardText = "";
         public string ScoreBoardText
         {
@@ -391,10 +491,7 @@ namespace SvoyaIgra.Game.ViewModels
         int _scoreToChange = 0;
         int ScoreToChange
         {
-            get
-            {
-                return _scoreToChange;
-            }
+            get { return _scoreToChange;}
             set
             {
                 if (_scoreToChange != value)
@@ -409,116 +506,23 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                return (SelectedPlayerIndex != -1 && GamePhase == (int)GamePhaseEnum.Question) ? true:false;
+                return (SelectedPlayerIndex != -1 && GamePhase == (int)GamePhaseEnum.Question) ? true : false;
             }
         }
 
-
-        string _buttonsMessageText ="1;0;0;0;0";
-        public string ButtonsMessageText
+        bool _autoCloseuestionOnPositiveAnswer = true;
+        public bool AutoCloseuestionOnPositiveAnswer
         {
-            get { return _buttonsMessageText; }
+            get { return _autoCloseuestionOnPositiveAnswer; }
             set
             {
-                if (_buttonsMessageText != value)
+                if (_autoCloseuestionOnPositiveAnswer != value)
                 {
-                    _buttonsMessageText = value;
-                    OnPropertyChanged(nameof(ButtonsMessageText));
-
-                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(ButtonsMessageText));
+                    _autoCloseuestionOnPositiveAnswer = value;
+                    OnPropertyChanged(nameof(AutoCloseuestionOnPositiveAnswer));
                 }
             }
         }
-
-        string _buttonsConnectionStatus = "Connected";
-        public string ButtonsConnectionStatus
-        {
-            get { return _buttonsConnectionStatus; }
-            set
-            {
-                if (_buttonsConnectionStatus != value)
-                {
-                    _buttonsConnectionStatus = value;
-                    OnPropertyChanged(nameof(ButtonsConnectionStatus));
-                }
-            }
-        }
-
-        
-        public bool AutoPlayerSelection
-        {
-            get {  return AutoPlayerSelectionIndex==0 ? true: false; }
-
-        }
-
-        int _autoPlayerSelectionIndex = 0; //0 = auto, 1=manual
-        public int AutoPlayerSelectionIndex
-        {
-            get { return _autoPlayerSelectionIndex; }
-            set
-            {
-                if (_autoPlayerSelectionIndex != value)
-                {
-                    _autoPlayerSelectionIndex = value;
-                    OnPropertyChanged(nameof(AutoPlayerSelectionIndex));
-                    OnPropertyChanged(nameof(AutoPlayerSelection));
-
-                    if (_autoPlayerSelectionIndex==1)
-                    {
-                        ButtonsMessageText = "1;0;0;0;0";
-                        SelectPlayerMethod(-1);
-                    }
-                        
-                }
-            }
-        }
-
-
-        public RelayCommand ChangePlayerScoreCommand { get; set; }
-        public RelayCommand SelectPlayerCommand { get; set; }
-
-
-
-        #region Buttons control
-
-        bool _readyToCollectAnswers = false;
-        public bool ReadyToCollectAnswers
-        {
-            get { return _readyToCollectAnswers; }
-            set
-            {
-                if (_readyToCollectAnswers != value)
-                {
-                    _readyToCollectAnswers = value;
-                    OnPropertyChanged(nameof(ReadyToCollectAnswers));
-
-                    if (value)
-                    {
-                        Debug.WriteLine("Ready to collect answers");
-                        ResetButtonsStateMethod(null);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Not Ready to collect answers");
-                    }
-                }
-            }
-        }
-
-
-        public RelayCommand ConnectButtonsServerCommand { get; set; }
-        public RelayCommand DisconnectButtonsServerCommand { get; set; }
-        public RelayCommand RequestNextPlayerCommand { get; set; }
-        public RelayCommand ResetButtonsStateCommand { get; set; }
-
-        public RelayCommand SetReadyForAnswersCommand { get; set; }
-
-
-
-
-
-        #endregion
-
 
         #endregion
 
@@ -607,60 +611,7 @@ namespace SvoyaIgra.Game.ViewModels
 
     }
 
-        
-
-        
-
-        private void ChangePlayerScoreMethod(object obj)
-        {
-            
-            if (SelectedPlayerIndex>-1)
-            {
-                switch ((string)obj)
-                {
-                    case "+":
-                        Players[SelectedPlayerIndex].Score += ScoreToChange;
-                        if (GamePhase == (int)GamePhaseEnum.Question) ChangeGamePhaseMethod(ActualRoundGamePhase);
-                        ScoreBoardText = "0";
-                        break;
-                    case "-":
-                        Players[SelectedPlayerIndex].Score -= ScoreToChange;
-                        break;
-                    default:
-                            break;                    
-                }
-                OnPropertyChanged(nameof(Players));
-            }
-            
-        }
-
-        private void SelectPlayerMethod(object obj)
-        {
-            int index = Convert.ToInt32(obj);
-
-            if (index != -1)
-            {
-                if (Players[index].isSelected && !AutoPlayerSelection)
-                {
-                    Players[index].isSelected = false;
-                }
-                else
-                {
-                    for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;                    
-                    Players[index].isSelected = true;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
-            }
-
-            OnPropertyChanged(nameof(Players));
-            SelectedPlayerIndex = Players.IndexOf(Players.FirstOrDefault(x => x.isSelected));
-        }
-
         #region Methods
-
 
         #region Player buttons methods
 
@@ -755,6 +706,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
+        #region Game phase
+
         void GamePhaseUpdate()
         {
             string workingDirectory = Environment.CurrentDirectory;
@@ -800,9 +753,8 @@ namespace SvoyaIgra.Game.ViewModels
                     break;
 
                 case (int)GamePhaseEnum.FinalRound:
+                    AutoCloseuestionOnPositiveAnswer = false;
                     CurrentQuestion = FinalQuestion;
-                    Debug.WriteLine(FinalQuestion.QuestionText);
-                    Debug.WriteLine(CurrentQuestion.QuestionText);
                     GamePhase = (int)GamePhaseEnum.Question;
                     break;
 
@@ -834,13 +786,6 @@ namespace SvoyaIgra.Game.ViewModels
                             break;
 
                     }
-
-
-
-
-
-
-
                     break;
 
                 default:
@@ -852,8 +797,60 @@ namespace SvoyaIgra.Game.ViewModels
                 SelectPlayerMethod(-1);
                 ReadyToCollectAnswers = false;
             }
-                
+
         }
+        private void ChangeGamePhaseMethod(object obj)
+        {
+            GamePhase = Convert.ToInt32(obj);
+            CurrentQuestion.SpecialIntroWasNotPlayed = true;
+            OnPropertyChanged(nameof(CurrentQuestion));
+
+        }
+
+        #endregion
+
+        #region Present screen methods
+
+        private void LockPresentScreenMethod(bool parameter)
+        {
+            if (PlayScreenWindow != null)
+            {
+                if (parameter)
+                {
+                    PlayScreenWindowState = WindowState.Normal;
+                    PlayScreenWindow.WindowStyle = WindowStyle.None;
+                    PlayScreenWindowState = WindowState.Maximized;
+
+                    PlayScreenWindow.Topmost = true;
+                }
+                else
+                {
+                    PlayScreenWindow.Topmost = false;
+                    PlayScreenWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+                }
+            }
+        }
+
+        private void ClosePresentScreenMethod(object obj)
+        {
+            if (PlayScreenWindow != null)
+            {
+                PlayScreenWindow.Close();
+            }
+        }
+
+        private void OpenPresentScreenMethod(object obj)
+        {
+            PlayScreenWindow = WindowLocator.PlayScreenWindow;
+            //PlayScreenWindow.DataContext = this;
+            PlayScreenWindow.WindowState = WindowState.Maximized;
+            PlayScreenWindow.Show();
+
+        }
+
+        #endregion
+
+        #region Image
 
         void GetImageSource(string Id)
         {
@@ -902,64 +899,77 @@ namespace SvoyaIgra.Game.ViewModels
             ImageSourceQuestion = imgsrc;
         }
 
+        #endregion
+
+        #region Players]
 
         private void GetPlayers()
         {
-            string[] colors = { "#FF0000", "#00FF00", "#0000FF" , "#FFFF00" };
+            string[] colors = { "#FF0000", "#00FF00", "#0000FF", "#FFFF00" };
             for (int i = 0; i < 4; i++)
             {
                 Players.Add(new Player("Player " + i.ToString(), colors[i]));
             }
         }
 
-        private void ChangeGamePhaseMethod(object obj)
+        private void ChangePlayerScoreMethod(object obj)
         {
-            GamePhase = Convert.ToInt32(obj);
-            CurrentQuestion.SpecialIntroWasNotPlayed = true;
-            OnPropertyChanged(nameof(CurrentQuestion));
+
+            if (SelectedPlayerIndex > -1)
+            {
+                switch ((string)obj)
+                {
+                    case "+":
+                        Players[SelectedPlayerIndex].Score += ScoreToChange;
+                        if (GamePhase == (int)GamePhaseEnum.Question && AutoCloseuestionOnPositiveAnswer)
+                        {
+                            ChangeGamePhaseMethod(ActualRoundGamePhase);
+                        }
+                        ScoreBoardText = "0";
+                        break;
+                    case "-":
+                        Players[SelectedPlayerIndex].Score -= ScoreToChange;
+                        break;
+                    default:
+                        break;
+                }
+                OnPropertyChanged(nameof(Players));
+            }
 
         }
 
-        private void LockPresentScreenMethod(bool parameter)
+        private void SelectPlayerMethod(object obj)
         {
-            if (PlayScreenWindow != null)
+            int index = Convert.ToInt32(obj);
+
+            if (index != -1)
             {
-                if (parameter)
+                if (Players[index].isSelected && !AutoPlayerSelection)
                 {
-                    PlayScreenWindowState = WindowState.Normal;
-                    PlayScreenWindow.WindowStyle = WindowStyle.None;
-                    PlayScreenWindowState = WindowState.Maximized;                    
-                    
-                    PlayScreenWindow.Topmost = true;
+                    Players[index].isSelected = false;
                 }
                 else
                 {
-                    PlayScreenWindow.Topmost = false;
-                    PlayScreenWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+                    for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
+                    Players[index].isSelected = true;
                 }
-            }               
-        }
-
-        private void ClosePresentScreenMethod(object obj)
-        {
-            if (PlayScreenWindow != null)
-            {
-                PlayScreenWindow.Close();
             }
+            else
+            {
+                for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
+            }
+
+            OnPropertyChanged(nameof(Players));
+            SelectedPlayerIndex = Players.IndexOf(Players.FirstOrDefault(x => x.isSelected));
         }
 
-        private void OpenPresentScreenMethod(object obj)
-        {
-            PlayScreenWindow  = WindowLocator.PlayScreenWindow;
-            //PlayScreenWindow.DataContext = this;
-            PlayScreenWindow.WindowState = WindowState.Maximized;
-            PlayScreenWindow.Show();       
-            
-        }
+        #endregion
+
+        #region questions
 
         private void OpenQuestionsSetupWindowMethod(object obj)
         {
-            var questionsSetupWindow = WindowLocator.QuestionsSetupWindow;            
+            var questionsSetupWindow = WindowLocator.QuestionsSetupWindow;
             questionsSetupWindow.ShowDialog();
         }
 
@@ -977,7 +987,7 @@ namespace SvoyaIgra.Game.ViewModels
                     topicIndex = i;
                     break;
                 }
-                    
+
             }
             CurrentQuestion = CurrentRoundQuestions[topicIndex].Questions[questionIndex];
             CurrentRoundQuestions[topicIndex].Questions[questionIndex].NotYetAsked = false;
@@ -987,17 +997,14 @@ namespace SvoyaIgra.Game.ViewModels
             if (CurrentQuestion.SpecialityType == (int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
             else ScoreBoardText = CurrentQuestion.Price.ToString();
 
-            
+            Debug.WriteLine($"Now GamePhase is {GamePhase}");
+
             OnPropertyChanged(nameof(CurrentRoundQuestions));
         }
 
-        private void CloseAppMethod(object obj)
-        {
-            App.Current.Shutdown();
-        }
+        #endregion
 
-
-        #region Media element method
+        #region Media element
 
         private void SpecialtyVideoMediaElementLoadedMethod(object obj)
         {
@@ -1020,6 +1027,11 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         #endregion
+
+        private void CloseAppMethod(object obj)
+        {
+            App.Current.Shutdown();
+        }
 
         #endregion
 

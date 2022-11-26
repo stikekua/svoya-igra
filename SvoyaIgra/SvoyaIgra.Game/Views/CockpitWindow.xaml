@@ -200,6 +200,7 @@
                                     MinWidth="100"/>
                                 <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
                             </StackPanel>
+                            <CheckBox Content="AutoClose on + answer" IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"/>
 
                         </StackPanel>
                         <Button Content="CloseIntro" Margin="5,0,0,0" Command="{Binding CloseSpecialIntroCommand}"/>
@@ -328,11 +329,33 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Viewbox  Grid.Column="0" Width="auto">
+            <Viewbox  Grid.Column="0" Width="auto" Visibility="{Binding QuestionsArePrepared,Converter={StaticResource BoolToVisibilityConverter}}"
+                     >
+
                 <DataGrid ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
                           CanUserAddRows="False"
                           HeadersVisibility="None"
-                          AutoGenerateColumns="False">
+                          AutoGenerateColumns="False"
+                          >
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGrid">
+                            <Setter Property="IsEnabled" Value="False"></Setter>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}" Value="True">
+                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}" Value="True">
+                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}" Value="True">
+                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                </DataTrigger>
+
+
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}"/>
                         <DataGridTemplateColumn>
