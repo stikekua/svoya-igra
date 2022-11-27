@@ -13,8 +13,8 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="CockpitWindow" 
-        Height="800"         
-        Width="900"
+        Height="1000"         
+        Width="1000"
         WindowStyle="SingleBorderWindow" 
         DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
 
@@ -66,9 +66,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
-            <RowDefinition Height="1*" MinHeight="150"/>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="1.2*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" x:Name="ThisWindowPanelGrid">
             <StackPanel Orientation="Horizontal">
@@ -214,20 +214,20 @@
         </Grid>
         <Grid Grid.Row="2" x:Name="PlayerControl">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" MinHeight="40"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition  Height="40"/>
+                <RowDefinition />
             </Grid.RowDefinitions>
             <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" SelectedIndex="{Binding AutoPlayerSelectionIndex}">
                 <ComboBoxItem Content="Auto" IsSelected="True" />
                 <ComboBoxItem Content="Manual" />
             </ComboBox>
 
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2 *"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Top">
                     <StackPanel.Resources>
                         <Style TargetType="StackPanel">
                             <Style.Triggers>
@@ -318,6 +318,19 @@
                         <Label Content="Selected Player"/>
                         <TextBlock Text="{Binding SelectedPlayerIndex}"/>
                     </StackPanel>
+                    <StackPanel>
+                        <ListView ItemsSource="{Binding WsLogOC}" Height="100" SelectedIndex="{Binding WsLogSelectedIndex}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="12"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListView>
+                        <Button Content="Clear log" 
+                                HorizontalAlignment="Center"
+                                Command="{Binding ClearWsLogCommand}"/>
+                    </StackPanel>
+
 
                 </StackPanel>
             </Grid>

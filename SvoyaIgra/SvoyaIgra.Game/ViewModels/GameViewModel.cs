@@ -76,8 +76,52 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Properties
 
+        #region Buttons
+
+        #region WS
 
         public WebSocketClientProvider WebSocketClient { get; set; }
+
+        ObservableCollection<string> _wsLogOC = new ObservableCollection<string>();
+        public ObservableCollection<string> WsLogOC
+        {
+            get { return _wsLogOC; }
+            set
+            {
+                if (_wsLogOC != value)
+                {
+                    _wsLogOC = value;
+                    OnPropertyChanged(nameof(WsLogOC));
+                    OnPropertyChanged(nameof(WsLogSelectedIndex));
+                }
+            }
+        }
+        public int WsLogSelectedIndex
+        {
+            get
+            {
+                if (WsLogOC.Count>0)
+                {
+                    return WsLogOC.Count - 1;
+                }
+                return -1;
+            }
+        }
+
+
+        string _buttonsConnectionStatus = "Xz";
+        public string ButtonsConnectionStatus
+        {
+            get { return _buttonsConnectionStatus; }
+            set
+            {
+                if (_buttonsConnectionStatus != value)
+                {
+                    _buttonsConnectionStatus = value;
+                    OnPropertyChanged(nameof(ButtonsConnectionStatus));
+                }
+            }
+        }
 
         string _notificationText = "";
         public string NotificationText
@@ -89,12 +133,14 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _notificationText = value;
                     OnPropertyChanged(nameof(NotificationText));
+                    OnPropertyChanged(nameof(WsLogSelectedIndex));                    
+                    if (WsLogOC != null)
+                    {
+                        WsLogOC.Add(value);
+                    }
                 }
             }
         }
-
-
-        #region Buttons stuff
 
         string _buttonsMessageText = "1;0;0;0;0";
         public string ButtonsMessageText
@@ -112,20 +158,12 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        string _buttonsConnectionStatus = "Connected";
-        public string ButtonsConnectionStatus
-        {
-            get { return _buttonsConnectionStatus; }
-            set
-            {
-                if (_buttonsConnectionStatus != value)
-                {
-                    _buttonsConnectionStatus = value;
-                    OnPropertyChanged(nameof(ButtonsConnectionStatus));
-                }
-            }
-        }
-
+        public RelayCommand ConnectButtonsServerCommand { get; set; }
+        public RelayCommand DisconnectButtonsServerCommand { get; set; }
+        public RelayCommand RequestNextPlayerCommand { get; set; }
+        public RelayCommand ResetButtonsStateCommand { get; set; }
+        public RelayCommand ClearWsLogCommand { get; set; }
+        #endregion
 
         public bool AutoPlayerSelection
         {
@@ -173,21 +211,18 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
 
-        public RelayCommand ConnectButtonsServerCommand { get; set; }
-        public RelayCommand DisconnectButtonsServerCommand { get; set; }
-        public RelayCommand RequestNextPlayerCommand { get; set; }
-        public RelayCommand ResetButtonsStateCommand { get; set; }
+        #endregion
+
+
+
+
+
+
         public RelayCommand SetReadyForAnswersCommand { get; set; }
-        #endregion
+        #endregion                
+        
 
-
-        public RelayCommand ChangePlayerScoreCommand { get; set; }
-        public RelayCommand SelectPlayerCommand { get; set; }
-
-        #endregion
-
-        //for WS
-
+        
 
         #region Cockpit window control
 
@@ -327,11 +362,6 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
-
-        public bool IsQuestion
-        {
-            get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
-        }
         #endregion
 
         #region Questions
@@ -427,7 +457,6 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Players
 
-
         ObservableCollection<Player> _players = new ObservableCollection<Player>();
         public ObservableCollection<Player> Players
         {
@@ -460,10 +489,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-
-
-
-
+        public RelayCommand SelectPlayerCommand { get; set; }
 
         #endregion
 
@@ -523,6 +549,7 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
+        public RelayCommand ChangePlayerScoreCommand { get; set; }
 
         #endregion
 
@@ -596,7 +623,7 @@ namespace SvoyaIgra.Game.ViewModels
             ///test
             //GetTestQuestionsMethod(null);
             GetPlayers();
-            //OpenPresentScreenMethod(null);
+            OpenPresentScreenMethod(null);
             ///
 
             #region Buttons control
@@ -607,9 +634,12 @@ namespace SvoyaIgra.Game.ViewModels
             ResetButtonsStateCommand = new RelayCommand(ResetButtonsStateMethod);
             SetReadyForAnswersCommand = new RelayCommand(SetReadyForAnswersMethod);
 
+            ClearWsLogCommand = new RelayCommand(ClearWsLogMethod);
             #endregion
 
     }
+
+
 
         #region Methods
 
@@ -626,41 +656,42 @@ namespace SvoyaIgra.Game.ViewModels
             //_log.Info("OnResetButtonPressed");
             if (WebSocketClient.Send(WsMessages.ResetCommand))
             {
-                NotificationText += $"C: {WsMessages.ResetCommand}\r\n";
+                NotificationText += $"C: {WsMessages.ResetCommand}";
                 //addToLogList($"C: {WsMessages.NextCommand}");
             }
         }
 
         private void RequestNextPlayerMethod(object obj)
         {
-            Debug.WriteLine("Next Player in Queue requested");
             //_log.Info("OnNextButtonPressed");
             if (WebSocketClient.Send(WsMessages.NextCommand))
             {
-                NotificationText += $"C: {WsMessages.NextCommand}\r\n";
+                NotificationText += $"C: {WsMessages.NextCommand}";
                 //addToLogList($"C: {WsMessages.NextCommand}");
             }
         }
 
         private void DisconnectButtonsServerMethod(object obj)
         {
-            Debug.WriteLine("Buttons Server Disconnected");
             WebSocketClient.Dispose();
-            //IsConnect = false;
+            NotificationText = "Disconnected from buttons server";
+            ButtonsConnectionStatus = "Disconnected";
 
         }
 
         private void ConnectButtonsServerMethod(object obj)
         {
-            Debug.WriteLine("Buttons Server connected");
-
             if (WebSocketClient.Connect())
             {
+               NotificationText = "Connected to buttons server";
+                ButtonsConnectionStatus = "Connected";
                 //_log.Info("WebSocketClient Connect");
                 //IsConnect = true;
             }
             else
             {
+                NotificationText = "Error while connection to buttons server";
+                ButtonsConnectionStatus = "Not connected";
                 //_log.Error("WebSocketClient Error");
             }
         }
@@ -901,7 +932,7 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
-        #region Players]
+        #region Players
 
         private void GetPlayers()
         {
@@ -1028,14 +1059,12 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
-        private void CloseAppMethod(object obj)
-        {
-            App.Current.Shutdown();
-        }
-
-        #endregion
-
         #region WS
+
+        private void ClearWsLogMethod(object obj)
+        {
+            WsLogOC.Clear();
+        }
 
         private void Wss_Opened()
         {
@@ -1059,5 +1088,14 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         #endregion
+
+        private void CloseAppMethod(object obj)
+        {
+            App.Current.Shutdown();
+        }
+
+        #endregion
+
+        
     }
 }
