@@ -16,60 +16,11 @@ using System.Windows.Media;
 using SvoyaIgra.Shared.Entities;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using SvoyaIgra.Game.Enums;
 
 namespace SvoyaIgra.Game.ViewModels
 {
-
-    #region enums
-    public enum GamePhaseEnum
-    {
-        PreGame = -1,
-        GameIntro = 0,
-        FirstRoundIntro = 1,
-        FirstRound = 2,
-        SecondRoundIntro = 3,
-        SecondRound = 4,
-        ThirdRoundIntro = 5,
-        ThirdRound = 6,
-        FinalRoundIntro = 7,
-        FinalRound = 8,
-        Results = 9,
-
-        Question = 10
-
-    }
-    public enum QuestionTypeEnum
-    {
-        Text = 1,
-        Picture = 2,
-        PictureSeries = 3,
-        Musical = 4,
-        Video = 5
-    }
-    public enum PlayerColorEnum
-    {
-        Red = 1,
-        Green = 2,
-        Blue = 4,
-        Yellow = 8
-    }
-    public enum PlayerIndexEnum
-    {
-        Red = 0,
-        Green = 1,
-        Blue = 2,
-        Yellow = 3
-    }
-    public enum SpecialityTypesEnum
-    {
-        NotSpecial = 0,
-        Cat = 1,
-        Auction = 2
-    }
-
-    #endregion
-
-    public class GameViewModel:ViewModelBase
+    public class GameViewModel : ViewModelBase
     {
         public WindowLocator WindowLocator { get; set; }
         private readonly IMultimediaService _multimediaService;
@@ -700,13 +651,13 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 switch (queue[qIndex - 1])
                 {
-                    case (int)PlayerColorEnum.Red://1
+                    case (int)ButtonEnum.Red://1
                         return (int)PlayerIndexEnum.Red;
-                    case (int)PlayerColorEnum.Green://2
+                    case (int)ButtonEnum.Green://2
                         return (int)PlayerIndexEnum.Green;
-                    case (int)PlayerColorEnum.Blue://4
+                    case (int)ButtonEnum.Blue://4
                         return (int)PlayerIndexEnum.Blue;
-                    case (int)PlayerColorEnum.Yellow://8
+                    case (int)ButtonEnum.Yellow://8
                         return (int)PlayerIndexEnum.Yellow;
 
                     default:

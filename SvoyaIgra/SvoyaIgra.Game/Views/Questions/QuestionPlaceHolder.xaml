@@ -7,6 +7,7 @@
              xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
              xmlns:views="clr-namespace:SvoyaIgra.Game.Views"
              xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
+             xmlns:enums="clr-namespace:SvoyaIgra.Game.Enums"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:Background="White">
@@ -60,24 +61,24 @@
                     <questions:TextQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
                                         Path=DataContext.CurrentQuestion.QuestionType, 
                                         Converter={StaticResource visibilityParameterConverter},
-                                        ConverterParameter={x:Static viewModels:QuestionTypeEnum.Text}}"/>
+                                        ConverterParameter={x:Static enums:QuestionTypeEnum.Text}}"/>
                     <questions:PictureQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
                                             Path=DataContext.CurrentQuestion.QuestionType, 
                                             Converter={StaticResource visibilityParameterConverter},
-                                            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Picture}}"/>
+                                            ConverterParameter={x:Static enums:QuestionTypeEnum.Picture}}"/>
                     <questions:PictureSeriesQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
                                                 Path=DataContext.CurrentQuestion.QuestionType, 
                                                 Converter={StaticResource visibilityParameterConverter},
-                                                ConverterParameter={x:Static viewModels:QuestionTypeEnum.PictureSeries}}"/>
+                                                ConverterParameter={x:Static enums:QuestionTypeEnum.PictureSeries}}"/>
                     <questions:MusicalQuestion Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
                                             Path=DataContext.CurrentQuestion.QuestionType, 
                                             Converter={StaticResource visibilityParameterConverter},
-                                            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Musical}}"/>
+                                            ConverterParameter={x:Static enums:QuestionTypeEnum.Musical}}"/>
                     <questions:VideoQuestion 
                                             Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
                                             Path=DataContext.CurrentQuestion.QuestionType, 
                                             Converter={StaticResource visibilityParameterConverter},
-                                            ConverterParameter={x:Static viewModels:QuestionTypeEnum.Video}}"/>
+                                            ConverterParameter={x:Static enums:QuestionTypeEnum.Video}}"/>
                 </DockPanel>
             </StackPanel>
             

@@ -1,5 +1,5 @@
-﻿using SvoyaIgra.Game.ViewModels.Helpers;
-using SvoyaIgra.Game.ViewModels;
+﻿using SvoyaIgra.Game.Enums;
+using SvoyaIgra.Game.ViewModels.Helpers;
 
 namespace SvoyaIgra.Game.Metadata
 {

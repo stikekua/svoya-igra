@@ -11,6 +11,7 @@
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:enums="clr-namespace:SvoyaIgra.Game.Enums"
         mc:Ignorable="d"
         Title="CockpitWindow" 
         Height="1000"         
@@ -132,44 +133,44 @@
                         <RadioButton GroupName="GamePhase" 
                                  Content="PreGame" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.PreGame}"
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.PreGame}"
                                  IsChecked="True"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="Game Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.GameIntro}"
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.GameIntro}"
                                  />
                         <RadioButton GroupName="GamePhase" 
                                  Content="First round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRoundIntro}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.FirstRoundIntro}"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="First round" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FirstRound}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.FirstRound}"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="Second round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRoundIntro}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.SecondRoundIntro}"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="Second round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.SecondRound}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.SecondRound}"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="Third round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRoundIntro}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRoundIntro}"/>
                         <RadioButton GroupName="GamePhase" Content="Third round" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.ThirdRound}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRound}"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="Final round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRoundIntro}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.FinalRoundIntro}"/>
                         <RadioButton GroupName="GamePhase" 
                                  Content="Final round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static viewModels:GamePhaseEnum.FinalRound}"/>
+                                 CommandParameter="{x:Static enums:GamePhaseEnum.FinalRound}"/>
                     </StackPanel>
 
                 </StackPanel>
@@ -188,7 +189,7 @@
                             CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
                             Width="150" 
                             Height="50"
-                            IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}"/>
+                            IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
 
 
                         <StackPanel>
@@ -354,13 +355,13 @@
                         <Style TargetType="DataGrid">
                             <Setter Property="IsEnabled" Value="False"></Setter>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.FirstRound}}" Value="True">
+                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.FirstRound}}" Value="True">
                                     <Setter Property="IsEnabled" Value="True"></Setter>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.SecondRound}}" Value="True">
+                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.SecondRound}}" Value="True">
                                     <Setter Property="IsEnabled" Value="True"></Setter>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.ThirdRound}}" Value="True">
+                                <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.ThirdRound}}" Value="True">
                                     <Setter Property="IsEnabled" Value="True"></Setter>
                                 </DataTrigger>
 
@@ -479,7 +480,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Viewbox>
-            <StackPanel Grid.Column="1" Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static viewModels:GamePhaseEnum.Question}}">
+            <StackPanel Grid.Column="1" Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}">
                 
                 <StackPanel Orientation="Horizontal">
 

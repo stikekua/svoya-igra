@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using SvoyaIgra.Game.Enums;
 
 namespace SvoyaIgra.Game.ViewModels
 {

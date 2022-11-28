@@ -1,6 +1,8 @@
-﻿namespace SvoyaIgra.Game.Metadata
+﻿using SvoyaIgra.Game.ViewModels.Helpers;
+
+namespace SvoyaIgra.Game.Metadata
 {
-    public class Player:ViewModels.Helpers.ViewModelBase
+    public class Player : ViewModelBase
     {
         public string Name { get; set; }
         int _score = 0;

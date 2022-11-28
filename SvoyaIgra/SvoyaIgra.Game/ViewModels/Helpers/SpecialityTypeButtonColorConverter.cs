@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows;
+using SvoyaIgra.Game.Enums;
 
 namespace SvoyaIgra.Game.ViewModels.Helpers
 {
