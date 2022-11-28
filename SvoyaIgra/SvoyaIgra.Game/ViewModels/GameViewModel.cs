@@ -623,7 +623,7 @@ namespace SvoyaIgra.Game.ViewModels
             ///test
             //GetTestQuestionsMethod(null);
             GetPlayers();
-            OpenPresentScreenMethod(null);
+            //OpenPresentScreenMethod(null);
             ///
 
             #region Buttons control
