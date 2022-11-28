@@ -29,10 +29,10 @@
     <Window.Resources>
 
         <Style TargetType="Button" x:Key="WindowButtons" >
-            <Setter Property="Width" Value="100"/>
+            <Setter Property="MinWidth" Value="100"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="FontFamily" Value="Microsoft YaHei Light"/>
-            <Setter Property="Margin" Value="3,0,3,0"/>
+            <Setter Property="Margin" Value="20,0,0,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -46,6 +46,7 @@
                                             Foreground="Black"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
+                                            Padding="10"
                                             />
                         </Border>
                     </ControlTemplate>
@@ -66,16 +67,16 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="1.2*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" x:Name="ThisWindowPanelGrid">
             <StackPanel Orientation="Horizontal">
                 <Button Content="Open Playscreen" 
-                            Command="{Binding OpenPresentScreenCommand}"
-                            Style="{StaticResource WindowButtons}">
+                        Command="{Binding OpenPresentScreenCommand}"
+                        Style="{StaticResource WindowButtons}">
                     <Button.Resources>
                         <Style TargetType="Button">
                             <Style.Triggers>
@@ -95,11 +96,11 @@
                             IsEnabled="{Binding PlayScreenRunning}"/>
 
                 <Border CornerRadius="3" 
-                            BorderThickness="1" 
-                            BorderBrush="Black"
-                            VerticalAlignment="Center"
-                            Height="50"
-                            Padding="2">
+                        BorderThickness="1" 
+                        BorderBrush="Black"
+                        VerticalAlignment="Center"
+                        Height="50"
+                        Padding="5" Margin="10">
                     <StackPanel Orientation="Horizontal" >
                         <CheckBox Style="{StaticResource CheckBoxWindow}"
                                   VerticalAlignment="Center"
@@ -109,16 +110,20 @@
                                        Style="{StaticResource DefaultTextBlock}"/>
                     </StackPanel>
                 </Border>
+
+                <Button Content="Open Questions setup" 
+                        Command="{Binding OpenQuestionsSetupWindowCommand}" 
+                        Style="{StaticResource WindowButtons}"/>
+
                 <Button Content="Close app"
                         Command="{Binding CloseAppCommand}"
                         IsEnabled="{Binding PlayScreenRunning}"
-                        Style="{StaticResource WindowButtons}"
-                        >
-                </Button>
+                        Style="{StaticResource WindowButtons}"/>
             </StackPanel>
 
         </Grid>
-        <Grid Grid.Row="1" x:Name="PresentWindowControlGrid">
+
+        <Grid Grid.Row="1" x:Name="PresentWindowControlGrid" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="3*"/>
@@ -174,51 +179,54 @@
                     </StackPanel>
 
                 </StackPanel>
-
-
             </Grid>
+
             <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
-                <StackPanel Grid.Column="1">
-                    <StackPanel  Orientation="Horizontal" >
-                        <Button Content="Open Questions setup" 
-                            Command="{Binding OpenQuestionsSetupWindowCommand}" 
-                            Width="150" 
-                            Height="50"/>
-                        <Button Content="CloseQuestion" 
-                            Command="{Binding ChangeGamePhaseCommand}" 
-                            CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
-                            Width="150" 
-                            Height="50"
-                            IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
+                <StackPanel  Orientation="Horizontal" >
+                    <StackPanel>
+                        <Button Content="Close Question" 
+                                Command="{Binding ChangeGamePhaseCommand}" 
+                                CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
+                                MinWidth="150" MinHeight="50"
+                                Margin="10" Padding="10"
+                                IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
 
-
-                        <StackPanel>
-                            <TextBox Text="{Binding ScoreBoardText}"/>
-                            <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
-                                <Button Content="+" 
+                        <Button Content="CloseIntro" 
+                                Command="{Binding CloseSpecialIntroCommand}"
+                                Margin="10" Padding="10"
+                                MinWidth="150" MinHeight="50"/>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="10">
+                        <TextBox Text="{Binding ScoreBoardText}" FontSize="20" Margin="0 10"/>
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
+                            <Button Content="+" 
                                     Command="{Binding ChangePlayerScoreCommand}" 
                                     CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
-                                    MinWidth="100"/>
-                                <Button Content="-" Command="{Binding ChangePlayerScoreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" MinWidth="100"/>
-                            </StackPanel>
-                            <CheckBox Content="AutoClose on + answer" IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"/>
-
+                                    MinWidth="100" Padding="5"
+                                    FontSize="20" FontWeight="Bold"/>
+                            <Button Content="-" 
+                                    Command="{Binding ChangePlayerScoreCommand}" 
+                                    CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
+                                    MinWidth="100" Padding="5"
+                                    FontSize="20" FontWeight="Bold"/>
                         </StackPanel>
-                        <Button Content="CloseIntro" Margin="5,0,0,0" Command="{Binding CloseSpecialIntroCommand}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                        <CheckBox Content="AutoClose on + answer" 
+                                  IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"
+                                  Margin="0 10"/>
 
                     </StackPanel>
                 </StackPanel>
-                
             </Grid>
         </Grid>
         <Grid Grid.Row="2" x:Name="PlayerControl">
             <Grid.RowDefinitions>
-                <RowDefinition  Height="40"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" SelectedIndex="{Binding AutoPlayerSelectionIndex}">
+            <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
+                      MinWidth="100"
+                      SelectedIndex="{Binding AutoPlayerSelectionIndex}">
                 <ComboBoxItem Content="Auto" IsSelected="True" />
                 <ComboBoxItem Content="Manual" />
             </ComboBox>
@@ -288,36 +296,40 @@
                         <StackPanel.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Margin" Value="5"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="MinWidth" Value="100"/>
                             </Style>
                         </StackPanel.Resources>
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Connect" Command="{Binding ConnectButtonsServerCommand}"/>
-                                <Button Content="Disconnect" Command="{Binding DisconnectButtonsServerCommand}"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="Connection Status:"/>
-                                <TextBlock Text="{Binding ButtonsConnectionStatus}"/>
-                            </StackPanel>
 
-                        </StackPanel>
+                        <GroupBox Header="Connetion">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Connect" Command="{Binding ConnectButtonsServerCommand}"/>
+                                    <Button Content="Disconnect" Command="{Binding DisconnectButtonsServerCommand}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Connection Status:"/>
+                                    <TextBlock Text="{Binding ButtonsConnectionStatus}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
 
                         <Button Content="Next" Command="{Binding RequestNextPlayerCommand}"/>
                         <Button Content="Reset" Command="{Binding ResetButtonsStateCommand}"/>
                         <Button Content="Ready to collect answers" Command="{Binding SetReadyForAnswersCommand}"/>
 
-
-
-
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Button message"/>
-                        <TextBox Text="{Binding ButtonsMessageText, UpdateSourceTrigger=LostFocus}"/>
+                        <TextBox Text="{Binding ButtonsMessageText, UpdateSourceTrigger=LostFocus}"
+                                 MinWidth="200" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Selected Player"/>
-                        <TextBlock Text="{Binding SelectedPlayerIndex}"/>
+                        <TextBlock Text="{Binding SelectedPlayerIndex}"
+                                   VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel>
                         <ListView ItemsSource="{Binding WsLogOC}" Height="100" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
@@ -329,6 +341,7 @@
                         </ListView>
                         <Button Content="Clear log" 
                                 HorizontalAlignment="Center"
+                                MinWidth="150"
                                 Command="{Binding ClearWsLogCommand}"/>
                     </StackPanel>
 
@@ -480,47 +493,68 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Viewbox>
-            <StackPanel Grid.Column="1" Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}">
-                
-                <StackPanel Orientation="Horizontal">
 
-                    <StackPanel>
-                        <Label Content="Price: "/>
-                        <TextBlock Text="{Binding CurrentQuestion.Price}"/>
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Answer: " Margin="5,0,5,0"/>
-                        <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}"/>
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Answer: " Margin="5,0,5,0"/>
-                        <TextBlock Text="{Binding CurrentQuestion.QuestionText}"/>
-                    </StackPanel>
-                    <StackPanel Margin="10,0,0,0">
-                        <Label Content="speciality: " Margin="5,0,5,0"/>
-                        <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"/>
-                    </StackPanel>
-                    <StackPanel Margin="10,0,0,0">
-                        <Label Content="topic: " Margin="5,0,5,0"/>
-                        <TextBlock Text="{Binding CurrentQuestion.TopicName}"/>
-                    </StackPanel>
-                    <StackPanel Margin="10,0,0,0">
-                        <Label Content="topic: " Margin="5,0,5,0"/>
-                        <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"/>
-                    </StackPanel>
+            <Grid Grid.Column="1"
+                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}">
 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Label Content="Price: " FontWeight="Bold" Margin="5"/>
+                    <TextBlock Text="{Binding CurrentQuestion.Price}"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
-            </StackPanel>
 
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="Topic: " FontWeight="Bold" Margin="5"/>
+                    <TextBlock Text="{Binding CurrentQuestion.TopicName}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Text: " FontWeight="Bold" Margin="5"/>
+                    <TextBlock Grid.Column="1" Text="{Binding CurrentQuestion.QuestionText}" 
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+                </Grid>
+
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Answer: " FontWeight="Bold" Margin="5"/>
+                    <TextBlock Grid.Column="1" Text="{Binding CurrentQuestion.QuestionAnswer}" 
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+                </Grid>
+
+                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                    <Label Content="Speciality: " FontWeight="Bold" Margin="5"/>
+                    <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="5" Orientation="Horizontal">
+                    <Label Content="SpecialityCatPrice: " FontWeight="Bold" Margin="5"/>
+                    <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+            </Grid>
 
         </Grid>
-
-            
-           
-
-       
-
 
     </Grid>
 </Window>
