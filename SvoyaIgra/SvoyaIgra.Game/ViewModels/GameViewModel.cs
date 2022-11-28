@@ -15,6 +15,7 @@ using SvoyaIgra.MultimediaProvider.Services;
 using System.Windows.Media;
 using SvoyaIgra.Shared.Entities;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -73,6 +74,7 @@ namespace SvoyaIgra.Game.ViewModels
         public WindowLocator WindowLocator { get; set; }
         private readonly IMultimediaService _multimediaService;
 
+        private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         #region Properties
 
@@ -119,25 +121,6 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _buttonsConnectionStatus = value;
                     OnPropertyChanged(nameof(ButtonsConnectionStatus));
-                }
-            }
-        }
-
-        string _notificationText = "";
-        public string NotificationText
-        {
-            get { return _notificationText; }
-            set
-            {
-                if (_notificationText != value)
-                {
-                    _notificationText = value;
-                    OnPropertyChanged(nameof(NotificationText));
-                    OnPropertyChanged(nameof(WsLogSelectedIndex));                    
-                    if (WsLogOC != null)
-                    {
-                        WsLogOC.Add(value);
-                    }
                 }
             }
         }
@@ -656,8 +639,7 @@ namespace SvoyaIgra.Game.ViewModels
             //_log.Info("OnResetButtonPressed");
             if (WebSocketClient.Send(WsMessages.ResetCommand))
             {
-                NotificationText += $"C: {WsMessages.ResetCommand}";
-                //addToLogList($"C: {WsMessages.NextCommand}");
+                AddToLogList($"C: {WsMessages.NextCommand}");
             }
         }
 
@@ -666,33 +648,34 @@ namespace SvoyaIgra.Game.ViewModels
             //_log.Info("OnNextButtonPressed");
             if (WebSocketClient.Send(WsMessages.NextCommand))
             {
-                NotificationText += $"C: {WsMessages.NextCommand}";
-                //addToLogList($"C: {WsMessages.NextCommand}");
+                AddToLogList($"C: {WsMessages.NextCommand}");
             }
         }
 
         private void DisconnectButtonsServerMethod(object obj)
         {
             WebSocketClient.Dispose();
-            NotificationText = "Disconnected from buttons server";
-            ButtonsConnectionStatus = "Disconnected";
+            AddToLogList("Connected to buttons server");
 
+            ButtonsConnectionStatus = "Disconnected";
         }
 
         private void ConnectButtonsServerMethod(object obj)
         {
             if (WebSocketClient.Connect())
             {
-               NotificationText = "Connected to buttons server";
-                ButtonsConnectionStatus = "Connected";
+                AddToLogList("Connected to buttons server");
                 //_log.Info("WebSocketClient Connect");
                 //IsConnect = true;
+
+                ButtonsConnectionStatus = "Connected";
             }
             else
             {
-                NotificationText = "Error while connection to buttons server";
-                ButtonsConnectionStatus = "Not connected";
+                AddToLogList($"Error while connection to buttons server");
                 //_log.Error("WebSocketClient Error");
+
+                ButtonsConnectionStatus = "Not connected";
             }
         }
 
@@ -1068,26 +1051,31 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void Wss_Opened()
         {
-            NotificationText += $"Opened\r\n";
+            AddToLogList($"Opened");
         }
 
         private void Wss_Closed()
         {
-            NotificationText += $"Closed\r\n";
+            AddToLogList($"Closed");
         }
 
         private void Wss_Error(string message)
         {
-            NotificationText += $"Error {message}\r\n";
-
+            AddToLogList($"Error {message}");
         }
         private void Wss_NewMessage(string message)
         {
-            NotificationText += $"S: {message}\r\n";
+            AddToLogList($"S: {message}");
             ButtonsMessageText = message;
         }
 
         #endregion
+
+        private void AddToLogList(string message)
+        {
+            _dispatcher.Invoke(() => WsLogOC.Add($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}\t {message}"));
+            OnPropertyChanged(nameof(WsLogSelectedIndex));
+        }
 
         private void CloseAppMethod(object obj)
         {

@@ -319,7 +319,7 @@
                         <TextBlock Text="{Binding SelectedPlayerIndex}"/>
                     </StackPanel>
                     <StackPanel>
-                        <ListView ItemsSource="{Binding WsLogOC}" Height="100" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}">
+                        <ListView ItemsSource="{Binding WsLogOC}" Height="100" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" FontSize="12"/>
