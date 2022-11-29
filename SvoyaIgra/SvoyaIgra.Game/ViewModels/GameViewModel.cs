@@ -17,6 +17,7 @@ using SvoyaIgra.Shared.Entities;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SvoyaIgra.Game.Enums;
+using SvoyaIgra.Game.Helpers;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -62,7 +63,7 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
 
-        string _buttonsConnectionStatus = "Xz";
+        private string _buttonsConnectionStatus = BtnsConnectionStatus.Unknown;
         public string ButtonsConnectionStatus
         {
             get { return _buttonsConnectionStatus; }
@@ -76,7 +77,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        string _buttonsMessageText = "1;0;0;0;0";
+        string _buttonsMessageText = ButtonMessageDecoder.EmptyMessage;
         public string ButtonsMessageText
         {
             get { return _buttonsMessageText; }
@@ -87,7 +88,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _buttonsMessageText = value;
                     OnPropertyChanged(nameof(ButtonsMessageText));
 
-                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(ButtonsMessageText));
+                    if (AutoPlayerSelection) SelectPlayerMethod((int)ButtonMessageDecoder.GetSelectedPlayerIndex(ButtonsMessageText));
                 }
             }
         }
@@ -119,7 +120,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     if (_autoPlayerSelectionIndex == 1)
                     {
-                        ButtonsMessageText = "1;0;0;0;0";
+                        ButtonsMessageText = ButtonMessageDecoder.EmptyMessage;
                         SelectPlayerMethod(-1);
                     }
 
@@ -140,7 +141,6 @@ namespace SvoyaIgra.Game.ViewModels
                     _readyToCollectAnswers = value;
                     OnPropertyChanged(nameof(ReadyToCollectAnswers));
                     if (value) ResetButtonsStateMethod(null);
-  
                 }
             }
         }
@@ -562,8 +562,8 @@ namespace SvoyaIgra.Game.ViewModels
 
             #region Buttons control
 
-            ConnectButtonsServerCommand = new RelayCommand(ConnectButtonsServerMethod);
-            DisconnectButtonsServerCommand = new RelayCommand(DisconnectButtonsServerMethod);
+            ConnectButtonsServerCommand = new RelayCommand(ConnectButtonsServerMethod, ConnectButtonsServer_CanExecute);
+            DisconnectButtonsServerCommand = new RelayCommand(DisconnectButtonsServerMethod, DisconnectButtonsServer_CanExecute);
             RequestNextPlayerCommand = new RelayCommand(RequestNextPlayerMethod);
             ResetButtonsStateCommand = new RelayCommand(ResetButtonsStateMethod);
             SetReadyForAnswersCommand = new RelayCommand(SetReadyForAnswersMethod);
@@ -572,9 +572,7 @@ namespace SvoyaIgra.Game.ViewModels
             #endregion
 
     }
-
-
-
+        
         #region Methods
 
         #region Player buttons methods
@@ -602,39 +600,40 @@ namespace SvoyaIgra.Game.ViewModels
                 AddToLogList($"C: {WsMessages.NextCommand}");
             }
         }
-
-        private void DisconnectButtonsServerMethod(object obj)
+        private bool ConnectButtonsServer_CanExecute(object obj)
         {
-            WebSocketClient.Dispose();
-            AddToLogList("Connected to buttons server");
-
-            ButtonsConnectionStatus = "Disconnected";
+            return ButtonsConnectionStatus != BtnsConnectionStatus.Connected && ButtonsConnectionStatus != BtnsConnectionStatus.Connecting;
         }
 
         private void ConnectButtonsServerMethod(object obj)
         {
+            ButtonsConnectionStatus = BtnsConnectionStatus.Connecting;
+
             if (WebSocketClient.Connect())
             {
                 AddToLogList("Connected to buttons server");
                 //_log.Info("WebSocketClient Connect");
-                //IsConnect = true;
 
-                ButtonsConnectionStatus = "Connected";
+                ButtonsConnectionStatus = BtnsConnectionStatus.Connected;
             }
             else
             {
                 AddToLogList($"Error while connection to buttons server");
                 //_log.Error("WebSocketClient Error");
 
-                ButtonsConnectionStatus = "Not connected";
+                ButtonsConnectionStatus = BtnsConnectionStatus.Error;
             }
         }
+        private bool DisconnectButtonsServer_CanExecute(object obj)
+        {
+            return ButtonsConnectionStatus == BtnsConnectionStatus.Connected || ButtonsConnectionStatus == BtnsConnectionStatus.Error;
+        }
+
 
         private int DecodeButtonMessage(string message)
         {
             char[] separator = ";".ToCharArray();
             string[] buttonsIndexes = message.Split(separator);
-
             int qIndex = Convert.ToInt32(buttonsIndexes[0]);
 
             List<int> queue = new List<int>()
@@ -648,38 +647,32 @@ namespace SvoyaIgra.Game.ViewModels
 
             for (int i = 0; i < queue.Count; i++)
             {
-                
-                if (queue[i]!=0)
+
+                if (queue[i] != 0)
                 {
                     switch (queue[i])
                     {
                         case (int)ButtonEnum.Red://1
-                            Players[(int)PlayerIndexEnum.Red].isInQueue     = true;
+                            Players[(int)PlayerIndexEnum.Red].isInQueue = true;
                             break;
                         case (int)ButtonEnum.Green://2
-                            Players[(int)PlayerIndexEnum.Green].isInQueue   = true;
+                            Players[(int)PlayerIndexEnum.Green].isInQueue = true;
                             break;
                         case (int)ButtonEnum.Blue://4
-                            Players[(int)PlayerIndexEnum.Blue].isInQueue    = true;
+                            Players[(int)PlayerIndexEnum.Blue].isInQueue = true;
                             break;
                         case (int)ButtonEnum.Yellow://8
-                            Players[(int)PlayerIndexEnum.Yellow].isInQueue  = true;
+                            Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
                             break;
 
                         default:
                             break;
                     }
-                    
+
                 }
             }
 
             OnPropertyChanged(nameof(Players));
-            foreach (var item in Players)
-            {
-                Debug.WriteLine($"Player {item.Name} is in Queue {item.isInQueue}");
-            }
-
-
 
             if (allZeros) return -1;
             else
@@ -702,7 +695,6 @@ namespace SvoyaIgra.Game.ViewModels
 
 
         }
-
 
         #endregion
 
@@ -910,10 +902,12 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void GetPlayers()
         {
-            string[] colors = { "#FF0000", "#00FF00", "#0000FF", "#FFFF00" };
-            for (int i = 0; i < 4; i++)
+            var colors = DefaultPlayers.GetColors();
+            var names = DefaultPlayers.GetNames();
+            
+            for (var i = 0; i < 4; i++)
             {
-                Players.Add(new Player("Player " + i.ToString(), colors[i]));
+                Players.Add(new Player($"Player {names[i]}", colors[i]));
             }
         }
 
@@ -1060,6 +1054,7 @@ namespace SvoyaIgra.Game.ViewModels
         private void Wss_Error(string message)
         {
             AddToLogList($"Error {message}");
+            ButtonsConnectionStatus = BtnsConnectionStatus.Error;
         }
         private void Wss_NewMessage(string message)
         {

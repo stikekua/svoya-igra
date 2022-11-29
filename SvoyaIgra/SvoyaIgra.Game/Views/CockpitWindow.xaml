@@ -32,7 +32,7 @@
             <Setter Property="MinWidth" Value="100"/>
             <Setter Property="Height" Value="50"/>
             <Setter Property="FontFamily" Value="Microsoft YaHei Light"/>
-            <Setter Property="Margin" Value="20,0,0,0"/>
+            <Setter Property="Margin" Value="10,0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -73,54 +73,64 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" x:Name="ThisWindowPanelGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Open Playscreen" 
+
+                <GroupBox Header="1. Questions" >
+                    <Button Content="Open Questions setup" 
+                            Command="{Binding OpenQuestionsSetupWindowCommand}" 
+                            Style="{StaticResource WindowButtons}"/>
+                </GroupBox>
+
+                <GroupBox Header="2. Playscreen" Margin="10 0 0 0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Open" 
                         Command="{Binding OpenPresentScreenCommand}"
                         Style="{StaticResource WindowButtons}">
-                    <Button.Resources>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding PlayScreenRunning}" Value="True">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding PlayScreenRunning}" Value="False">
-                                    <Setter Property="IsEnabled" Value="True" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-                <Button Content="Close" 
+                            <Button.Resources>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PlayScreenRunning}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding PlayScreenRunning}" Value="False">
+                                            <Setter Property="IsEnabled" Value="True" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        <Button Content="Close" 
                             Style="{StaticResource WindowButtons}"
                             Command="{Binding ClosePresentScreenCommand}"
                             IsEnabled="{Binding PlayScreenRunning}"/>
 
-                <Border CornerRadius="3" 
+                        <Border CornerRadius="3" 
                         BorderThickness="1" 
                         BorderBrush="Black"
                         VerticalAlignment="Center"
                         Height="50"
-                        Padding="5" Margin="10">
-                    <StackPanel Orientation="Horizontal" >
-                        <CheckBox Style="{StaticResource CheckBoxWindow}"
+                        Padding="10" Margin="10">
+                            <StackPanel Orientation="Horizontal" >
+                                <CheckBox Style="{StaticResource CheckBoxWindow}"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding PlayScreenLocked}"
                                   IsEnabled="{Binding PlayScreenRunning}"/>
-                        <TextBlock Text="Lock Playscreen" 
-                                       Style="{StaticResource DefaultTextBlock}"/>
+                                <TextBlock Text="Lock Playscreen" 
+                                   Margin="5,0,0,0"
+                                   Style="{StaticResource DefaultTextBlock}"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
-                </Border>
-
-                <Button Content="Open Questions setup" 
-                        Command="{Binding OpenQuestionsSetupWindowCommand}" 
-                        Style="{StaticResource WindowButtons}"/>
-
-                <Button Content="Close app" HorizontalAlignment="Right"
-                        Command="{Binding CloseAppCommand}"
-                        IsEnabled="{Binding PlayScreenRunning}"
-                        Style="{StaticResource WindowButtons}"/>
+                </GroupBox>
             </StackPanel>
-
+            <Button Grid.Column="1" Content="Close app"
+                    Command="{Binding CloseAppCommand}"
+                    IsEnabled="{Binding PlayScreenRunning}"
+                    Style="{StaticResource WindowButtons}"/>
         </Grid>
 
         <Grid Grid.Row="1" x:Name="PresentWindowControlGrid" Margin="5">
@@ -194,19 +204,7 @@
                         <Button Content="CloseIntro" 
                                 Command="{Binding CloseSpecialIntroCommand}"
                                 Margin="10" Padding="10"
-                                MinWidth="150" MinHeight="50">
-                            <Button.Resources>
-                                <Style TargetType="Button">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding CurrentQuestion.SpecialIntroWasNotPlayed}" Value="False">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Resources>
-                            
-                        </Button>
+                                MinWidth="150" MinHeight="50"/>
                     </StackPanel>
                     
                     <StackPanel Margin="10">
@@ -344,7 +342,7 @@
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel>
-                        <ListView ItemsSource="{Binding WsLogOC}" Height="100" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
+                        <ListView ItemsSource="{Binding WsLogOC}" Height="75" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" FontSize="12"/>
