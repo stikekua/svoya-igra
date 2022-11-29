@@ -17,6 +17,7 @@ using SvoyaIgra.Shared.Entities;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SvoyaIgra.Game.Enums;
+using SvoyaIgra.Game.Helpers;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -76,7 +77,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        string _buttonsMessageText = "1;0;0;0;0";
+        string _buttonsMessageText = ButtonMessageDecoder.EmptyMessage;
         public string ButtonsMessageText
         {
             get { return _buttonsMessageText; }
@@ -87,7 +88,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _buttonsMessageText = value;
                     OnPropertyChanged(nameof(ButtonsMessageText));
 
-                    if (AutoPlayerSelection) SelectPlayerMethod(DecodeButtonMessage(ButtonsMessageText));
+                    if (AutoPlayerSelection) SelectPlayerMethod((int)ButtonMessageDecoder.GetSelectedPlayerIndex(ButtonsMessageText));
                 }
             }
         }
@@ -119,7 +120,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     if (_autoPlayerSelectionIndex == 1)
                     {
-                        ButtonsMessageText = "1;0;0;0;0";
+                        ButtonsMessageText = ButtonMessageDecoder.EmptyMessage;
                         SelectPlayerMethod(-1);
                     }
 
@@ -637,45 +638,6 @@ namespace SvoyaIgra.Game.ViewModels
 
             ButtonsConnectionStatus = BtnsConnectionStatus.Disconnected;
         }
-
-        private int DecodeButtonMessage(string message)
-        {
-            char[] separator = ";".ToCharArray();
-            string[] buttonsIndexes = message.Split(separator);
-
-            int qIndex = Convert.ToInt32(buttonsIndexes[0]);
-
-            List<int> queue = new List<int>()
-            {
-                Convert.ToInt32(buttonsIndexes[1]),
-                Convert.ToInt32(buttonsIndexes[2]),
-                Convert.ToInt32(buttonsIndexes[3]),
-                Convert.ToInt32(buttonsIndexes[4])
-            };
-            bool allZeros = queue.TrueForAll(x => x == 0);
-
-            if (allZeros) return -1;
-            else
-            {
-                switch (queue[qIndex - 1])
-                {
-                    case (int)ButtonEnum.Red://1
-                        return (int)PlayerIndexEnum.Red;
-                    case (int)ButtonEnum.Green://2
-                        return (int)PlayerIndexEnum.Green;
-                    case (int)ButtonEnum.Blue://4
-                        return (int)PlayerIndexEnum.Blue;
-                    case (int)ButtonEnum.Yellow://8
-                        return (int)PlayerIndexEnum.Yellow;
-
-                    default:
-                        return -1;
-                }
-            }
-
-
-        }
-
 
         #endregion
 
