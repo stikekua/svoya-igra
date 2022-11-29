@@ -605,6 +605,14 @@ namespace SvoyaIgra.Game.ViewModels
             return ButtonsConnectionStatus != BtnsConnectionStatus.Connected && ButtonsConnectionStatus != BtnsConnectionStatus.Connecting;
         }
 
+        private void DisconnectButtonsServerMethod(object obj)
+        {
+            WebSocketClient.Dispose();
+            AddToLogList("Connected to buttons server");
+
+            ButtonsConnectionStatus = "Disconnected";
+        }
+
         private void ConnectButtonsServerMethod(object obj)
         {
             ButtonsConnectionStatus = BtnsConnectionStatus.Connecting;
