@@ -840,10 +840,12 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void GetPlayers()
         {
-            string[] colors = { "#FF0000", "#00FF00", "#0000FF", "#FFFF00" };
-            for (int i = 0; i < 4; i++)
+            var colors = DefaultPlayers.GetColors();
+            var names = DefaultPlayers.GetNames();
+            
+            for (var i = 0; i < 4; i++)
             {
-                Players.Add(new Player("Player " + i.ToString(), colors[i]));
+                Players.Add(new Player($"Player {names[i]}", colors[i]));
             }
         }
 
