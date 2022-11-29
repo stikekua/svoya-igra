@@ -19,9 +19,28 @@
             <Button Content="Get Test Questions" Command="{Binding GetTestQuestionsCommand}"
                             MinWidth="200" FontSize="16" 
                             Margin="10" Padding="10"/>
-            <Button Content="Get Real Questions" Command="{Binding GetRealQuestionsFromDbCommand}"
-                            MinWidth="200" FontSize="16"
-                            Margin="10" Padding="10"/>
+            <GroupBox Header="Questions DB">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Create game"
+                                    Command="{Binding CreateGameCommand}"
+                                    Margin="10" Padding="10"></Button>
+                            <Button Content="Get last game"
+                                    Command="{Binding GetLastGameCommand}"
+                                    Margin="10" Padding="10"></Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Game Id" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding GameId}"
+                                       VerticalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="Get Real Questions" Command="{Binding GetRealQuestionsFromDbCommand}"
+                                    MinWidth="200" FontSize="16"
+                                    Margin="10" Padding="10"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
 
         <GroupBox Grid.Row="1" Header="Round Question">

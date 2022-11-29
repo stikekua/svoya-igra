@@ -21,7 +21,12 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Properties
 
-        public Guid GameId { get; set; }
+        private Guid _gameId = Guid.Empty;
+        public Guid GameId
+        {
+            get => _gameId;
+            set { _gameId = value; OnPropertyChanged(); }
+        }
 
         #region All questions
 
@@ -41,6 +46,8 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         public RelayCommand GetTestQuestionsCommand { get; set; }
+        public RelayCommand CreateGameCommand { get; set; }
+        public RelayCommand GetLastGameCommand { get; set; }
         public RelayCommand GetRealQuestionsFromDbCommand { get; set; }
 
         #endregion
@@ -303,15 +310,15 @@ namespace SvoyaIgra.Game.ViewModels
 
             ApplyQuestionChangesCommand = new RelayCommand(ApplyQuestionChangesMethod);
             GetTestQuestionsCommand = new RelayCommand(GetTestQuestionsMethod);
-            GetRealQuestionsFromDbCommand = new RelayCommand(GetRealQuestionsFromDbMethod);
+            CreateGameCommand = new RelayCommand(CreateGame_Execute, CreateGame_CanExecute);
+            GetLastGameCommand = new RelayCommand(GetLastGame_Execute);
+            GetRealQuestionsFromDbCommand = new RelayCommand(GetRealQuestionsFromDb_Execute, GetRealQuestionsFromDb_CanExecute);
             GetRandomCatQuestionsCommand = new RelayCommand(GetRandomCatQuestionsMethod);
             ApplyFinalQuestionChangesCommand = new RelayCommand(ApplyFinalQuestionChangesMethod);
             GetNewFinalQuestionCommand = new RelayCommand(GetNewFinalQuestionMethod);
             ClearNewQuestionFieldsCommand = new RelayCommand(ClearNewQuestionFieldsMethod);
             RefreshQuestionCommand = new RelayCommand(RefreshQuestionMethod);
         }
-
-
 
         #region Methods
 
@@ -347,11 +354,29 @@ namespace SvoyaIgra.Game.ViewModels
             GetCurrentQuestion();
         }
 
-        private async void GetRealQuestionsFromDbMethod(object obj)
+        private bool CreateGame_CanExecute(object obj)
         {
-            //create game
-            GameId = await _gameService.CreateGameAsync();
+            return true;
+            //TODO prevent multiple game creation
+        }
 
+        private async void CreateGame_Execute(object obj)
+        {
+            GameId = await _gameService.CreateGameAsync();
+        }
+
+        private async void GetLastGame_Execute(object obj)
+        {
+            GameId = await _gameService.GetLastGameAsync();
+        }
+
+        private bool GetRealQuestionsFromDb_CanExecute(object obj)
+        {
+            return GameId != Guid.Empty;
+        }
+
+        private async void GetRealQuestionsFromDb_Execute(object obj)
+        {
             //get round topics
             var topicsFromDB = await _gameService.GetTopicsAsync(GameId);
 
