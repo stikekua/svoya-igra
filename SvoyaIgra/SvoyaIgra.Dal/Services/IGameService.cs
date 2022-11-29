@@ -11,6 +11,12 @@ namespace SvoyaIgra.Dal.Services
         public Task<Guid> CreateGameAsync();
 
         /// <summary>
+        /// returns last created gameId
+        /// </summary>
+        /// <returns></returns>
+        public Task<Guid> GetLastGameAsync();
+
+        /// <summary>
         /// returns randomly 18(GameConstants.RoundTopicsCount) topics 
         /// </summary>
         /// <returns></returns>

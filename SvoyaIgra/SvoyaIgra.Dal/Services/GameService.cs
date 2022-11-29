@@ -29,6 +29,12 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         return game.Id;
     }
 
+    public Task<Guid> GetLastGameAsync()
+    {
+        var game = _dbContext.Set<GameSession>().OrderByDescending(g => g.CreatedAt).FirstOrDefault();
+        return Task.FromResult(game?.Id ?? Guid.Empty);
+    }
+
     public async Task<IEnumerable<TopicDto>> GetTopicsAsync(Guid gameId)
     {
         var game = _dbContext.Set<GameSession>().FirstOrDefault(g => g.Id == gameId);
