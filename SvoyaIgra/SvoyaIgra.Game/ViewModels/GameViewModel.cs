@@ -62,7 +62,7 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
 
-        string _buttonsConnectionStatus = "Xz";
+        private string _buttonsConnectionStatus = BtnsConnectionStatus.Unknown;
         public string ButtonsConnectionStatus
         {
             get { return _buttonsConnectionStatus; }
@@ -562,8 +562,8 @@ namespace SvoyaIgra.Game.ViewModels
 
             #region Buttons control
 
-            ConnectButtonsServerCommand = new RelayCommand(ConnectButtonsServerMethod);
-            DisconnectButtonsServerCommand = new RelayCommand(DisconnectButtonsServerMethod);
+            ConnectButtonsServerCommand = new RelayCommand(ConnectButtonsServerMethod, ConnectButtonsServer_CanExecute);
+            DisconnectButtonsServerCommand = new RelayCommand(DisconnectButtonsServerMethod, DisconnectButtonsServer_CanExecute);
             RequestNextPlayerCommand = new RelayCommand(RequestNextPlayerMethod);
             ResetButtonsStateCommand = new RelayCommand(ResetButtonsStateMethod);
             SetReadyForAnswersCommand = new RelayCommand(SetReadyForAnswersMethod);
@@ -572,9 +572,7 @@ namespace SvoyaIgra.Game.ViewModels
             #endregion
 
     }
-
-
-
+        
         #region Methods
 
         #region Player buttons methods
@@ -602,32 +600,42 @@ namespace SvoyaIgra.Game.ViewModels
                 AddToLogList($"C: {WsMessages.NextCommand}");
             }
         }
-
-        private void DisconnectButtonsServerMethod(object obj)
+        private bool ConnectButtonsServer_CanExecute(object obj)
         {
-            WebSocketClient.Dispose();
-            AddToLogList("Connected to buttons server");
-
-            ButtonsConnectionStatus = "Disconnected";
+            return ButtonsConnectionStatus != BtnsConnectionStatus.Connected && ButtonsConnectionStatus != BtnsConnectionStatus.Connecting;
         }
 
         private void ConnectButtonsServerMethod(object obj)
         {
+            ButtonsConnectionStatus = BtnsConnectionStatus.Connecting;
+
             if (WebSocketClient.Connect())
             {
                 AddToLogList("Connected to buttons server");
                 //_log.Info("WebSocketClient Connect");
-                //IsConnect = true;
 
-                ButtonsConnectionStatus = "Connected";
+                ButtonsConnectionStatus = BtnsConnectionStatus.Connected;
             }
             else
             {
                 AddToLogList($"Error while connection to buttons server");
                 //_log.Error("WebSocketClient Error");
 
-                ButtonsConnectionStatus = "Not connected";
+                ButtonsConnectionStatus = BtnsConnectionStatus.Error;
             }
+        }
+        private bool DisconnectButtonsServer_CanExecute(object obj)
+        {
+            return ButtonsConnectionStatus == BtnsConnectionStatus.Connected || ButtonsConnectionStatus == BtnsConnectionStatus.Error;
+        }
+
+        private void DisconnectButtonsServerMethod(object obj)
+        {
+            ButtonsConnectionStatus = BtnsConnectionStatus.Disconnecting;
+            WebSocketClient.Dispose();
+            AddToLogList("Disconnecting from buttons server");
+
+            ButtonsConnectionStatus = BtnsConnectionStatus.Disconnected;
         }
 
         private int DecodeButtonMessage(string message)
@@ -1013,6 +1021,7 @@ namespace SvoyaIgra.Game.ViewModels
         private void Wss_Error(string message)
         {
             AddToLogList($"Error {message}");
+            ButtonsConnectionStatus = BtnsConnectionStatus.Error;
         }
         private void Wss_NewMessage(string message)
         {
