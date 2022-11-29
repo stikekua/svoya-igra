@@ -88,7 +88,11 @@ namespace SvoyaIgra.Game.ViewModels
                     _buttonsMessageText = value;
                     OnPropertyChanged(nameof(ButtonsMessageText));
 
-                    if (AutoPlayerSelection) SelectPlayerMethod((int)ButtonMessageDecoder.GetSelectedPlayerIndex(ButtonsMessageText));
+                    if (AutoPlayerSelection)
+                    {
+                        SelectPlayerMethod((int)ButtonMessageDecoder.GetSelectedPlayerIndex(ButtonsMessageText));
+                        PlayerInQueueDetector(ButtonsMessageText);
+                    }
                 }
             }
         }
@@ -635,6 +639,54 @@ namespace SvoyaIgra.Game.ViewModels
         private bool DisconnectButtonsServer_CanExecute(object obj)
         {
             return ButtonsConnectionStatus == BtnsConnectionStatus.Connected || ButtonsConnectionStatus == BtnsConnectionStatus.Error;
+        }
+
+        void PlayerInQueueDetector(string message)
+        {
+            if (Players!=null)
+            {
+
+                char[] separator = ";".ToCharArray();
+                string[] buttonsIndexes = message.Split(separator);
+                int qIndex = Convert.ToInt32(buttonsIndexes[0]);
+
+                List<int> queue = new List<int>()
+            {
+                Convert.ToInt32(buttonsIndexes[1]),
+                Convert.ToInt32(buttonsIndexes[2]),
+                Convert.ToInt32(buttonsIndexes[3]),
+                Convert.ToInt32(buttonsIndexes[4])
+            };
+
+                for (int i = 0; i < queue.Count; i++)
+                {
+
+                    if (queue[i] != 0)
+                    {
+                        switch (queue[i])
+                        {
+                            case (int)ButtonEnum.Red://1
+                                Players[(int)PlayerIndexEnum.Red].isInQueue = true;
+                                break;
+                            case (int)ButtonEnum.Green://2
+                                Players[(int)PlayerIndexEnum.Green].isInQueue = true;
+                                break;
+                            case (int)ButtonEnum.Blue://4
+                                Players[(int)PlayerIndexEnum.Blue].isInQueue = true;
+                                break;
+                            case (int)ButtonEnum.Yellow://8
+                                Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+                OnPropertyChanged(nameof(Players));
+            }
+
         }
 
 
