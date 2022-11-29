@@ -115,7 +115,7 @@
                         Command="{Binding OpenQuestionsSetupWindowCommand}" 
                         Style="{StaticResource WindowButtons}"/>
 
-                <Button Content="Close app"
+                <Button Content="Close app" HorizontalAlignment="Right"
                         Command="{Binding CloseAppCommand}"
                         IsEnabled="{Binding PlayScreenRunning}"
                         Style="{StaticResource WindowButtons}"/>
@@ -194,7 +194,19 @@
                         <Button Content="CloseIntro" 
                                 Command="{Binding CloseSpecialIntroCommand}"
                                 Margin="10" Padding="10"
-                                MinWidth="150" MinHeight="50"/>
+                                MinWidth="150" MinHeight="50">
+                            <Button.Resources>
+                                <Style TargetType="Button">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentQuestion.SpecialIntroWasNotPlayed}" Value="False">
+                                            <Setter Property="IsEnabled" Value="True"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Resources>
+                            
+                        </Button>
                     </StackPanel>
                     
                     <StackPanel Margin="10">
@@ -226,7 +238,7 @@
             </Grid.RowDefinitions>
             <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
                       MinWidth="100"
-                      SelectedIndex="{Binding AutoPlayerSelectionIndex}">
+                      SelectedIndex="{Binding AutoPlayerSelectionIndex, Mode=TwoWay}">
                 <ComboBoxItem Content="Auto" IsSelected="True" />
                 <ComboBoxItem Content="Manual" />
             </ComboBox>

@@ -24,6 +24,7 @@ namespace SvoyaIgra.Game.Metadata
         }
         public string ColorCode { get; set; }
         public bool isActive { get; set; } = true;
+        public bool isInQueue { get; set; } = true;
         public bool isSelected { get; set; } = false;
 
         public Player(string name, string colorCode)

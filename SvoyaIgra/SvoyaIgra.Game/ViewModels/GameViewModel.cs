@@ -140,6 +140,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _readyToCollectAnswers = value;
                     OnPropertyChanged(nameof(ReadyToCollectAnswers));
                     if (value) ResetButtonsStateMethod(null);
+  
                 }
             }
         }
@@ -155,8 +156,7 @@ namespace SvoyaIgra.Game.ViewModels
         public RelayCommand SetReadyForAnswersCommand { get; set; }
         #endregion                
         
-
-        
+               
 
         #region Cockpit window control
 
@@ -646,6 +646,41 @@ namespace SvoyaIgra.Game.ViewModels
             };
             bool allZeros = queue.TrueForAll(x => x == 0);
 
+            for (int i = 0; i < queue.Count; i++)
+            {
+                
+                if (queue[i]!=0)
+                {
+                    switch (queue[i])
+                    {
+                        case (int)ButtonEnum.Red://1
+                            Players[(int)PlayerIndexEnum.Red].isInQueue     = true;
+                            break;
+                        case (int)ButtonEnum.Green://2
+                            Players[(int)PlayerIndexEnum.Green].isInQueue   = true;
+                            break;
+                        case (int)ButtonEnum.Blue://4
+                            Players[(int)PlayerIndexEnum.Blue].isInQueue    = true;
+                            break;
+                        case (int)ButtonEnum.Yellow://8
+                            Players[(int)PlayerIndexEnum.Yellow].isInQueue  = true;
+                            break;
+
+                        default:
+                            break;
+                    }
+                    
+                }
+            }
+
+            OnPropertyChanged(nameof(Players));
+            foreach (var item in Players)
+            {
+                Debug.WriteLine($"Player {item.Name} is in Queue {item.isInQueue}");
+            }
+
+
+
             if (allZeros) return -1;
             else
             {
@@ -719,11 +754,22 @@ namespace SvoyaIgra.Game.ViewModels
 
                 case (int)GamePhaseEnum.FinalRound:
                     AutoCloseuestionOnPositiveAnswer = false;
+                    AutoPlayerSelectionIndex = 1; //manual
                     CurrentQuestion = FinalQuestion;
                     GamePhase = (int)GamePhaseEnum.Question;
                     break;
 
                 case (int)GamePhaseEnum.Question:
+
+
+                    if (Players != null)
+                    {
+                        for (int i = 0; i < Players.Count; i++)
+                        {
+                            Players[i].isInQueue = false;
+                        }
+                        OnPropertyChanged(nameof(Players));
+                    }
 
                     switch (CurrentQuestion.SpecialityType)
                     {
@@ -785,7 +831,6 @@ namespace SvoyaIgra.Game.ViewModels
                     PlayScreenWindowState = WindowState.Normal;
                     PlayScreenWindow.WindowStyle = WindowStyle.None;
                     PlayScreenWindowState = WindowState.Maximized;
-
                     PlayScreenWindow.Topmost = true;
                 }
                 else
@@ -798,19 +843,14 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void ClosePresentScreenMethod(object obj)
         {
-            if (PlayScreenWindow != null)
-            {
-                PlayScreenWindow.Close();
-            }
+            if (PlayScreenWindow != null) PlayScreenWindow.Close();
         }
 
         private void OpenPresentScreenMethod(object obj)
         {
             PlayScreenWindow = WindowLocator.PlayScreenWindow;
-            //PlayScreenWindow.DataContext = this;
             PlayScreenWindow.WindowState = WindowState.Maximized;
             PlayScreenWindow.Show();
-
         }
 
         #endregion
@@ -886,6 +926,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     case "+":
                         Players[SelectedPlayerIndex].Score += ScoreToChange;
+                        OnPropertyChanged(nameof(Players));
                         if (GamePhase == (int)GamePhaseEnum.Question && AutoCloseuestionOnPositiveAnswer)
                         {
                             ChangeGamePhaseMethod(ActualRoundGamePhase);
@@ -894,11 +935,17 @@ namespace SvoyaIgra.Game.ViewModels
                         break;
                     case "-":
                         Players[SelectedPlayerIndex].Score -= ScoreToChange;
+                        OnPropertyChanged(nameof(Players));
+                        if (AutoPlayerSelection)
+                        {
+                            RequestNextPlayerMethod(null);
+                        }
+                        
                         break;
                     default:
                         break;
                 }
-                OnPropertyChanged(nameof(Players));
+                
             }
 
         }

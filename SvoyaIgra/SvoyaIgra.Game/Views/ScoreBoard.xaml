@@ -76,12 +76,19 @@
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
                     <Style.Triggers>
+                        
+                        <DataTrigger Binding="{Binding Players[0].isInQueue}" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Players[0].isInQueue}" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Players[0].isSelected}" Value="True">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                                <BeginStoryboard x:Name="Players_0_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="testName"/>
+                                <StopStoryboard BeginStoryboardName="Players_0_storyboard"/>
                             </DataTrigger.ExitActions>
                         </DataTrigger>    
                     </Style.Triggers>
@@ -99,14 +106,20 @@
                     <helpers:OutlinedTextBlock Text="{Binding Players[1].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
                 </StackPanel>
             <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
-                    <Style.Triggers>
+                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">  
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Players[1].isInQueue}" Value="True">
+                                <Setter Property="Opacity" Value="1"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Players[1].isInQueue}" Value="false">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </DataTrigger>
                         <DataTrigger Binding="{Binding Players[1].isSelected}" Value="True">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                                <BeginStoryboard x:Name="Players_1_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="testName"/>
+                                <StopStoryboard  BeginStoryboardName="Players_1_storyboard"/>
                             </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>
@@ -126,12 +139,19 @@
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
                     <Style.Triggers>
+
+                        <DataTrigger Binding="{Binding Players[2].isInQueue}" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Players[2].isInQueue}" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Players[2].isSelected}" Value="True">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                                <BeginStoryboard x:Name="Players_2_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="testName"/>
+                                <StopStoryboard  BeginStoryboardName="Players_2_storyboard"/>
                             </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>
@@ -151,12 +171,19 @@
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
                     <Style.Triggers>
+
+                        <DataTrigger Binding="{Binding Players[3].isInQueue}" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Players[3].isInQueue}" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Players[3].isSelected}" Value="True">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="testName" Storyboard="{StaticResource AnimateFlicker}"/>
+                                <BeginStoryboard x:Name="Players_3_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="testName"/>
+                                <StopStoryboard  BeginStoryboardName="Players_3_storyboard"/>
                             </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>

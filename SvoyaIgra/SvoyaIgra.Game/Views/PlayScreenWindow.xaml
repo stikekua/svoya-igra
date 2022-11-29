@@ -12,10 +12,9 @@
         xmlns:enums="clr-namespace:SvoyaIgra.Game.Enums"
         mc:Ignorable="d"
         Title="PlayScreenWindow" 
-        MinHeight="1080" MinWidth="1920"
+        Height="1080" Width="1920"
         Background="{StaticResource MainGameBackground}"
         WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}"
-        Topmost="True"
         DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
 
     <Window.Resources>
