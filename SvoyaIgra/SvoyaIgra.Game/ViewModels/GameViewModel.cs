@@ -152,11 +152,6 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
-
-
-
-
-
         public RelayCommand SetReadyForAnswersCommand { get; set; }
         #endregion                
         
@@ -350,9 +345,16 @@ namespace SvoyaIgra.Game.ViewModels
                 {                    
                     _currentQuestion = value;
                     OnPropertyChanged(nameof(CurrentQuestion));
+                    OnPropertyChanged(nameof(IsPictureQuestion)); 
                 } 
             } 
         }
+
+        public bool IsPictureQuestion
+        {
+            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Picture ? true : false; }
+        }
+
 
         private Question _finalQuestion = new Question();
         public Question FinalQuestion
@@ -383,12 +385,12 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
 
-
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
         public RelayCommand CloseQuestion { get; set; }
+        public RelayCommand ShowPictureInQustionCommand { get; set; }
 
-        
+
 
 
         #endregion
@@ -552,6 +554,7 @@ namespace SvoyaIgra.Game.ViewModels
 
 
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
+            ShowPictureInQustionCommand = new RelayCommand(ShowPictureInQustionMethod);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
 
@@ -576,7 +579,9 @@ namespace SvoyaIgra.Game.ViewModels
             #endregion
 
     }
-        
+
+
+
         #region Methods
 
         #region Player buttons methods
@@ -956,6 +961,34 @@ namespace SvoyaIgra.Game.ViewModels
             ImageSourceQuestion = imgsrc;
         }
 
+
+        private void ShowPictureInQustionMethod(object obj)
+        {
+            string Id = CurrentQuestion.MediaLink;
+            MultimediaForEnum questionFor = (MultimediaForEnum)obj;
+
+            var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
+
+            string fileName = string.Empty;
+            if ((int)questionFor == (int)MultimediaForEnum.Question)
+            {
+                fileName = mutimediaCfg.QuestionFiles.ToList()[0];
+            }
+            else if ((int)questionFor == (int)MultimediaForEnum.Answer)
+            {
+                fileName = mutimediaCfg.AnswerFiles.ToList()[0];
+            }
+
+            var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
+
+
+            if (mutimediaStream.mediaType == MediaType.Image)
+            {
+                var ms = ConverToMemoryStream(mutimediaStream.stream);
+                SetImageSource(ms);
+            }
+        }
+
         #endregion
 
         #region Players
@@ -1031,7 +1064,7 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
-        #region questions
+        #region Questions
 
         private void OpenQuestionsSetupWindowMethod(object obj)
         {
@@ -1067,6 +1100,8 @@ namespace SvoyaIgra.Game.ViewModels
 
             OnPropertyChanged(nameof(CurrentRoundQuestions));
         }
+
+
 
         #endregion
 
@@ -1122,13 +1157,15 @@ namespace SvoyaIgra.Game.ViewModels
             ButtonsMessageText = message;
         }
 
-        #endregion
-
         private void AddToLogList(string message)
         {
             _dispatcher.Invoke(() => WsLogOC.Add($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}\t {message}"));
             OnPropertyChanged(nameof(WsLogSelectedIndex));
         }
+
+        #endregion
+
+
 
         private void CloseAppMethod(object obj)
         {

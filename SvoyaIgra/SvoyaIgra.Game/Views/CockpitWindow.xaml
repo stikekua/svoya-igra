@@ -9,6 +9,8 @@
         xmlns:gf="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
         xmlns:questions="clr-namespace:SvoyaIgra.Game.Views.Questions"        
         xmlns:viewModels="clr-namespace:SvoyaIgra.Game.ViewModels"
+        xmlns:sharedEntities="clr-namespace:SvoyaIgra.Shared.Entities;assembly=SvoyaIgra.Shared"
+        
         xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:enums="clr-namespace:SvoyaIgra.Game.Enums"
@@ -18,14 +20,11 @@
         Width="1000"
         WindowStyle="SingleBorderWindow" 
         DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
-
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <i:InvokeCommandAction Command="{Binding CloseAppCommand}"  />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-
-
     <Window.Resources>
 
         <Style TargetType="Button" x:Key="WindowButtons" >
@@ -68,7 +67,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="1.2*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
@@ -132,19 +131,15 @@
                     IsEnabled="{Binding PlayScreenRunning}"
                     Style="{StaticResource WindowButtons}"/>
         </Grid>
-
-        <Grid Grid.Row="1" x:Name="PresentWindowControlGrid" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" x:Name="WindowControlGrid">
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel Orientation="Vertical" 
-                            Height="auto" 
-                            Width="auto"
-                            VerticalAlignment="Top"
-                            IsEnabled="{Binding PlayScreenRunning}">
+        <GroupBox Grid.Row="1"
+                  Header="Game Phases"  
+                  VerticalAlignment="Center" >
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding PlayScreenRunning}">
+                <StackPanel.Resources>
+                    <Style TargetType="RadioButton">
+                        <Setter Property="Margin" Value="13,0,0,0"/>
+                    </Style>
+                </StackPanel.Resources>
                         <RadioButton GroupName="GamePhase" 
                                  Content="PreGame" 
                                  Command="{Binding ChangeGamePhaseCommand}"
@@ -156,26 +151,27 @@
                                  CommandParameter="{x:Static enums:GamePhaseEnum.GameIntro}"
                                  />
                         <RadioButton GroupName="GamePhase" 
-                                 Content="First round Intro" 
+                                 Content="1st round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FirstRoundIntro}"/>
                         <RadioButton GroupName="GamePhase" 
-                                 Content="First round" 
+                                 Content="1st round" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FirstRound}"/>
                         <RadioButton GroupName="GamePhase" 
-                                 Content="Second round Intro" 
+                                 Content="2nd round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.SecondRoundIntro}"/>
                         <RadioButton GroupName="GamePhase" 
-                                 Content="Second round" 
+                                 Content="2nd round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.SecondRound}"/>
                         <RadioButton GroupName="GamePhase" 
-                                 Content="Third round Intro" 
+                                 Content="3rd round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" Content="Third round" 
+                        <RadioButton GroupName="GamePhase" 
+                                     Content="3rd round" 
                                  Command="{Binding ChangeGamePhaseCommand}" 
                                  CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRound}"/>
                         <RadioButton GroupName="GamePhase" 
@@ -187,48 +183,7 @@
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FinalRound}"/>
                     </StackPanel>
-
-                </StackPanel>
-            </Grid>
-
-            <Grid Grid.Column="1" x:Name="GamePhaseControlGrid">
-                <StackPanel  Orientation="Horizontal" >
-                    <StackPanel>
-                        <Button Content="Close Question" 
-                                Command="{Binding ChangeGamePhaseCommand}" 
-                                CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
-                                MinWidth="150" MinHeight="50"
-                                Margin="10" Padding="10"
-                                IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
-
-                        <Button Content="CloseIntro" 
-                                Command="{Binding CloseSpecialIntroCommand}"
-                                Margin="10" Padding="10"
-                                MinWidth="150" MinHeight="50"/>
-                    </StackPanel>
-                    
-                    <StackPanel Margin="10">
-                        <TextBox Text="{Binding ScoreBoardText}" FontSize="20" Margin="0 10"/>
-                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
-                            <Button Content="+" 
-                                    Command="{Binding ChangePlayerScoreCommand}" 
-                                    CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
-                                    MinWidth="100" Padding="5"
-                                    FontSize="20" FontWeight="Bold"/>
-                            <Button Content="-" 
-                                    Command="{Binding ChangePlayerScoreCommand}" 
-                                    CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
-                                    MinWidth="100" Padding="5"
-                                    FontSize="20" FontWeight="Bold"/>
-                        </StackPanel>
-                        <CheckBox Content="AutoClose on + answer" 
-                                  IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"
-                                  Margin="0 10"/>
-
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-        </Grid>
+                </GroupBox>
         <Grid Grid.Row="2" x:Name="PlayerControl">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -240,7 +195,6 @@
                 <ComboBoxItem Content="Auto" IsSelected="True" />
                 <ComboBoxItem Content="Manual" />
             </ComboBox>
-
             <Grid Grid.Row="1" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
@@ -354,25 +308,24 @@
                                 MinWidth="150"
                                 Command="{Binding ClearWsLogCommand}"/>
                     </StackPanel>
-
-
                 </StackPanel>
             </Grid>
+        
 
-            
-        </Grid>
+    </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <Viewbox  Grid.Column="0" Width="auto" Visibility="{Binding QuestionsArePrepared,Converter={StaticResource BoolToVisibilityConverter}}"
-                     >
+                     VerticalAlignment="Top">
 
                 <DataGrid ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
                           CanUserAddRows="False"
                           HeadersVisibility="None"
                           AutoGenerateColumns="False"
+                          
                           >
                     <DataGrid.Resources>
                         <Style TargetType="DataGrid">
@@ -449,7 +402,7 @@
                                                     <DataTrigger Binding="{Binding Questions[2].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </DataTrigger>
-  
+
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -470,7 +423,7 @@
                                                     <DataTrigger Binding="{Binding Questions[3].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </DataTrigger>
- 
+
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -491,7 +444,7 @@
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[4].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                    </DataTrigger> 
+                                                    </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -503,68 +456,173 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </Viewbox>
-
-            <Grid Grid.Column="1"
-                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}">
-
+            <Grid x:Name="CurrentQuestionControl" Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
+                <GroupBox Grid.Row="0" 
+                          Header="Current question"
+                          BorderThickness="2">
+                    <Grid x:Name="CurrentQuestionInfo" 
+                            Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}">
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Label Content="Price: " FontWeight="Bold" Margin="5"/>
-                    <TextBlock Text="{Binding CurrentQuestion.Price}"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Label Content="Price: " FontWeight="Bold" Margin="5"/>
+                            <TextBlock Text="{Binding CurrentQuestion.Price}"
                                VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <Label Content="Topic: " FontWeight="Bold" Margin="5"/>
-                    <TextBlock Text="{Binding CurrentQuestion.TopicName}"
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <Label Content="Topic: " FontWeight="Bold" Margin="5"/>
+                            <TextBlock Text="{Binding CurrentQuestion.TopicName}"
                                VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Content="Text: " FontWeight="Bold" Margin="5"/>
-                    <TextBlock Grid.Column="1" Text="{Binding CurrentQuestion.QuestionText}" 
+                        </StackPanel>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Text: " FontWeight="Bold" Margin="5"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CurrentQuestion.QuestionText}" 
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"/>
-                </Grid>
-
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Content="Answer: " FontWeight="Bold" Margin="5"/>
-                    <TextBlock Grid.Column="1" Text="{Binding CurrentQuestion.QuestionAnswer}" 
+                        </Grid>
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Answer: " FontWeight="Bold" Margin="5"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CurrentQuestion.QuestionAnswer}" 
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"/>
+                        </Grid>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal">
+                            <Label Content="Speciality: " FontWeight="Bold" Margin="5"/>
+                            <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"
+                               VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="5" Orientation="Horizontal">
+                            <Label Content="SpecialityCatPrice: " FontWeight="Bold" Margin="5"/>
+                            <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"
+                               VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                    </Grid>
+                </GroupBox>
+                
+                <Grid x:Name="SpecialQuestionsControl" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>                    
+                        <GroupBox Header="Standard control" Grid.Row="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Margin="10" Grid.Column="0">
+                                    <TextBox Text="{Binding ScoreBoardText}" FontSize="20" Margin="0 10"/>
+                                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding IsAvailableForScoreChange}">
+                                        <Button Content="+" 
+                                                Command="{Binding ChangePlayerScoreCommand}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
+                                                MinWidth="100" Padding="5"
+                                                FontSize="20" FontWeight="Bold"/>
+                                        <Button Content="-" 
+                                                Command="{Binding ChangePlayerScoreCommand}" 
+                                                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=Content}" 
+                                                MinWidth="100" Padding="5"
+                                                FontSize="20" FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <CheckBox Content="AutoClose on + answer" 
+                                  IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"
+                                  Margin="0 10"/>
+
+                                </StackPanel>
+                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                    <Grid x:Name="MainQuestionControl" Grid.Row="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Content="Close Question" Grid.Column="0"
+                                            Command="{Binding ChangeGamePhaseCommand}" 
+                                            CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
+                                            MinWidth="150" MinHeight="50"
+                                            Margin="10" Padding="10"
+                                            IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
+                                        <Button Content="CloseIntro" Grid.Column="1"
+                                            Command="{Binding CloseSpecialIntroCommand}"
+                                            Margin="10" Padding="10"
+                                            MinWidth="150" MinHeight="50"/>
+
+                                    </Grid>
+
+                                </Grid>
+                            </Grid>
+                        </GroupBox>
+                        <GroupBox Header="Speciality stuff" Grid.Row="1">
+                            <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <GroupBox Header="Picture" IsEnabled="{Binding IsPictureQuestion}">
+                                <GroupBox.Resources>
+                                    <Style TargetType="GroupBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Opacity" Value="1"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </GroupBox.Resources>
+                                <StackPanel>
+                                    <RadioButton GroupName="Picture" 
+                                                 Content="Show Question" 
+                                                 Command="{Binding ShowPictureInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"
+                                                 IsChecked="True"/>
+                                    <RadioButton GroupName="Picture" 
+                                                 Content="Show Answer" 
+                                                 Command="{Binding ShowPictureInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
+                                                 />
+                                </StackPanel>
+ 
+                            </GroupBox>
+                                
+                            </Grid>     
+                            
+                        </GroupBox>
+
+
+                    
+
+
+
                 </Grid>
-
-                <StackPanel Grid.Row="4" Orientation="Horizontal">
-                    <Label Content="Speciality: " FontWeight="Bold" Margin="5"/>
-                    <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="5" Orientation="Horizontal">
-                    <Label Content="SpecialityCatPrice: " FontWeight="Bold" Margin="5"/>
-                    <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
-
             </Grid>
 
-        </Grid>
 
+        </Grid>
     </Grid>
 </Window>

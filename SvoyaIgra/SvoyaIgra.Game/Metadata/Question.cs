@@ -29,11 +29,10 @@ namespace SvoyaIgra.Game.Metadata
                 {
                     _specialityType = value;
                     OnPropertyChanged(nameof(SpecialityType));
+                    OnPropertyChanged(nameof(IsSpecial));
                 }                
             }
         }
-
-
 
         public int SpecialityCatPrice { get; set; } = 0;
 
