@@ -18,7 +18,8 @@
                     <Setter Property="FontWeight" Value="Bold"/>
                     <Setter Property="Stroke" Value="Black"/>
                     <Setter Property="StrokeThickness" Value="2"/>
-                </Style>
+                    <Setter Property="Margin" Value="5,0,5,0"/>
+            </Style>
                 <Style TargetType="helpers:OutlinedTextBlock" x:Key="PlayerScoreOutlinedTextBlock">
                     <Setter Property="FontSize" Value="40"/>
                     <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -32,7 +33,7 @@
                     <Setter Property="BorderBrush" Value="Black"/>
                     <Setter Property="BorderThickness" Value="2"/>
                     <Setter Property="CornerRadius" Value="5"/>
-                    <Setter Property="Width" Value="150"/>
+                    <Setter Property="Width" Value="auto"/>
                     <Setter Property="Margin" Value="10,0,10,0"/>
                 </Style>
                 <Style TargetType="Border" x:Key="PlayerNameBorder">
@@ -65,18 +66,17 @@
         </StackPanel.Resources>
 
 
-        <Border         Background="{Binding Players[0].ColorCode}"
+        <Border         Background="{Binding Players[0].ColorCode}" 
                         Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
             <StackPanel>
-                <Border Style="{StaticResource PlayerNameBorder}">
-                    <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}"/>
+                <Border Style="{StaticResource PlayerNameBorder}" >
+                    <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}" />
                 </Border>
                 <helpers:OutlinedTextBlock Text="{Binding Players[0].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
             </StackPanel>
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
-                    <Style.Triggers>
-                        
+                    <Style.Triggers>                        
                         <DataTrigger Binding="{Binding Players[0].isInQueue}" Value="True">
                             <Setter Property="Opacity" Value="1"/>
                         </DataTrigger>
@@ -95,7 +95,6 @@
                 </Style>
             </Border.Style>
         </Border>
-
         <Border 
                         Background="{Binding Players[1].ColorCode}"
                         Visibility="{Binding Players[1].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
@@ -126,8 +125,7 @@
                 </Style>
             </Border.Style>
         </Border>
-
-            <Border 
+        <Border 
                         Background="{Binding Players[2].ColorCode}"
                         Visibility="{Binding Players[2].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
                 <StackPanel>
@@ -158,8 +156,7 @@
                 </Style>
             </Border.Style>
         </Border>
-
-            <Border 
+        <Border 
                         Background="{Binding Players[3].ColorCode}"
                         Visibility="{Binding Players[3].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
                 <StackPanel>

@@ -18,6 +18,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SvoyaIgra.Game.Enums;
 using SvoyaIgra.Game.Helpers;
+using SvoyaIgra.Dal.Bo;
+using Topic = SvoyaIgra.Game.Metadata.Topic;
+using Question = SvoyaIgra.Game.Metadata.Question;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -154,8 +157,6 @@ namespace SvoyaIgra.Game.ViewModels
 
         public RelayCommand SetReadyForAnswersCommand { get; set; }
         #endregion                
-        
-               
 
         #region Cockpit window control
 
@@ -264,8 +265,9 @@ namespace SvoyaIgra.Game.ViewModels
                     _gamePhase = value;
                     OnPropertyChanged(nameof(GamePhase));
                     OnPropertyChanged(nameof(isIntroOnScreen));
+                    OnPropertyChanged(nameof(IsQuestion));
+                    
                     GamePhaseUpdate();
-                   
                 }
             }
         }
@@ -334,8 +336,6 @@ namespace SvoyaIgra.Game.ViewModels
             get { return AllRoundsQuestions.Count > 0 ? true : false; }
         }
 
-
-
         private Question _currentQuestion = new Question();
         public Question CurrentQuestion 
         {   get {  return _currentQuestion; }
@@ -348,6 +348,10 @@ namespace SvoyaIgra.Game.ViewModels
                     OnPropertyChanged(nameof(IsPictureQuestion)); 
                 } 
             } 
+        }
+        public bool IsQuestion
+        {
+            get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
         }
 
         public bool IsPictureQuestion
@@ -472,7 +476,7 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                return (SelectedPlayerIndex != -1 && GamePhase == (int)GamePhaseEnum.Question) ? true : false;
+                return (SelectedPlayerIndex != -1 && ((GamePhase == (int)GamePhaseEnum.Question && AutoPlayerSelectionIndex==0) || AutoPlayerSelectionIndex == 1)) ? true : false;
             }
         }
 

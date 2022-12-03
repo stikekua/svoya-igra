@@ -49,6 +49,7 @@
                         <Setter Property="FontWeight" Value="Bold"/>
                         <Setter Property="Stroke" Value="Black"/>
                         <Setter Property="StrokeThickness" Value="2"/>
+                        <Setter Property="Margin" Value="10,0,10,0"/>
                     </Style>
 
 
@@ -65,7 +66,7 @@
                         <Setter Property="BorderBrush" Value="Black"/>
                         <Setter Property="BorderThickness" Value="2"/>
                         <Setter Property="CornerRadius" Value="5"/>
-                        <Setter Property="Width" Value="150"/>
+                        <Setter Property="Width" Value="auto"/>
                         <Setter Property="Margin" Value="10,0,10,0"/>
                     </Style>
                     <Style TargetType="Border" x:Key="PlayerNameBorder">
