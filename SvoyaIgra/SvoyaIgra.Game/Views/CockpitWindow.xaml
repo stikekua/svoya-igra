@@ -709,17 +709,13 @@
                                         </Style.Triggers>
                                     </Style>
                                 </GroupBox.Resources>
-                                <StackPanel>
-                                    <RadioButton GroupName="Picture" 
-                                                 Content="Show Question" 
-                                                 Command="{Binding ShowPictureInQustionCommand}"
-                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"
-                                                 IsChecked="True"/>
-                                    <RadioButton GroupName="Picture" 
-                                                 Content="Show Answer" 
-                                                 Command="{Binding ShowPictureInQustionCommand}"
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Show Question" Command="{Binding ShowPictureInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Show Answer" Command="{Binding ShowPictureInQustionCommand}"
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
-                                                 />
+                                            Margin="5,0,0,0"/>
+
                                 </StackPanel>
  
                             </GroupBox>
