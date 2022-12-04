@@ -1073,6 +1073,10 @@ namespace SvoyaIgra.Game.ViewModels
                     default:
                         break;
                 }
+                if (!AutoPlayerSelection)
+                {
+                    SelectPlayerMethod(-1);
+                }
                 
             }
 
