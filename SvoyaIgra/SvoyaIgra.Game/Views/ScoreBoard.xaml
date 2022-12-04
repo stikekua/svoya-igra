@@ -66,8 +66,20 @@
         </StackPanel.Resources>
 
 
-        <Border         Background="{Binding Players[0].ColorCode}" 
+        <Border         Background="{Binding Players[0].ColorCode}"
                         Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
+            <!--<Border.Resources>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,anc}, ReadyToCollectAnswers}" Value="True">
+                            <Setter Property="Background" Value="{Binding Players[0].ColorCode}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ReadyToCollectAnswers}" Value="False">
+                            <Setter Property="Background" Value="Transparent" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Resources>-->
             <StackPanel>
                 <Border Style="{StaticResource PlayerNameBorder}" >
                     <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}" />

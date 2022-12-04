@@ -39,6 +39,22 @@ namespace SvoyaIgra.Game.ViewModels
 
         public WebSocketClientProvider WebSocketClient { get; set; }
 
+        string _buttonServerAddress = "ws://localhost:81"; 
+        public string ButtonServerAddress
+        {
+            get { return _buttonServerAddress; }
+            set
+            {
+                if (_buttonServerAddress != value)
+                {
+                    _buttonServerAddress = value;
+                    OnPropertyChanged(nameof(ButtonServerAddress));
+                }
+            }
+        }
+
+        
+
         ObservableCollection<string> _wsLogOC = new ObservableCollection<string>();
         public ObservableCollection<string> WsLogOC
         {
@@ -148,6 +164,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _readyToCollectAnswers = value;
                     OnPropertyChanged(nameof(ReadyToCollectAnswers));
                     if (value) ResetButtonsStateMethod(null);
+                    Debug.WriteLine($"ReadyToCollectAnswers is {ReadyToCollectAnswers}");
                 }
             }
         }
@@ -541,12 +558,6 @@ namespace SvoyaIgra.Game.ViewModels
             WindowLocator = new WindowLocator();
             _multimediaService = multimediaService;
 
-            WebSocketClient = new WebSocketClientProvider();
-            WebSocketClient.Opened += Wss_Opened;
-            WebSocketClient.Closed += Wss_Closed;
-            WebSocketClient.Error += Wss_Error;
-            WebSocketClient.Received += Wss_NewMessage;
-
             CloseAppCommand  = new RelayCommand(CloseAppMethod);
             OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
             ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
@@ -601,7 +612,7 @@ namespace SvoyaIgra.Game.ViewModels
             //_log.Info("OnResetButtonPressed");
             if (WebSocketClient.Send(WsMessages.ResetCommand))
             {
-                AddToLogList($"C: {WsMessages.NextCommand}");
+                AddToLogList($"C: {WsMessages.ResetCommand}");
             }
         }
 
@@ -628,6 +639,13 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void ConnectButtonsServerMethod(object obj)
         {
+
+            WebSocketClient = new WebSocketClientProvider(ButtonServerAddress);
+            WebSocketClient.Opened += Wss_Opened;
+            WebSocketClient.Closed += Wss_Closed;
+            WebSocketClient.Error += Wss_Error;
+            WebSocketClient.Received += Wss_NewMessage;
+
             ButtonsConnectionStatus = BtnsConnectionStatus.Connecting;
 
             if (WebSocketClient.Connect())
@@ -666,6 +684,16 @@ namespace SvoyaIgra.Game.ViewModels
                 Convert.ToInt32(buttonsIndexes[3]),
                 Convert.ToInt32(buttonsIndexes[4])
             };
+
+
+                if (Players != null)
+                {
+                    for (int i = 0; i < Players.Count; i++)
+                    {
+                        Players[i].isInQueue = false;
+                    }
+                    OnPropertyChanged(nameof(Players));
+                }
 
                 for (int i = 0; i < queue.Count; i++)
                 {
@@ -788,6 +816,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                 case (int)GamePhaseEnum.FirstRound:
                     CurrentRoundQuestions = AllRoundsQuestions[0];
+                    if (AutoPlayerSelectionIndex==0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null); 
                     break;
 
                 case (int)GamePhaseEnum.SecondRoundIntro:
@@ -797,6 +826,8 @@ namespace SvoyaIgra.Game.ViewModels
 
                 case (int)GamePhaseEnum.SecondRound:
                     CurrentRoundQuestions = AllRoundsQuestions[1];
+                    if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+
                     break;
 
                 case (int)GamePhaseEnum.ThirdRoundIntro:
@@ -806,6 +837,8 @@ namespace SvoyaIgra.Game.ViewModels
 
                 case (int)GamePhaseEnum.ThirdRound:
                     CurrentRoundQuestions = AllRoundsQuestions[2];
+                    if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+
                     break;
 
                 case (int)GamePhaseEnum.FinalRoundIntro:
@@ -977,10 +1010,12 @@ namespace SvoyaIgra.Game.ViewModels
             if ((int)questionFor == (int)MultimediaForEnum.Question)
             {
                 fileName = mutimediaCfg.QuestionFiles.ToList()[0];
+                Debug.WriteLine($"{fileName}");
             }
             else if ((int)questionFor == (int)MultimediaForEnum.Answer)
             {
                 fileName = mutimediaCfg.AnswerFiles.ToList()[0];
+                Debug.WriteLine($"{fileName}");
             }
 
             var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
@@ -1099,8 +1134,6 @@ namespace SvoyaIgra.Game.ViewModels
             GamePhase = (int)GamePhaseEnum.Question;
             if (CurrentQuestion.SpecialityType == (int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
             else ScoreBoardText = CurrentQuestion.Price.ToString();
-
-            Debug.WriteLine($"Now GamePhase is {GamePhase}");
 
             OnPropertyChanged(nameof(CurrentRoundQuestions));
         }

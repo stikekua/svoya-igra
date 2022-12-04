@@ -330,6 +330,10 @@
                         <GroupBox Header="Connetion">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal">
+                                    <Label Content="Button Server address"/>
+                                    <TextBox Text="{Binding ButtonServerAddress}" Width="100"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
                                     <Button Content="Connect" Command="{Binding ConnectButtonsServerCommand}"/>
                                     <Button Content="Disconnect" Command="{Binding DisconnectButtonsServerCommand}"/>
                                 </StackPanel>
@@ -598,11 +602,11 @@
                             </Grid.Resources>
                             <Label Grid.Row="0" Content="Text: " FontWeight="Bold" />
                             <Border Grid.Row="1"  >
-                                <TextBlock  Text="{Binding CurrentQuestion.QuestionText}" MinHeight="50"/>
+                                <TextBlock  Text="{Binding CurrentQuestion.QuestionText}" MinHeight="50" TextWrapping="WrapWithOverflow"/>
                             </Border>
                             <Label Grid.Row="2" Content="Answer: " FontWeight="Bold" />
                             <Border Grid.Row="3">
-                                <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}" MinHeight="20"/>
+                                <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}" MinHeight="20" TextWrapping="WrapWithOverflow"/>
                             </Border>
 
                         </Grid>
