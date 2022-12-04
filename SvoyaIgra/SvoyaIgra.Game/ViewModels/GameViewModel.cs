@@ -163,8 +163,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _readyToCollectAnswers = value;
                     OnPropertyChanged(nameof(ReadyToCollectAnswers));
-                    if (value) ResetButtonsStateMethod(null);
-                    Debug.WriteLine($"ReadyToCollectAnswers is {ReadyToCollectAnswers}");
+                    if (value && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
                 }
             }
         }
@@ -608,12 +607,15 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void ResetButtonsStateMethod(object obj)
         {
-            Debug.WriteLine("Buttons State Resetted");
             //_log.Info("OnResetButtonPressed");
-            if (WebSocketClient.Send(WsMessages.ResetCommand))
+            if (ButtonsConnectionStatus == BtnsConnectionStatus.Connected)
             {
-                AddToLogList($"C: {WsMessages.ResetCommand}");
+                if (WebSocketClient.Send(WsMessages.ResetCommand))
+                {
+                    AddToLogList($"C: {WsMessages.ResetCommand}");
+                }
             }
+
         }
 
         private void RequestNextPlayerMethod(object obj)

@@ -42,7 +42,6 @@
                     <Setter Property="CornerRadius" Value="7"/>
                     <Setter Property="Margin" Value="-2"/>
                 </Style>
-
             <Storyboard x:Key="AnimateFlicker" RepeatBehavior="Forever">
                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
                      From="0"
@@ -61,25 +60,10 @@
                      AutoReverse="True"
                      Duration="0:0:1" />
             </Storyboard>
-
-
         </StackPanel.Resources>
-
-
-        <Border         Background="{Binding Players[0].ColorCode}"
+        <Border         
                         Visibility="{Binding Players[0].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
-            <!--<Border.Resources>
-                <Style TargetType="Border">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,anc}, ReadyToCollectAnswers}" Value="True">
-                            <Setter Property="Background" Value="{Binding Players[0].ColorCode}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ReadyToCollectAnswers}" Value="False">
-                            <Setter Property="Background" Value="Transparent" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Resources>-->
+
             <StackPanel>
                 <Border Style="{StaticResource PlayerNameBorder}" >
                     <helpers:OutlinedTextBlock Text="{Binding Players[0].Name}" Style="{StaticResource PlayerNameOutlinedTextBlock}" />
@@ -88,27 +72,42 @@
             </StackPanel>
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Opacity" Value="0.5"/>
                     <Style.Triggers>                        
-                        <DataTrigger Binding="{Binding Players[0].isInQueue}" Value="True">
-                            <Setter Property="Opacity" Value="1"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[0].isInQueue}" Value="False">
-                            <Setter Property="Opacity" Value="0.5"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[0].isSelected}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="Players_0_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <StopStoryboard BeginStoryboardName="Players_0_storyboard"/>
-                            </DataTrigger.ExitActions>
+                        <DataTrigger Binding="{Binding ReadyToCollectAnswers}" Value="True">
+                            <Setter Property="Background" Value="{Binding Players[0].ColorCode}" />
                         </DataTrigger>    
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[0].isInQueue}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Opacity" Value="1"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding Players[0].isInQueue}" Value="False">
+                            
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[0].isSelected}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="Players_0_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="Players_0_storyboard"/>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
         <Border 
-                        Background="{Binding Players[1].ColorCode}"
                         Visibility="{Binding Players[1].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
                 <StackPanel>
                     <Border Style="{StaticResource PlayerNameBorder}">
@@ -117,28 +116,40 @@
                     <helpers:OutlinedTextBlock Text="{Binding Players[1].Score}" Style="{StaticResource PlayerScoreOutlinedTextBlock}"/>
                 </StackPanel>
             <Border.Style>
-                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">  
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Players[1].isInQueue}" Value="True">
-                                <Setter Property="Opacity" Value="1"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Players[1].isInQueue}" Value="false">
-                                <Setter Property="Opacity" Value="0.5"/>
-                            </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[1].isSelected}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="Players_1_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="Players_1_storyboard"/>
-                            </DataTrigger.ExitActions>
+                <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Opacity" Value="0.5"/>
+                    <Style.Triggers>                        
+                        <DataTrigger Binding="{Binding ReadyToCollectAnswers}" Value="True">
+                            <Setter Property="Background" Value="{Binding Players[1].ColorCode}" />
                         </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[1].isInQueue}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Opacity" Value="1"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[1].isSelected}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="Players_1_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="Players_1_storyboard"/>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
         <Border 
-                        Background="{Binding Players[2].ColorCode}"
                         Visibility="{Binding Players[2].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
                 <StackPanel>
                     <Border Style="{StaticResource PlayerNameBorder}">
@@ -148,28 +159,39 @@
                 </StackPanel>
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
-                    <Style.Triggers>
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Opacity" Value="0.5"/>
+                    <Style.Triggers>                        
+                        <DataTrigger Binding="{Binding ReadyToCollectAnswers}" Value="True">
+                            <Setter Property="Background" Value="{Binding Players[2].ColorCode}" />
+                        </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Players[2].isInQueue}" Value="True">
-                            <Setter Property="Opacity" Value="1"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[2].isInQueue}" Value="False">
-                            <Setter Property="Opacity" Value="0.5"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[2].isSelected}" Value="True">
-                            <DataTrigger.EnterActions>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[2].isInQueue}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Opacity" Value="1"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[2].isSelected}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="Players_2_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="Players_2_storyboard"/>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="Players_2_storyboard"/>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
         <Border 
-                        Background="{Binding Players[3].ColorCode}"
                         Visibility="{Binding Players[3].isActive, Converter={StaticResource visibilityCollapsedConverter}}">
                 <StackPanel>
                     <Border Style="{StaticResource PlayerNameBorder}">
@@ -179,26 +201,38 @@
                 </StackPanel>
             <Border.Style>
                 <Style TargetType="Border" BasedOn="{StaticResource WholePlayerBorder}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Opacity" Value="0.5"/>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding ReadyToCollectAnswers}" Value="True">
+                            <Setter Property="Background" Value="{Binding Players[3].ColorCode}" />
+                        </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Players[3].isInQueue}" Value="True">
-                            <Setter Property="Opacity" Value="1"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[3].isInQueue}" Value="False">
-                            <Setter Property="Opacity" Value="0.5"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Players[3].isSelected}" Value="True">
-                            <DataTrigger.EnterActions>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[3].isInQueue}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Opacity" Value="1"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Players[3].isSelected}" Value="True"/>
+                                <Condition Binding="{Binding ReadyToCollectAnswers}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="Players_3_storyboard" Storyboard="{StaticResource AnimateFlicker}"/>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <StopStoryboard  BeginStoryboardName="Players_3_storyboard"/>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="Players_3_storyboard"/>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
                     </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
-
     </StackPanel>
 </UserControl>
