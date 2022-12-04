@@ -388,7 +388,7 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 var listOfQuestions = new List<Question>();
                 listOfQuestions.AddRange(
-                    t.Questions!.Select(q => new Question(q.Text, q.Answer, (int)q.Difficulty, 1, true, t.Name)));
+                    t.Questions!.Select(q => new Question(t.Name, q.Text, q.Answer, (int)q.Difficulty, (int)q.Type, q.MultimediaId ?? Guid.Empty.ToString())));
 
                 topics.Add(new Topic(listOfQuestions, t.Name));                
             });

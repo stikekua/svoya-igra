@@ -1,5 +1,6 @@
 ﻿using SvoyaIgra.Game.Enums;
 using SvoyaIgra.Game.ViewModels.Helpers;
+using System;
 
 namespace SvoyaIgra.Game.Metadata
 {
@@ -37,7 +38,7 @@ namespace SvoyaIgra.Game.Metadata
         public int SpecialityCatPrice { get; set; } = 0;
 
 
-        bool _notYetAsked;
+        bool _notYetAsked = true;
         public bool NotYetAsked 
         { 
             get { return _notYetAsked; }
@@ -83,6 +84,16 @@ namespace SvoyaIgra.Game.Metadata
             QuestionType = questionType;
             TopicName=topicName;
         }
+        public Question(string topicName, string questionText, string questionAnswer, int price, int questionType = 1, string mediaLink = "00000000-0000-0000-0000-000000000000")
+        {
+            TopicName = topicName;
+            QuestionText = questionText;
+            QuestionAnswer = questionAnswer;
+            Price = price;
+            QuestionType = questionType;
+            MediaLink = mediaLink;
+        }
+
         public Question()
         {
 
