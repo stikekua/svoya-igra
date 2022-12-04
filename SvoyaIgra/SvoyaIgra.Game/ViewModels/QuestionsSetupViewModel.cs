@@ -66,7 +66,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _currentRoundIndex = value;
                     OnPropertyChanged(nameof(CurrentRoundIndex));
-                    GetCurrentQuestion();
+                    RefreshQuestionMethod(null);
                 }
             }
         }
@@ -81,7 +81,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _currentTopicIndex = value;
                     OnPropertyChanged(nameof(CurrentTopicIndex));
-                    GetCurrentQuestion();
+                    RefreshQuestionMethod(null);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _currentQuestionIndex = value;
                     OnPropertyChanged(nameof(CurrentQuestionIndex));
-                    GetCurrentQuestion();
+                    RefreshQuestionMethod(null);
                 }
             }
         }
@@ -351,7 +351,7 @@ namespace SvoyaIgra.Game.ViewModels
             FinalQuestionSetup = new Question("some final question text", "some final question answer", 0,1,true,"Just Final question");
 
 
-            GetCurrentQuestion();
+            RefreshQuestionMethod(null);
         }
 
         private bool CreateGame_CanExecute(object obj)
@@ -439,7 +439,7 @@ namespace SvoyaIgra.Game.ViewModels
             FinalQuestionSetup = FinalQuestions[0];
             //end temp
 
-            GetCurrentQuestion();
+            RefreshQuestionMethod(null);
 
         }
         void GetCurrentQuestion()
@@ -496,7 +496,7 @@ namespace SvoyaIgra.Game.ViewModels
             OnPropertyChanged(nameof(AllRoundsQuestions));
 
             MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed, new question type is {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType}");
-            GetCurrentQuestion();
+            RefreshQuestionMethod(null);
         }
 
         private void ClearNewQuestionFieldsMethod(object obj)
