@@ -6,19 +6,18 @@
 void EVH_next() {
   Serial.println("next>>");
 
-  if (queueSelector < 3 && queue[queueSelector + 1] != 0) {
-    //deselect
-    EN_sendMsg(CMD_DESELECT, static_cast<cButton>(queue[queueSelector]));
-    //select next in queue
-    queueSelector++;
-    EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
-  }
-  else if (queue[queueSelector + 1] == 0) {
-    Serial.println("Nobody else in the queue");
-  }
-  else {
+  if (queueSelector >= 3) {
     Serial.println("End of the queue");
     queueSelector = 3;
+  } else if (queue[queueSelector] == 0) {
+    Serial.println("Nobody else in the queue");
+  } else if (queueSelector < 3 && queue[queueSelector] != 0) {
+    //deselect current
+    EN_sendMsg(CMD_DESELECT, static_cast<cButton>(queue[queueSelector]));
+    //move queue
+    queueSelector++;
+    //select next in queue
+    EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
   }
   //send actulal status
   makeWSMessage();
