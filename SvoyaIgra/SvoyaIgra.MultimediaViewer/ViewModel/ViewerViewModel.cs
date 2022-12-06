@@ -29,6 +29,8 @@ public partial class ViewerViewModel
     private MultimediaForEnum _multimedia_for;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoadPictureCommand))]
+    [NotifyCanExecuteChangedFor(nameof(GetPathCommand))]
     private string _selected;
 
     [ObservableProperty]
@@ -64,7 +66,7 @@ public partial class ViewerViewModel
         Afiles = mutimediaCfg.AnswerFiles;
     }
 
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanLoadPicture))]
     private void LoadPicture(object obj)
     {
         if (Qfiles.Contains(Selected))
@@ -99,13 +101,32 @@ public partial class ViewerViewModel
         
     }
 
-    [RelayCommand]
+    public bool CanLoadPicture(object obj)
+    {
+        return !string.IsNullOrWhiteSpace(Selected);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanGetPath))]
     private void GetPath(object obj)
     {
+        if (Qfiles.Contains(Selected))
+        {
+            Multimedia_for = MultimediaForEnum.Question;
+        }
+        else if (Afiles.Contains(Selected))
+        {
+            Multimedia_for = MultimediaForEnum.Answer;
+        }
+
         var mutimedia = _multimediaService.GetMultimediaPath(Id, Multimedia_for, Selected);
         File_path = mutimedia.path ?? "";
     }
 
+    public bool CanGetPath(object obj)
+    {
+        return !string.IsNullOrWhiteSpace(Selected);
+    }
+    
     private void SetImageSource(MemoryStream ms)
     {
         var imgsrc = new BitmapImage();
