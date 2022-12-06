@@ -76,6 +76,10 @@ void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus) {
 }
 
 void EN_sendMsg(cCommand cmd, cButton btn) {
+  Serial.print("EN_sendMsg: cmd - ");
+  Serial.print(cmd);
+  Serial.print(", btn - ");
+  Serial.println(btn);
   //Find button's MAC id
   int btnMac = findMacId(btn);
   //Set values to send

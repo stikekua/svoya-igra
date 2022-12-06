@@ -16,8 +16,10 @@ void EVH_next() {
     EN_sendMsg(CMD_DESELECT, static_cast<cButton>(queue[queueSelector]));
     //move queue
     queueSelector++;
-    //select next in queue
-    EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
+    //select next in queue if someone
+    if (queue[queueSelector] != 0){
+      EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
+    }    
   }
   //send actulal status
   makeWSMessage();
