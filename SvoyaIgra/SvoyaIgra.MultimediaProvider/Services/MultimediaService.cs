@@ -15,9 +15,11 @@ public class MultimediaService : IMultimediaService
 
     public MultimediaConfig GetMultimediaConfig(string multimediaId)
     {
+        var folderPath = _multimediaStore.GetFolderPath(multimediaId) ?? "";
         var files = _multimediaStore.ListMultimedia(multimediaId).ToList();
         return new MultimediaConfig
         {
+            FolderPath = folderPath,
             QuestionFiles = files.Where(f=>f.Item1 == MultimediaForEnum.Question).Select(x=>x.Item2),
             AnswerFiles = files.Where(f => f.Item1 == MultimediaForEnum.Answer).Select(x => x.Item2),
         };
@@ -55,4 +57,8 @@ public class MultimediaService : IMultimediaService
         return _multimediaStore.SaveMultimedia(multimediaId, multimediaFor, fileName, fileStream);
     }
 
+    public string CreateMultimedia()
+    {
+        return _multimediaStore.CreateMultimedia();
+    }
 }

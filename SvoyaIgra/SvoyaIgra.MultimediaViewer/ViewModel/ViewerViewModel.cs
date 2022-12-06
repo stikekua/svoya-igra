@@ -30,7 +30,6 @@ public partial class ViewerViewModel
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LoadPictureCommand))]
-    [NotifyCanExecuteChangedFor(nameof(GetPathCommand))]
     private string _selected;
 
     [ObservableProperty]
@@ -78,8 +77,10 @@ public partial class ViewerViewModel
             Multimedia_for = MultimediaForEnum.Answer;
         }
 
-        var mutimediaStream =
-            _multimediaService.GetMultimedia(Id, Multimedia_for, Selected);
+        var mutimediaStream = _multimediaService.GetMultimedia(Id, Multimedia_for, Selected);
+
+        var mutimedia = _multimediaService.GetMultimediaPath(Id, Multimedia_for, Selected);
+        File_path = mutimedia.path ?? "";
 
         if (mutimediaStream.mediaType == MediaType.Image)
         {
@@ -97,32 +98,9 @@ public partial class ViewerViewModel
             
         }
 
-
-        
     }
 
     public bool CanLoadPicture(object obj)
-    {
-        return !string.IsNullOrWhiteSpace(Selected);
-    }
-
-    [RelayCommand(CanExecute = nameof(CanGetPath))]
-    private void GetPath(object obj)
-    {
-        if (Qfiles.Contains(Selected))
-        {
-            Multimedia_for = MultimediaForEnum.Question;
-        }
-        else if (Afiles.Contains(Selected))
-        {
-            Multimedia_for = MultimediaForEnum.Answer;
-        }
-
-        var mutimedia = _multimediaService.GetMultimediaPath(Id, Multimedia_for, Selected);
-        File_path = mutimedia.path ?? "";
-    }
-
-    public bool CanGetPath(object obj)
     {
         return !string.IsNullOrWhiteSpace(Selected);
     }

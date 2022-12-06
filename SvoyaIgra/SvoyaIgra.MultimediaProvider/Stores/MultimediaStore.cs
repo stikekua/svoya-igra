@@ -62,4 +62,20 @@ public class MultimediaStore: IMultimediaStore
         return questionList.Union(answerList);
     }
 
+    public string CreateMultimedia()
+    {
+        var multimediaId = Guid.NewGuid().ToString().ToUpperInvariant();
+        var pathQuestion = Path.Combine(_multimediaStoreOptions.RootPath, multimediaId, MultimediaForEnum.Question.ToString());
+        Directory.CreateDirectory(pathQuestion);
+        var pathAnswer = Path.Combine(_multimediaStoreOptions.RootPath, multimediaId, MultimediaForEnum.Answer.ToString());
+        Directory.CreateDirectory(pathAnswer);
+
+        return multimediaId;
+    }
+
+    public string? GetFolderPath(string multimediaId)
+    {
+        var path = Path.Combine(_multimediaStoreOptions.RootPath, multimediaId);
+        return path;
+    }
 }
