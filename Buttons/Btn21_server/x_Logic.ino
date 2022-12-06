@@ -55,6 +55,12 @@ void EVH_buttonPressed(int button) {
   webSocket.broadcastTXT(ButtonStateMsg, strlen(ButtonStateMsg));
 }
 
+void EVH_connected(){
+  //send actulal status
+  makeWSMessage();
+  webSocket.broadcastTXT(ButtonStateMsg, strlen(ButtonStateMsg));
+}
+
 // *******************************************************************
 // ****************** F U N C T I O N S ******************************
 // *******************************************************************
