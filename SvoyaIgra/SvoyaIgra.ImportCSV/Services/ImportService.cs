@@ -45,9 +45,10 @@ public class ImportService : IImportService
                             Type = Enum.Parse<QuestionType>(question.QuestionType),
                             Difficulty = (QuestionDifficulty)question.QuestionDifficulty,
                             Text = question.Question,
-                            Answer = question.Answer
+                            Answer = question.Answer,
+                            MultimediaId = String.IsNullOrWhiteSpace(question.MultimediaId) ? Guid.Empty.ToString() : question.MultimediaId,
                         })
-                    });
+                    }); ;
                 }
             }
             catch (CsvHelperException e)

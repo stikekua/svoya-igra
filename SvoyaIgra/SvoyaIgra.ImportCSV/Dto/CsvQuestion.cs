@@ -2,7 +2,7 @@
 
 public class CsvQuestion
 {
-    //Round;TopicNo;Topic;QuestionDifficulty;QuestionType;Question;Answer
+    //Round;TopicNo;Topic;QuestionDifficulty;QuestionType;Question;Answer;MultimediaId
 
     public int Round { get; set; }
     public int TopicNo { get; set; }
@@ -11,5 +11,6 @@ public class CsvQuestion
     public string QuestionType { get; set; }
     public string Question { get; set; }
     public string Answer { get; set; }
+    public string? MultimediaId { get; set; }
 
 }
