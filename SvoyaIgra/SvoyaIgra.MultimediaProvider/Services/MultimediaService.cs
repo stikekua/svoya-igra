@@ -34,8 +34,25 @@ public class MultimediaService : IMultimediaService
         return (stream, mediaType);
     }
 
+    public (string? path, MediaType mediaType) GetMultimediaPath(string multimediaId, MultimediaForEnum multimediaFor, string fileName)
+    {
+        var provider = new FileExtensionMediaTypeProvider();
+        if (!provider.TryGetMediaType(fileName, out var mediaType))
+        {
+            throw new Exception($"Unknown media type for multimedia {multimediaId}/{multimediaFor}/{fileName}");
+        }
+        var path = _multimediaStore.GetMultimediaPath(multimediaId, multimediaFor, fileName);
+        if (path == null)
+        {
+            return (path, MediaType.None);
+        }
+
+        return (path, mediaType);
+    }
+
     public Task SaveMultimedia(string multimediaId, MultimediaForEnum multimediaFor, string fileName, Stream fileStream)
     {
         return _multimediaStore.SaveMultimedia(multimediaId, multimediaFor, fileName, fileStream);
     }
+
 }

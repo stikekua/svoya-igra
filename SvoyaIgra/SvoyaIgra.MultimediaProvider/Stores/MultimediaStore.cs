@@ -19,8 +19,20 @@ public class MultimediaStore: IMultimediaStore
     {
         try
         {
-            var fileInfo = _fileProvider.GetFileInfo(Path.Combine(multimediaId, multimediaFor.ToString(), fileName));
+            var fileInfo = _fileProvider.GetFileInfo(Path.Combine(multimediaId, multimediaFor.ToString(), fileName));            
             return fileInfo.CreateReadStream();
+        }
+        catch (FileNotFoundException)
+        {
+            return null;
+        }
+    }
+    public string? GetMultimediaPath(string multimediaId, MultimediaForEnum multimediaFor, string fileName)
+    {
+        try
+        {
+            var fileInfo = _fileProvider.GetFileInfo(Path.Combine(multimediaId, multimediaFor.ToString(), fileName));
+            return fileInfo.PhysicalPath;
         }
         catch (FileNotFoundException)
         {
@@ -49,4 +61,5 @@ public class MultimediaStore: IMultimediaStore
 
         return questionList.Union(answerList);
     }
+
 }
