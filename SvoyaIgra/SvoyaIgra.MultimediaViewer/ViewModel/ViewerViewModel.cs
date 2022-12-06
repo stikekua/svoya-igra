@@ -37,6 +37,9 @@ public partial class ViewerViewModel
     [ObservableProperty]
     private IEnumerable<string> _afiles;
 
+    [ObservableProperty]
+    private string _file_path;
+
     public ViewerViewModel(IMultimediaService multimediaService)
     {
         _multimediaService = multimediaService;
@@ -96,7 +99,12 @@ public partial class ViewerViewModel
         
     }
 
-    
+    [RelayCommand]
+    private void GetPath(object obj)
+    {
+        var mutimedia = _multimediaService.GetMultimediaPath(Id, Multimedia_for, Selected);
+        File_path = mutimedia.path ?? "";
+    }
 
     private void SetImageSource(MemoryStream ms)
     {

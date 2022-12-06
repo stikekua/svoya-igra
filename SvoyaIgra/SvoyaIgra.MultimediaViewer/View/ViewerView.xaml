@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:SvoyaIgra.MultimediaViewer.View"
              xmlns:viewModel="clr-namespace:SvoyaIgra.MultimediaViewer.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="450" d:DesignWidth="700"
              DataContext="{Binding Source={StaticResource Locator}, Path=ViewerViewModel}"
              >
 
@@ -115,10 +115,34 @@
 
                 </Grid>
 
-                <Image Grid.Column="1" 
+                <Grid Grid.Column="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" 
+                                VerticalAlignment="Center">
+                        
+                        <Button Content="GetPath"
+                            Margin="5" MinWidth="100"
+                            Command="{Binding GetPathCommand}"/>
+
+                        <TextBox Width="400"
+                                 Height="50"
+                                 Margin="15,0,0,0"
+                                 Text="{Binding File_path}"
+                                 TextWrapping="Wrap"
+                            />
+                    </StackPanel>
+                    
+                    <Image Grid.Row="1" 
                        Margin="10,0,0,0"
                        Stretch="Uniform" 
                        Source="{Binding Image, Mode=OneWay}"/>
+                    
+                </Grid>
+                
             </Grid>
 
         </Grid>
