@@ -334,10 +334,23 @@ namespace SvoyaIgra.Game.ViewModels
                 for (int i = 0; i < 6; i++) //topics
                 {
                     var listOfQuestions = new List<Question>();
+                    string topic = "Topic " + i.ToString();
                     for (int k = 0; k < 5; k++) //questions
                     {
-                        string questionText = "Topic " + i.ToString() + " question " + k.ToString();
-                        listOfQuestions.Add(new Question(questionText, "Answer for " + questionText, (k * 100 + 100) * (z + 1), k + 1,true, "Topic " + i.ToString()));
+                        
+                        string questionText = topic + " question " + k.ToString();
+                        string answer = "answer for " + questionText;
+                        string mediaLink = "00000000-0000-0000-0000-000000000000";
+                        if (k+1==(int)QuestionTypeEnum.Musical)
+                        {
+                            mediaLink = "00000000-0000-0000-0000-000000000001"; //default music
+                        }
+                        else if (k+1 == (int)QuestionTypeEnum.Video)
+                        {
+                            mediaLink = "00000000-0000-0000-0000-000000000002"; //default video
+                        } 
+                        //listOfQuestions.Add(new Question(questionText, "Answer for " + questionText, (k * 100 + 100) * (z + 1), k + 1,true, "Topic " + i.ToString()));
+                        listOfQuestions.Add(new Question(topic, questionText, answer, (k * 100 + 100) * (z + 1), k + 1,mediaLink ));
                     }
                     topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
 

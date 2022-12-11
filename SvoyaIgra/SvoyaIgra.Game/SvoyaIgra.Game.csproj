@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\MusicQuestion.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Resources\Videos\" />
   </ItemGroup>
@@ -24,6 +28,10 @@
     <ProjectReference Include="..\SvoyaIgra.Dal\SvoyaIgra.Dal.csproj" />
     <ProjectReference Include="..\SvoyaIgra.MultimediaProvider\SvoyaIgra.MultimediaProvider.csproj" />
     <ProjectReference Include="..\SvoyaIgra.WebSocketProvider\SvoyaIgra.WebSocketProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\MusicQuestion.png" />
   </ItemGroup>
 
   <ItemGroup>
