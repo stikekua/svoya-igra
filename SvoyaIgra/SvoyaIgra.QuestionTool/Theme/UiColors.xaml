@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--Background Colors-->
+    <Color x:Key="primaryBackColor1">#EFF5F5</Color>
+    <Color x:Key="primaryBackColor2">#D3DFE0</Color>
+    <Color x:Key="secondaryBackColor1">#B8C9CA</Color>
+    <Color x:Key="secondaryBackColor2">#D3DFE0</Color>
+    <!--Window Border Colors-->
+    <Color x:Key="winBorderColor1">#497174</Color>
+    <Color x:Key="winBorderColor2">#D6E4E5</Color>
+    <Color x:Key="winBorderColor3">#EB6440</Color>
+    <!--Window controls-->
+    <SolidColorBrush x:Key="winClose" Color="#EF6C96"/>
+    <SolidColorBrush x:Key="winMaximize" Color="#FFC047"/>
+    <SolidColorBrush x:Key="winMinimize" Color="#7E82FC"/>
+
+    <!--Color Palette-->
+    <SolidColorBrush x:Key="color1" Color="#EFF5F5"/>
+    <SolidColorBrush x:Key="color2" Color="#D6E4E5"/>
+    <SolidColorBrush x:Key="color3" Color="#497174"/>
+    <SolidColorBrush x:Key="color4" Color="#EB6440"/>
+
+
+    <SolidColorBrush x:Key="color5" Color="#7E82FC"/>
+    <SolidColorBrush x:Key="color6" Color="#FFC047"/>
+    <SolidColorBrush x:Key="color7" Color="#EF6C96"/>
+    <SolidColorBrush x:Key="color8" Color="#78A3FC"/>
+    <SolidColorBrush x:Key="color9" Color="#07F3C0"/>
+    <SolidColorBrush x:Key="color10" Color="#FBA1AA"/>
+    <!--Font Colors-->
+    <SolidColorBrush x:Key="titleColor1" Color="#E0E1F1"/>
+    <SolidColorBrush x:Key="titleColor2" Color="#497174"/>
+    <SolidColorBrush x:Key="titleColor3" Color="#EB6440"/>
+    <SolidColorBrush x:Key="plainTextColor1" Color="#EFF5F5"/>
+    <SolidColorBrush x:Key="plainTextColor2" Color="#D6E4E5"/>
+    <SolidColorBrush x:Key="plainTextColor3" Color="#497174"/>
+    <!--Panel Colors-->
+    <SolidColorBrush x:Key="panelColor" Color="#200F53"/>
+    <SolidColorBrush x:Key="panelOverColor" Color="#D6E4E5"/>
+    <SolidColorBrush x:Key="panelActiveColor" Color="#497174"/>
+    <SolidColorBrush x:Key="panelActiveBorderColor" Color="#EB6440"/>
+    <!--Button Colors-->
+    <!--TextBox Colors-->
+    <!--Etc-->
+</ResourceDictionary>
