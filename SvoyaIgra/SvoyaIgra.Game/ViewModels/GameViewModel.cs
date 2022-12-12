@@ -361,7 +361,9 @@ namespace SvoyaIgra.Game.ViewModels
                 {                    
                     _currentQuestion = value;
                     OnPropertyChanged(nameof(CurrentQuestion));
-                    OnPropertyChanged(nameof(IsPictureQuestion)); 
+                    OnPropertyChanged(nameof(IsPictureQuestion));
+                    OnPropertyChanged(nameof(IsMusicQuestion));
+                    OnPropertyChanged(nameof(IsVideoQuestion));
                 } 
             } 
         }
@@ -373,6 +375,16 @@ namespace SvoyaIgra.Game.ViewModels
         public bool IsPictureQuestion
         {
             get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Picture ? true : false; }
+        }
+
+        public bool IsMusicQuestion
+        {
+            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Musical ? true : false; }
+        }
+
+        public bool IsVideoQuestion
+        {
+            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Video ? true : false; }
         }
 
 
@@ -404,11 +416,44 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private MediaElement _musicQuestionMediaElement;
+        public MediaElement MusicQuestionMediaElement
+        {
+            get { return _musicQuestionMediaElement; }
+            set
+            {
+                if (_musicQuestionMediaElement != value)
+                {
+                    _musicQuestionMediaElement = value;
+                    OnPropertyChanged(nameof(MusicQuestionMediaElement));
+                }
+            }
+        }
+        private MediaElement _videoQuestionMediaElement;
+        public MediaElement VideoQuestionMediaElement
+        {
+            get { return _videoQuestionMediaElement; }
+            set
+            {
+                if (_videoQuestionMediaElement != value)
+                {
+                    _videoQuestionMediaElement = value;
+                    OnPropertyChanged(nameof(VideoQuestionMediaElement));
+                }
+            }
+        }
+
+
 
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
         public RelayCommand CloseQuestion { get; set; }
         public RelayCommand ShowPictureInQustionCommand { get; set; }
+        public RelayCommand PlayMediaInQustionCommand { get; set; }
+        public RelayCommand StopMediaInQustionCommand { get; set; }
+
+        public RelayCommand LoadMusicMediaInQustionCommand { get; set; }
+        public RelayCommand LoadVideoMediaInQustionCommand { get; set; }
 
 
 
@@ -571,6 +616,10 @@ namespace SvoyaIgra.Game.ViewModels
             ShowPictureInQustionCommand = new RelayCommand(ShowPictureInQustionMethod);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
+            PlayMediaInQustionCommand = new RelayCommand(PlayMediaInQustionMethod);
+            StopMediaInQustionCommand = new RelayCommand(StopMediaInQustionMethod);
+            LoadMusicMediaInQustionCommand = new RelayCommand(LoadMusicMediaInQustionMethod);
+            LoadVideoMediaInQustionCommand = new RelayCommand(LoadVideoMediaInQustionMethod);
 
 
             MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
@@ -593,6 +642,10 @@ namespace SvoyaIgra.Game.ViewModels
             #endregion
 
     }
+
+
+
+
 
 
 
@@ -1144,7 +1197,63 @@ namespace SvoyaIgra.Game.ViewModels
             OnPropertyChanged(nameof(CurrentRoundQuestions));
         }
 
+        private void StopMediaInQustionMethod(object obj)
+        {
+            if (MusicQuestionMediaElement!=null && VideoQuestionMediaElement!=null)
+            {
+                MusicQuestionMediaElement.Stop();
+                VideoQuestionMediaElement.Stop();
+            }
+        }
 
+        private void PlayMediaInQustionMethod(object obj)
+        {
+            string Id = CurrentQuestion.MediaLink;
+            MultimediaForEnum questionFor = (MultimediaForEnum)obj;
+
+            var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
+
+            
+
+            string fileName = string.Empty;
+
+            if ((int)questionFor == (int)MultimediaForEnum.Question)
+            {
+                fileName = mutimediaCfg.QuestionFiles.ToList()[0];
+                Debug.WriteLine($"{fileName}");
+            }
+            else if ((int)questionFor == (int)MultimediaForEnum.Answer)
+            {
+                fileName = mutimediaCfg.AnswerFiles.ToList()[0];
+                Debug.WriteLine($"{fileName}");
+            }
+
+            var whatToPlay = _multimediaService.GetMultimediaPath(Id, questionFor, fileName);
+
+            if (CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Musical)
+            {
+                MusicQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
+                VideoQuestionMediaElement.Source = null;
+
+                MusicQuestionMediaElement.Play();
+            } 
+            else if (CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Video)
+            {
+                VideoQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
+                MusicQuestionMediaElement.Source = null;
+
+                VideoQuestionMediaElement.Play();
+            }
+
+            //var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
+
+
+            //if (mutimediaStream.mediaType == MediaType.Image)
+            //{
+            //    var ms = ConverToMemoryStream(mutimediaStream.stream);
+            //    SetImageSource(ms);
+            //}
+        }
 
         #endregion
 
@@ -1169,6 +1278,17 @@ namespace SvoyaIgra.Game.ViewModels
                 OnPropertyChanged(nameof(CurrentRoundQuestions));
             }
         }
+
+        private void LoadMusicMediaInQustionMethod(object obj)
+        {
+            MusicQuestionMediaElement = (MediaElement)obj;
+        }
+
+        private void LoadVideoMediaInQustionMethod(object obj)
+        {
+            VideoQuestionMediaElement = (MediaElement)obj;
+        }
+
 
         #endregion
 

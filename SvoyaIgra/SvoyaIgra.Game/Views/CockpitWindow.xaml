@@ -716,11 +716,52 @@
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
                                             Margin="5,0,0,0"/>
 
-                                </StackPanel>
- 
+                                </StackPanel> 
                             </GroupBox>
+                            <GroupBox Header="Music" Grid.Column="1" IsEnabled="{Binding IsMusicQuestion}">
+                                <GroupBox.Resources>
+                                    <Style TargetType="GroupBox">
+                                        <!--<Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentQuestion.QuestionType}" Value="{x:Static sharedEntities:QuestionType.Musical}">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>-->
+                                    </Style>
+                                </GroupBox.Resources>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" Margin="5,0,0,0"/>
+                                    <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
+                                            Margin="5,0,0,0"/>
+                                </StackPanel>
                                 
-                            </Grid>     
+                            </GroupBox>
+                            <GroupBox Header="Video" Grid.Column="2" IsEnabled="{Binding IsVideoQuestion}">
+                                <GroupBox.Resources>
+                                    <Style TargetType="GroupBox">
+                                        <!--<Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentQuestion.QuestionType}" Value="{x:Static sharedEntities:QuestionType.Video}">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>-->
+                                    </Style>
+                                </GroupBox.Resources>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" Margin="5,0,0,0"/>
+                                    <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
+                                            Margin="5,0,0,0"/>
+                                </StackPanel>
+
+                            </GroupBox>
+
+                        </Grid>     
                             
                         </GroupBox>
                 </Grid>
