@@ -21,6 +21,7 @@ using SvoyaIgra.Game.Helpers;
 using SvoyaIgra.Dal.Bo;
 using Topic = SvoyaIgra.Game.Metadata.Topic;
 using Question = SvoyaIgra.Game.Metadata.Question;
+using System.Media;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -443,6 +444,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        SoundPlayer FinalMusicPlayer { get; set; } = new SoundPlayer();
 
 
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
@@ -454,15 +456,14 @@ namespace SvoyaIgra.Game.ViewModels
 
         public RelayCommand LoadMusicMediaInQustionCommand { get; set; }
         public RelayCommand LoadVideoMediaInQustionCommand { get; set; }
+        public RelayCommand PlayFinalMusicCommand { get; set; }
 
 
+    #endregion
 
+    #region Players
 
-        #endregion
-
-        #region Players
-
-        ObservableCollection<Player> _players = new ObservableCollection<Player>();
+    ObservableCollection<Player> _players = new ObservableCollection<Player>();
         public ObservableCollection<Player> Players
         {
             get
@@ -620,6 +621,7 @@ namespace SvoyaIgra.Game.ViewModels
             StopMediaInQustionCommand = new RelayCommand(StopMediaInQustionMethod);
             LoadMusicMediaInQustionCommand = new RelayCommand(LoadMusicMediaInQustionMethod);
             LoadVideoMediaInQustionCommand = new RelayCommand(LoadVideoMediaInQustionMethod);
+            PlayFinalMusicCommand = new RelayCommand(PlayFinalMusicMethod);
 
 
             MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
@@ -642,6 +644,8 @@ namespace SvoyaIgra.Game.ViewModels
             #endregion
 
     }
+
+
 
 
 
@@ -1204,6 +1208,8 @@ namespace SvoyaIgra.Game.ViewModels
                 MusicQuestionMediaElement.Stop();
                 VideoQuestionMediaElement.Stop();
             }
+
+            FinalMusicPlayer.Stop();
         }
 
         private void PlayMediaInQustionMethod(object obj)
@@ -1244,15 +1250,15 @@ namespace SvoyaIgra.Game.ViewModels
 
                 VideoQuestionMediaElement.Play();
             }
+        }
 
-            //var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
-
-
-            //if (mutimediaStream.mediaType == MediaType.Image)
-            //{
-            //    var ms = ConverToMemoryStream(mutimediaStream.stream);
-            //    SetImageSource(ms);
-            //}
+        private void PlayFinalMusicMethod(object obj)
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string finalFile = projectDirectory + @"\Resources\Sounds\FinalTime.wav";
+            FinalMusicPlayer = new SoundPlayer(finalFile); //put your own .wave file path
+            FinalMusicPlayer.Play();
         }
 
         #endregion
