@@ -44,8 +44,8 @@
                     <StackPanel Orientation="Horizontal"
                                 Height="35"
                                 Margin="10,25,0,10">
-                        <fa:IconImage Icon="ClipboardQuestion" Height="20" Width="20" 
-                                      Foreground="{StaticResource titleColor2}"/>
+                        <!--<fa:IconImage Icon="ClipboardQuestion" Height="20" Width="20" 
+                                      Foreground="{StaticResource titleColor2}"/>-->
                         <TextBlock Text="Question Tool"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
@@ -61,42 +61,42 @@
 
                         <RadioButton Style="{StaticResource MenuButtonTheme}"
                                      IsChecked="True"
-                                     Command="{Binding ViewerViewCommand}">
+                                     Command="{Binding DashboardViewCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:IconImage Icon="Home" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Viewer" Style="{StaticResource menuButtonText}"/>
+                                <TextBlock Text="Dashboard" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource MenuButtonTheme}"
-                                     Command="{Binding EditorViewCommand}">
+                                     Command="{Binding AuthorsViewCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Fire" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Editor" Style="{StaticResource menuButtonText}"/>
+                                <fa:IconImage Icon="User" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Authors" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource MenuButtonTheme}"
-                                     Command="{Binding EditorViewCommand}">
+                                     Command="{Binding TopicsViewCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Star" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Editor" Style="{StaticResource menuButtonText}"/>
+                                <fa:IconImage Icon="Folder" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Topics" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource MenuButtonTheme}"
-                                     Command="{Binding EditorViewCommand}">
+                                     Command="{Binding QuestionsViewCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Cloud" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Editor" Style="{StaticResource menuButtonText}"/>
+                                <fa:IconImage Icon="QuestionCircle" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Questions" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
 
                         <RadioButton Style="{StaticResource MenuButtonTheme}"
-                                     Command="{Binding EditorViewCommand}">
+                                     Command="{Binding ImportViewCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:IconImage Icon="Pen" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Editor" Style="{StaticResource menuButtonText}"/>
+                                <fa:IconImage Icon="FileImport" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Import" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </RadioButton>
 

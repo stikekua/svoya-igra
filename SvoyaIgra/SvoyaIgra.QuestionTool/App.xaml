@@ -3,18 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SvoyaIgra.QuestionTool"
              xmlns:viewModel="clr-namespace:SvoyaIgra.QuestionTool.ViewModel"
-             >
+             xmlns:view="clr-namespace:SvoyaIgra.QuestionTool.View">
     <Application.Resources>
         <ResourceDictionary>
             <viewModel:ViewModelLocator x:Key="Locator" />
 
-            <!--<DataTemplate DataType="{x:Type viewModel:ViewerViewModel}">
-                <view:ViewerView/>
+            <DataTemplate DataType="{x:Type viewModel:DashboardViewModel}">
+                <view:DashboardView/>
             </DataTemplate>
-
-            <DataTemplate DataType="{x:Type viewModel:EditorViewModel}">
-                <view:EditorView/>
-            </DataTemplate>-->
+            <DataTemplate DataType="{x:Type viewModel:AuthorsViewModel}">
+                <view:AuthorsView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:TopicsViewModel}">
+                <view:TopicsView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:QuestionsViewModel}">
+                <view:QuestionsView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:ImportViewModel}">
+                <view:ImportView/>
+            </DataTemplate>
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Theme/UiColors.xaml"/>

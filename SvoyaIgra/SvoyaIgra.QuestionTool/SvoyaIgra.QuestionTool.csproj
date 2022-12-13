@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="View\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SvoyaIgra.MultimediaProvider\SvoyaIgra.MultimediaProvider.csproj" />
   </ItemGroup>
 

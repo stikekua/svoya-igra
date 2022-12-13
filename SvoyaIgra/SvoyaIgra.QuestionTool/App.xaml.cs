@@ -38,8 +38,11 @@ namespace SvoyaIgra.QuestionTool
 
                 // Register all ViewModels.
                 services.AddSingleton<MainViewModel>();
-                //services.AddSingleton<ViewerViewModel>();
-                //services.AddSingleton<EditorViewModel>();
+                services.AddSingleton<DashboardViewModel>();
+                services.AddSingleton<AuthorsViewModel>();
+                services.AddSingleton<TopicsViewModel>();
+                services.AddSingleton<QuestionsViewModel>();
+                services.AddSingleton<ImportViewModel>();
 
                 // Register all the Windows of the applications.
                 services.AddTransient<MainWindow>();

@@ -20,20 +20,47 @@ public partial class MainViewModel
     public MainViewModel()
     {
         ViewModelLocator = new ViewModelLocator();
-        //CurrentView = ViewModelLocator.ViewerViewModel;
+
+        DashboardView(null);
+    }
+
+    [RelayCommand]
+    private void DashboardView(object obj)
+    {
+        CurrentView = ViewModelLocator.DashboardViewModel;
         Caption = "Dashboard";
         Icon = IconChar.Home;
     }
 
-    //[RelayCommand]
-    //private void ViewerView(object obj)
-    //{
-    //    CurrentView = ViewModelLocator.ViewerViewModel;
-    //}
+    [RelayCommand]
+    private void AuthorsView(object obj)
+    {
+        CurrentView = ViewModelLocator.AuthorsViewModel;
+        Caption = "Authors";
+        Icon = IconChar.User;
+    }
 
-    //[RelayCommand]
-    //private void EditorView(object obj)
-    //{
-    //    CurrentView = ViewModelLocator.EditorViewModel;
-    //}
+    [RelayCommand]
+    private void TopicsView(object obj)
+    {
+        CurrentView = ViewModelLocator.TopicsViewModel;
+        Caption = "Topics";
+        Icon = IconChar.Folder;
+    }
+
+    [RelayCommand]
+    private void QuestionsView(object obj)
+    {
+        CurrentView = ViewModelLocator.QuestionsViewModel;
+        Caption = "Questions";
+        Icon = IconChar.QuestionCircle;
+    }
+
+    [RelayCommand]
+    private void ImportView(object obj)
+    {
+        CurrentView = ViewModelLocator.ImportViewModel;
+        Caption = "Import";
+        Icon = IconChar.FileImport;
+    }
 }
