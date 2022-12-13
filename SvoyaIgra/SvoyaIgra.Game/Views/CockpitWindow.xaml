@@ -177,7 +177,7 @@
                                  Content="Final round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FinalRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" x:Name="FinalRoundRadioButton"
                                  Content="Final round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FinalRound}"/>
@@ -719,16 +719,6 @@
                                 </StackPanel> 
                             </GroupBox>
                             <GroupBox Header="Music" Grid.Column="1" IsEnabled="{Binding IsMusicQuestion}">
-                                <GroupBox.Resources>
-                                    <Style TargetType="GroupBox">
-                                        <!--<Setter Property="IsEnabled" Value="False"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentQuestion.QuestionType}" Value="{x:Static sharedEntities:QuestionType.Musical}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>-->
-                                    </Style>
-                                </GroupBox.Resources>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
@@ -740,16 +730,6 @@
                                 
                             </GroupBox>
                             <GroupBox Header="Video" Grid.Column="2" IsEnabled="{Binding IsVideoQuestion}">
-                                <GroupBox.Resources>
-                                    <Style TargetType="GroupBox">
-                                        <!--<Setter Property="IsEnabled" Value="False"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding CurrentQuestion.QuestionType}" Value="{x:Static sharedEntities:QuestionType.Video}">
-                                                <Setter Property="IsEnabled" Value="True"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>-->
-                                    </Style>
-                                </GroupBox.Resources>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
@@ -757,6 +737,18 @@
                                     <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
                                             Margin="5,0,0,0"/>
+                                </StackPanel>
+
+                            </GroupBox>
+                            <GroupBox Header="Final round music" Grid.Column="3" IsEnabled="{Binding ElementName=FinalRoundRadioButton, Path=IsChecked}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Play" Command="{Binding PlayFinalMusicCommand}"
+                                                  MinWidth="50"/>
+                                    <Button Content="Stop" 
+                                            Command="{Binding StopMediaInQustionCommand}" 
+                                            CommandParameter="Play"
+                                            MinWidth="50" Margin="5,0,0,0"/>
+                                    
                                 </StackPanel>
 
                             </GroupBox>
