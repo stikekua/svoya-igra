@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SvoyaIgra.QuestionTool.Data;
 using SvoyaIgra.QuestionTool.ViewModel;
 
 namespace SvoyaIgra.QuestionTool
@@ -31,8 +33,18 @@ namespace SvoyaIgra.QuestionTool
                 .AddJsonFile("appsettings.json", false, true);
             _config = builder.Build();
 
+            var connectionString = _config.GetConnectionString("SvoyaIgraDbContext");
+            //if (string.IsNullOrWhiteSpace(connectionString))
+            //{
+            //    Ui.Error("Missing connection string for SvoyaIgraDbContext in appsettings.json");
+            //}
+
             host = Host.CreateDefaultBuilder().ConfigureServices((hostContext, services) =>
             {
+                // DbContexts
+                services.AddDbContext<SvoyaIgraDbContext>(options => options.UseSqlServer(connectionString));
+
+                // Di
                 services.ConfigureAppOptions(_config);
                 services.AddDiRegistration(_config);
 

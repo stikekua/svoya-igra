@@ -40,6 +40,10 @@
     <SolidColorBrush x:Key="panelActiveColor" Color="#497174"/>
     <SolidColorBrush x:Key="panelActiveBorderColor" Color="#EB6440"/>
     <!--Button Colors-->
+    <SolidColorBrush x:Key="buttonPrimaryColor" Color="#497174"/>
+    <SolidColorBrush x:Key="buttonPrimaryTextColor" Color="#D6E4E5"/>
+    <SolidColorBrush x:Key="buttonSecondaryColor" Color="#D6E4E5"/>
+    <SolidColorBrush x:Key="buttonSecondaryTextColor" Color="#497174"/>
     <!--TextBox Colors-->
     <!--Etc-->
 </ResourceDictionary>
