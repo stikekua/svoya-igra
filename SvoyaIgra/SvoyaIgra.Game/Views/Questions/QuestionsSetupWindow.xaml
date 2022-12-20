@@ -71,6 +71,13 @@
                                     <ComboBoxItem>6th topic</ComboBoxItem>
                                 </ComboBox>
                             </StackPanel>
+                            <StackPanel Margin="5 ">
+                                <Label Content="topics count"/>
+                                <TextBlock Text="{Binding TopicsCount}">
+                                    
+                                </TextBlock>
+                                  
+                            </StackPanel>
                             <StackPanel Margin="5">
                                 <Label Content="Select Question" />
                                 <ComboBox Text="Question" SelectedIndex="{Binding CurrentQuestionIndex}">

@@ -40,10 +40,28 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _allRoundsQuestions = value;
                     OnPropertyChanged(nameof(AllRoundsQuestions));
+                    OnPropertyChanged(nameof(TopicsCount));
                     ViewModelLocator.GameViewModel.AllRoundsQuestions = AllRoundsQuestions;
                 }
             }
         }
+
+        public int TopicsCount
+        {
+            get 
+            {
+                int count = 0;
+                if (AllRoundsQuestions.Count>0)
+                {
+                    for (int i = 0; i < AllRoundsQuestions.Count; i++)
+                    {
+                        count = count+ AllRoundsQuestions[i].Count;
+                    }
+                }
+                return count;
+            }            
+        }
+
 
         public RelayCommand GetTestQuestionsCommand { get; set; }
         public RelayCommand CreateGameCommand { get; set; }
