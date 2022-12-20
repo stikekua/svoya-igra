@@ -10,7 +10,7 @@
     <StackPanel VerticalAlignment="Center">
         <Viewbox>
             <StackPanel>
-                <MediaElement Source="" LoadedBehavior="Manual" Stretch="Fill"  UnloadedBehavior="Manual">
+                <MediaElement Source="" LoadedBehavior="Manual" Stretch="Fill"  UnloadedBehavior="Manual" >
                     <ia:Interaction.Triggers>
                         <ia:EventTrigger EventName="Loaded">
                             <ia:InvokeCommandAction Command="{Binding LoadVideoMediaInQustionCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=MediaElement}}"/>

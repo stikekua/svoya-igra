@@ -967,6 +967,8 @@ namespace SvoyaIgra.Game.ViewModels
         {
             GamePhase = Convert.ToInt32(obj);
             CurrentQuestion.SpecialIntroWasNotPlayed = true;
+            VideoQuestionMediaElement.Source = null;
+            MusicQuestionMediaElement.Source = null;
             OnPropertyChanged(nameof(CurrentQuestion));
 
         }
