@@ -939,14 +939,14 @@ namespace SvoyaIgra.Game.ViewModels
                     break;
 
                 case (int)GamePhaseEnum.FinalRoundIntro:
+                    CurrentQuestion = FinalQuestion;
                     VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FinalRound.wmv", UriKind.RelativeOrAbsolute);
                     VideoMediaElement.Play();
                     break;
 
                 case (int)GamePhaseEnum.FinalRound:
                     AutoCloseuestionOnPositiveAnswer = false;
-                    AutoPlayerSelectionIndex = 1; //manual
-                    CurrentQuestion = FinalQuestion;
+                    AutoPlayerSelectionIndex = 1; //manual                    
                     GamePhase = (int)GamePhaseEnum.Question;
                     break;
 
