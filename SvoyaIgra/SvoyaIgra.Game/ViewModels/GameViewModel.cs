@@ -22,6 +22,7 @@ using SvoyaIgra.Dal.Bo;
 using Topic = SvoyaIgra.Game.Metadata.Topic;
 using Question = SvoyaIgra.Game.Metadata.Question;
 using System.Media;
+using log4net;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -449,7 +450,7 @@ namespace SvoyaIgra.Game.ViewModels
 
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
-        public RelayCommand CloseQuestion { get; set; }
+        public RelayCommand CloseQuestionCommand { get; set; }
         public RelayCommand ShowPictureInQustionCommand { get; set; }
         public RelayCommand PlayMediaInQustionCommand { get; set; }
         public RelayCommand StopMediaInQustionCommand { get; set; }
@@ -461,7 +462,7 @@ namespace SvoyaIgra.Game.ViewModels
 
     #endregion
 
-    #region Players
+        #region Players
 
     ObservableCollection<Player> _players = new ObservableCollection<Player>();
         public ObservableCollection<Player> Players
@@ -496,6 +497,47 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         public RelayCommand SelectPlayerCommand { get; set; }
+
+        #endregion
+
+        #region Statistics
+
+        string _statisticsCsvPath = "";
+        public string StatisticsCsvPath
+        {
+            get
+            {
+                return _statisticsCsvPath;
+            }
+            set
+            {
+                if (_statisticsCsvPath != value)
+                {
+                    _statisticsCsvPath = value;
+                    OnPropertyChanged(nameof(ScoreBoardText));
+                }
+            }
+        }
+
+        bool _statisticsRecordingIsActive = false;
+        public bool StatisticsRecordingIsActive
+        {
+            get
+            {
+                return _statisticsRecordingIsActive;
+            }
+            set
+            {
+                if (_statisticsRecordingIsActive != value)
+                {
+                    _statisticsRecordingIsActive = value;
+                    OnPropertyChanged(nameof(StatisticsRecordingIsActive));
+                }
+            }
+        }
+
+        public RelayCommand StartRecordStatisticsCommand { get; set; }
+        public RelayCommand RecordScoresCommand { get; set; }
 
         #endregion
 
@@ -603,7 +645,7 @@ namespace SvoyaIgra.Game.ViewModels
             WindowLocator = new WindowLocator();
             _multimediaService = multimediaService;
 
-            CloseAppCommand  = new RelayCommand(CloseAppMethod);
+            CloseAppCommand = new RelayCommand(CloseAppMethod);
             OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
             ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
 
@@ -614,6 +656,7 @@ namespace SvoyaIgra.Game.ViewModels
 
 
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
+            CloseQuestionCommand = new RelayCommand(CloseQuestionMethod);
             ShowPictureInQustionCommand = new RelayCommand(ShowPictureInQustionMethod);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
@@ -626,11 +669,12 @@ namespace SvoyaIgra.Game.ViewModels
 
             MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
             SpecialtyVideoMediaElementLoadedCommand = new RelayCommand(SpecialtyVideoMediaElementLoadedMethod);
-            ///test
-            //GetTestQuestionsMethod(null);
+
+            StartRecordStatisticsCommand = new RelayCommand(StartRecordStatisticsMethod);
+            RecordScoresCommand = new RelayCommand(RecordScoresMethod);
+
+
             GetPlayers();
-            //OpenPresentScreenMethod(null);
-            ///
 
             #region Buttons control
 
@@ -642,14 +686,8 @@ namespace SvoyaIgra.Game.ViewModels
 
             ClearWsLogCommand = new RelayCommand(ClearWsLogMethod);
             #endregion
-
-    }
-
-
-
-
-
-
+        
+        }
 
 
 
@@ -1116,7 +1154,8 @@ namespace SvoyaIgra.Game.ViewModels
                         OnPropertyChanged(nameof(Players));
                         if (GamePhase == (int)GamePhaseEnum.Question && AutoCloseuestionOnPositiveAnswer)
                         {
-                            ChangeGamePhaseMethod(ActualRoundGamePhase);
+                            CloseQuestionMethod(null);
+                            //ChangeGamePhaseMethod(ActualRoundGamePhase);
                         }
                         ScoreBoardText = "0";
                         break;
@@ -1254,6 +1293,15 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private void CloseQuestionMethod(object obj)
+        {
+            if (StatisticsRecordingIsActive) RecordScoresMethod(null);
+            ChangeGamePhaseMethod(ActualRoundGamePhase);
+
+
+        }
+
+
         private void PlayFinalMusicMethod(object obj)
         {
             string workingDirectory = Environment.CurrentDirectory;
@@ -1336,6 +1384,51 @@ namespace SvoyaIgra.Game.ViewModels
 
         #endregion
 
+        #region Statistics
+
+        private void RecordScoresMethod(object obj)
+        {
+            if (StatisticsRecordingIsActive)
+            {
+                using (StreamWriter sw = File.AppendText(StatisticsCsvPath))
+                {
+                    string raw = "";
+                    for (int i = 0; i < Players.Count; i++)
+                    {
+                        raw = raw + Players[i].Score.ToString() + ";";
+                        
+                    }
+                    raw = raw.Remove(raw.Length - 1);
+                    sw.WriteLine(raw);
+                }
+            }
+        }
+
+        private void StartRecordStatisticsMethod(object obj)
+        {           
+
+            StatisticsCsvPath = @"C:\SvoyaIgra\Statistics_" + DateTime.Now.ToString("HH_mm_ddMMyyyy")+".csv";
+
+            MessageBoxResult result=  MessageBox.Show("Do you really want to start game statistics recording with these names?", "Statistics", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                
+                StatisticsRecordingIsActive =true;           
+                using (StreamWriter sw = File.AppendText(StatisticsCsvPath))
+                {
+                    string raw = "";
+                    for (int i = 0; i < Players.Count; i++)
+                    {
+                        raw = raw + Players[i].Name + ";";
+                    }
+                    raw = raw.Remove(raw.Length - 1);
+                    sw.WriteLine(raw);
+                }
+            }
+        }
+
+        #endregion
 
 
         private void CloseAppMethod(object obj)
