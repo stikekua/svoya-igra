@@ -25,6 +25,13 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
+        <ObjectDataProvider x:Key="PlayerSelectionModeEnum"
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:PlayerSelectionModeEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
 
         <Style TargetType="Button" x:Key="WindowButtons" >
             <Setter Property="MinWidth" Value="100"/>
@@ -195,12 +202,18 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                 <Label Content="How to select player: " FontSize="20"/>
-                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
+                <!--<ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
                       MinWidth="100" FontSize="20"
                       SelectedIndex="{Binding AutoPlayerSelectionIndex, Mode=TwoWay}">
                     <ComboBoxItem Content="Auto (Buttons)" IsSelected="True" />
                     <ComboBoxItem Content="Manual (here in cockpit)" />
-                </ComboBox>
+                </ComboBox>-->
+                <ComboBox VerticalAlignment="Center" 
+                          HorizontalAlignment="Center"
+                          MinWidth="100" FontSize="20"
+                          ItemsSource="{Binding Source={StaticResource PlayerSelectionModeEnum}}"
+                          SelectedValue="{Binding PlayerSelectionMode,Mode=TwoWay}"/>
+                
             </StackPanel>
             <Grid Grid.Row="1" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
@@ -216,12 +229,11 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal"  VerticalAlignment="Top" HorizontalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="StackPanel">
+                                <Setter Property="IsEnabled" Value="False"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding AutoPlayerSelection, UpdateSourceTrigger=PropertyChanged}" Value="False">
+
+                                    <DataTrigger Binding="{Binding PlayerSelectionMode, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static enums:PlayerSelectionModeEnum.Manual}">
                                         <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding AutoPlayerSelection, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                        <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -321,14 +333,19 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" 
-                            IsEnabled="{Binding AutoPlayerSelection}">
+                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center"  >
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="Padding" Value="5"/>
                                 <Setter Property="MinWidth" Value="100"/>
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlayerSelectionMode}" Value="{x:Static enums:PlayerSelectionModeEnum.Manual}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
 

@@ -197,13 +197,6 @@
                                 
                                 <StackPanel Margin="10 0">
                                     <Label Content="new question type"/>
-                                    <!--<ComboBox SelectedIndex="{Binding NewQuestionTypeIndex,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                                        <ComboBoxItem   IsSelected="True">Text</ComboBoxItem>
-                                        <ComboBoxItem>Picture</ComboBoxItem>
-                                        <ComboBoxItem>Picture series</ComboBoxItem>
-                                        <ComboBoxItem>Music</ComboBoxItem>
-                                        <ComboBoxItem>Video</ComboBoxItem>
-                                    </ComboBox>-->
                                     <ComboBox ItemsSource="{Binding Source={StaticResource QuestionTypeEnum}}"
                                               SelectedValue="{Binding NewQuestionType}"/>
                                  

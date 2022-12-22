@@ -109,7 +109,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _buttonsMessageText = value;
                     OnPropertyChanged(nameof(ButtonsMessageText));
 
-                    if (AutoPlayerSelection)
+                    if (PlayerSelectionMode==PlayerSelectionModeEnum.Auto)
                     {
                         SelectPlayerMethod((int)ButtonMessageDecoder.GetSelectedPlayerIndex(ButtonsMessageText));
                         PlayerInQueueDetector(ButtonsMessageText);
@@ -124,26 +124,19 @@ namespace SvoyaIgra.Game.ViewModels
         public RelayCommand ResetButtonsStateCommand { get; set; }
         public RelayCommand ClearWsLogCommand { get; set; }
         #endregion
-
-        public bool AutoPlayerSelection
+        
+        PlayerSelectionModeEnum _playerSelectionMode = PlayerSelectionModeEnum.Auto;
+        public PlayerSelectionModeEnum PlayerSelectionMode
         {
-            get { return AutoPlayerSelectionIndex == 0 ? true : false; }
-
-        }
-
-        int _autoPlayerSelectionIndex = 0; //0 = auto, 1=manual
-        public int AutoPlayerSelectionIndex
-        {
-            get { return _autoPlayerSelectionIndex; }
+            get { return _playerSelectionMode; }
             set
             {
-                if (_autoPlayerSelectionIndex != value)
+                if (_playerSelectionMode != value)
                 {
-                    _autoPlayerSelectionIndex = value;
-                    OnPropertyChanged(nameof(AutoPlayerSelectionIndex));
-                    OnPropertyChanged(nameof(AutoPlayerSelection));
+                    _playerSelectionMode = value;
+                    OnPropertyChanged(nameof(PlayerSelectionMode));
 
-                    if (_autoPlayerSelectionIndex == 1)
+                    if (_playerSelectionMode == PlayerSelectionModeEnum.Manual)
                     {
                         ButtonsMessageText = ButtonMessageDecoder.EmptyMessage;
                         SelectPlayerMethod(-1);
@@ -577,7 +570,9 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                return (SelectedPlayerIndex != -1 && ((GamePhase == (int)GamePhaseEnum.Question && AutoPlayerSelectionIndex==0) || AutoPlayerSelectionIndex == 1)) ? true : false;
+                return (SelectedPlayerIndex != -1 && 
+                    ((GamePhase == (int)GamePhaseEnum.Question && PlayerSelectionMode==PlayerSelectionModeEnum.Auto) || PlayerSelectionMode == PlayerSelectionModeEnum.Manual)) 
+                    ? true : false;
             }
         }
 
@@ -893,7 +888,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     case (int)GamePhaseEnum.FirstRound:
                         CurrentRoundQuestions = AllRoundsQuestions[0];
-                        if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+                        if (PlayerSelectionMode == PlayerSelectionModeEnum.Auto && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
                         break;
 
                     case (int)GamePhaseEnum.SecondRoundIntro:
@@ -903,7 +898,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     case (int)GamePhaseEnum.SecondRound:
                         CurrentRoundQuestions = AllRoundsQuestions[1];
-                        if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+                        if (PlayerSelectionMode == PlayerSelectionModeEnum.Auto && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
 
                         break;
 
@@ -914,7 +909,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     case (int)GamePhaseEnum.ThirdRound:
                         CurrentRoundQuestions = AllRoundsQuestions[2];
-                        if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+                        if (PlayerSelectionMode == PlayerSelectionModeEnum.Auto && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
 
                         break;
 
@@ -926,7 +921,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     case (int)GamePhaseEnum.FinalRound:
                         AutoCloseuestionOnPositiveAnswer = false;
-                        AutoPlayerSelectionIndex = 1; //manual                    
+                        PlayerSelectionMode = PlayerSelectionModeEnum.Manual;                   
                         GamePhase = (int)GamePhaseEnum.Question;
                         break;
 
@@ -1193,7 +1188,7 @@ namespace SvoyaIgra.Game.ViewModels
                         case "-":
                             Players[SelectedPlayerIndex].Score -= ScoreToChange;
                             OnPropertyChanged(nameof(Players));
-                            if (AutoPlayerSelection)
+                            if (PlayerSelectionMode==PlayerSelectionModeEnum.Auto)
                             {
                                 RequestNextPlayerMethod(null);
                             }
@@ -1202,7 +1197,7 @@ namespace SvoyaIgra.Game.ViewModels
                         default:
                             break;
                     }
-                    if (!AutoPlayerSelection)
+                    if (PlayerSelectionMode == PlayerSelectionModeEnum.Manual)
                     {
                         SelectPlayerMethod(-1);
                     }
@@ -1223,7 +1218,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                 if (index != -1)
                 {
-                    if (Players[index].isSelected && !AutoPlayerSelection)
+                    if (Players[index].isSelected && PlayerSelectionMode == PlayerSelectionModeEnum.Manual)
                     {
                         Players[index].isSelected = false;
                     }
