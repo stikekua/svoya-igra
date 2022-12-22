@@ -7,5 +7,6 @@
     <helpers:BoolParameterConverter             x:Key="boolParameterConverter"/>
     <helpers:SpecialityTypeButtonColorConverter x:Key="specialityColorConverter"/>
     <helpers:SpecialityIntroConverter           x:Key="specialityIntroConverter"/>
+    <helpers:QuestionTypeBorderBrushConverter   x:Key="questionTypeBorderBrushConverter"/>
 
 </ResourceDictionary>

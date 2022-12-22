@@ -441,14 +441,20 @@
                                     <Button Content="{Binding Questions[0].Price}"                                            
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[0]}" 
-                                            Foreground="{Binding Questions[0].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                            Foreground="{Binding Questions[0].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[0].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[0].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[0].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                    
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -462,13 +468,18 @@
                                     <Button Content="{Binding Questions[1].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[1]}"
-                                            Foreground="{Binding Questions[1].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                            Foreground="{Binding Questions[1].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[1].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Setter Property="Background" Value="gray"/>
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[1].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[1].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -484,13 +495,18 @@
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[2]}"
                                             Foreground="{Binding Questions[2].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[2].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}"
                                             >
                                         <Button.Resources>
                                             <Style TargetType="Button">
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[2].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[2].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
 
                                                 </Style.Triggers>
@@ -506,13 +522,18 @@
                                     <Button Content="{Binding Questions[3].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[3]}"
-                                            Foreground="{Binding Questions[3].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                            Foreground="{Binding Questions[3].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[3].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[3].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[3].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
 
                                                 </Style.Triggers>
@@ -529,14 +550,18 @@
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[4]}"
                                             Foreground="{Binding Questions[4].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[4].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}"
                                             >
                                         <Button.Resources>
                                             <Style TargetType="Button">
-
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[4].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[4].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -600,8 +625,20 @@
                             </StackPanel>
                             
                             <StackPanel Grid.Row="5" Orientation="Horizontal">
-                                <Label Content="SpecialityCatPrice: "  />
-                                <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"/>
+                                <StackPanel.Resources>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentQuestion.SpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Resources>
+                                        <Label Content="SpecialityCatPrice: "  />
+                                <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}">
+                                    
+                                </TextBlock>
                             </StackPanel>
 
                         </StackPanel>
