@@ -286,7 +286,10 @@
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Question text" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding FinalQuestionSetup.QuestionText}" TextWrapping="Wrap" Height="40"/>
+                            <TextBlock x:Name="finalQuestionTextBlock" Text="{Binding FinalQuestionSetup.QuestionText}" 
+                                       TextWrapping="Wrap" 
+                                       Height="80" 
+                                       ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Answer" FontWeight="Bold"/>
@@ -306,7 +309,10 @@
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Question text" FontWeight="Bold"/>
-                            <TextBox Text="{Binding NewFinalQuestionText}" TextWrapping="Wrap" Height="40"/>
+                            <TextBox Text="{Binding NewFinalQuestionText}" 
+                                     Height="{Binding ElementName=finalQuestionTextBlock, Path=Height}"
+                                     TextWrapping="{Binding ElementName=finalQuestionTextBlock, Path=TextWrapping}"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Answer" FontWeight="Bold"/>
