@@ -238,6 +238,21 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private SpecialityTypesEnum _newQuestionSpecialityType;
+        public SpecialityTypesEnum NewQuestionSpecialityType
+        {
+            get { return _newQuestionSpecialityType; }
+            set
+            {
+                if (_newQuestionSpecialityType != value)
+                {
+                    _newQuestionSpecialityType = value;
+                    OnPropertyChanged(nameof(NewQuestionSpecialityType));
+                }
+            }
+        }
+
+
         public RelayCommand GetRandomCatQuestionsCommand { get; set; }
         public RelayCommand ApplyQuestionChangesCommand { get; set; }
         public RelayCommand ClearNewQuestionFieldsCommand { get; set; }
@@ -498,7 +513,8 @@ namespace SvoyaIgra.Game.ViewModels
 
             NewQuestionText = questionFromDb.QuestionText;
             NewQuestionAnswer = questionFromDb.QuestionAnswer;
-            NewQuestionSpecialityTypeIndex = 1;//Cat
+            //NewQuestionSpecialityTypeIndex = 1;//Cat
+            NewQuestionSpecialityType = SpecialityTypesEnum.Cat;//Cat
             NewTopicName = questionFromDb.TopicName;
             NewQuestionTypeIndex = questionFromDb.QuestionType - 1;
             NewQuestionMediaLink = questionFromDb.MediaLink;
@@ -510,18 +526,22 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityTypeIndex;
+                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityType;// here
                 AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionTypeIndex+1;
 
                 if (NewQuestionTypeIndex + 1 > (int)QuestionTypeEnum.Text) //if not text
                 {
                     AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
                 }
-                if (NewQuestionSpecialityTypeIndex == 1)
+                //if (NewQuestionSpecialityTypeIndex == 1)
+                //{
+                //    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
+                //    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].TopicName = NewTopicName;
+                //}
+                if (NewQuestionSpecialityType == SpecialityTypesEnum.Cat)
                 {
                     AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
                     AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].TopicName = NewTopicName;
-
                 }
             }
             OnPropertyChanged(nameof(AllRoundsQuestions));
@@ -547,7 +567,8 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 NewQuestionText = CurrentQuestion.QuestionText;
                 NewQuestionAnswer = CurrentQuestion.QuestionAnswer;
-                NewQuestionSpecialityTypeIndex = CurrentQuestion.SpecialityType-1;
+                // NewQuestionSpecialityTypeIndex = CurrentQuestion.SpecialityType-1;
+                NewQuestionSpecialityType = CurrentQuestion.SpecialityType;//new
                 NewTopicName = CurrentQuestion.TopicName;
                 NewQuestionTypeIndex = CurrentQuestion.QuestionType-1;
                 NewQuestionMediaLink = CurrentQuestion.MediaLink;

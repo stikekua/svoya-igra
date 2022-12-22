@@ -15,23 +15,35 @@ namespace SvoyaIgra.Game.Metadata
 
         public bool IsSpecial
         {
-            get 
-            { 
-                return SpecialityType==0? false:true; 
-            }
+            get {  return SpecialityType== SpecialityTypesEnum.NotSpecial ? false:true;  }
         }
-        private int _specialityType  = (int)SpecialityTypesEnum.NotSpecial;
-        public int SpecialityType 
-        { 
+        //private int _specialityType  = (int)SpecialityTypesEnum.NotSpecial;
+        //public int SpecialityType 
+        //{ 
+        //    get { return _specialityType; }
+        //    set 
+        //    {
+        //        if (_specialityType != value)
+        //        {
+        //            _specialityType = value;
+        //            OnPropertyChanged(nameof(SpecialityType));
+        //            OnPropertyChanged(nameof(IsSpecial));
+        //        }                
+        //    }
+        //}
+
+        private SpecialityTypesEnum _specialityType = SpecialityTypesEnum.NotSpecial;
+        public SpecialityTypesEnum SpecialityType
+        {
             get { return _specialityType; }
-            set 
+            set
             {
                 if (_specialityType != value)
                 {
                     _specialityType = value;
                     OnPropertyChanged(nameof(SpecialityType));
                     OnPropertyChanged(nameof(IsSpecial));
-                }                
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using SvoyaIgra.Game.Metadata;
+using SvoyaIgra.Game.Enums;
 using System;
 using System.Globalization;
 using System.Windows;
@@ -11,7 +12,7 @@ namespace SvoyaIgra.Game.ViewModels.Helpers
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var q = (Question)value;
-            return (q.SpecialityType>0 && q.SpecialIntroWasNotPlayed) ? Visibility.Visible :Visibility.Collapsed ;
+            return (q.SpecialityType!=SpecialityTypesEnum.NotSpecial && q.SpecialIntroWasNotPlayed) ? Visibility.Visible :Visibility.Collapsed ;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

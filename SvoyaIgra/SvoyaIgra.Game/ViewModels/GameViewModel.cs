@@ -942,11 +942,11 @@ namespace SvoyaIgra.Game.ViewModels
 
                         switch (CurrentQuestion.SpecialityType)
                         {
-                            case (int)SpecialityTypesEnum.Cat:
+                            case SpecialityTypesEnum.Cat:
                                 SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Cat.wmv", UriKind.RelativeOrAbsolute);
                                 SpecialtyVideoMediaElement.Play();
                                 break;
-                            case (int)SpecialityTypesEnum.Auction:
+                            case SpecialityTypesEnum.Auction:
                                 SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Auction.wmv", UriKind.RelativeOrAbsolute);
                                 SpecialtyVideoMediaElement.Play();
                                 break;
@@ -1344,14 +1344,13 @@ namespace SvoyaIgra.Game.ViewModels
                         topicIndex = i;
                         break;
                     }
-
                 }
                 CurrentQuestion = CurrentRoundQuestions[topicIndex].Questions[questionIndex];
                 CurrentRoundQuestions[topicIndex].Questions[questionIndex].NotYetAsked = false;
 
 
                 GamePhase = (int)GamePhaseEnum.Question;
-                if (CurrentQuestion.SpecialityType == (int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
+                if (CurrentQuestion.SpecialityType == SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
                 else ScoreBoardText = CurrentQuestion.Price.ToString();
 
                 OnPropertyChanged(nameof(CurrentRoundQuestions));
