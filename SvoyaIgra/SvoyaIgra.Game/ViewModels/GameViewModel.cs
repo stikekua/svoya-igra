@@ -376,15 +376,15 @@ namespace SvoyaIgra.Game.ViewModels
         }
         public bool IsPictureQuestion
         {
-            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Picture ? true : false; }
+            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Picture ? true : false; }
         }
         public bool IsMusicQuestion
         {
-            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Musical ? true : false; }
+            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Musical ? true : false; }
         }
         public bool IsVideoQuestion
         {
-            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Video ? true : false; }
+            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Video ? true : false; }
         }
 
 
@@ -957,7 +957,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                         switch (CurrentQuestion.QuestionType)
                         {
-                            case (int)QuestionTypeEnum.Picture:
+                            case QuestionTypeEnum.Picture:
                                 GetImageSource(CurrentQuestion.MediaLink);
                                 break;
 
@@ -1400,14 +1400,14 @@ namespace SvoyaIgra.Game.ViewModels
 
                 var whatToPlay = _multimediaService.GetMultimediaPath(Id, questionFor, fileName);
 
-                if (CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Musical)
+                if (CurrentQuestion.QuestionType == QuestionTypeEnum.Musical)
                 {
                     MusicQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
                     VideoQuestionMediaElement.Source = null;
 
                     MusicQuestionMediaElement.Play();
                 }
-                else if (CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Video)
+                else if (CurrentQuestion.QuestionType == QuestionTypeEnum.Video)
                 {
                     VideoQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
                     MusicQuestionMediaElement.Source = null;

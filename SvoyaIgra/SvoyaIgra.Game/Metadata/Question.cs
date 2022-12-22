@@ -17,20 +17,7 @@ namespace SvoyaIgra.Game.Metadata
         {
             get {  return SpecialityType== SpecialityTypesEnum.NotSpecial ? false:true;  }
         }
-        //private int _specialityType  = (int)SpecialityTypesEnum.NotSpecial;
-        //public int SpecialityType 
-        //{ 
-        //    get { return _specialityType; }
-        //    set 
-        //    {
-        //        if (_specialityType != value)
-        //        {
-        //            _specialityType = value;
-        //            OnPropertyChanged(nameof(SpecialityType));
-        //            OnPropertyChanged(nameof(IsSpecial));
-        //        }                
-        //    }
-        //}
+
 
         private SpecialityTypesEnum _specialityType = SpecialityTypesEnum.NotSpecial;
         public SpecialityTypesEnum SpecialityType
@@ -79,15 +66,9 @@ namespace SvoyaIgra.Game.Metadata
         }
 
 
-        public int QuestionType { get; set; } = (int)QuestionTypeEnum.Text;
-
-        //Text = 1
-        //Picture = 2
-        //PictureSeries = 3
-        //Musical = 4
-        //Video = 5
+        public QuestionTypeEnum QuestionType { get; set; } = QuestionTypeEnum.Text;
        
-        public Question(string questionText, string questionAnswer, int price, int questionType = 1, bool notYetAsked = true, string topicName="" )
+        public Question(string questionText, string questionAnswer, int price, QuestionTypeEnum questionType = QuestionTypeEnum.Text, bool notYetAsked = true, string topicName="" )
         {
             QuestionText = questionText;
             QuestionAnswer = questionAnswer;
@@ -96,7 +77,7 @@ namespace SvoyaIgra.Game.Metadata
             QuestionType = questionType;
             TopicName=topicName;
         }
-        public Question(string topicName, string questionText, string questionAnswer, int price, int questionType = 1, string mediaLink = "00000000-0000-0000-0000-000000000000")
+        public Question(string topicName, string questionText, string questionAnswer, int price, QuestionTypeEnum questionType = QuestionTypeEnum.Text, string mediaLink = "00000000-0000-0000-0000-000000000000")
         {
             TopicName = topicName;
             QuestionText = questionText;

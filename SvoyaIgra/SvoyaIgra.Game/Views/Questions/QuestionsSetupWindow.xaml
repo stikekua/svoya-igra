@@ -12,9 +12,17 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=QuestionsSetupViewModel}">
     <Window.Resources>
         <ObjectDataProvider x:Key="SpecialityTypesEnum"
-       MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="enums:SpecialityTypesEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="QuestionTypeEnum"
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:QuestionTypeEnum"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
@@ -168,7 +176,7 @@
                                         <Style TargetType="Button">
                                             <Setter Property="IsEnabled" Value="False"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=NewQuestionSpecialityTypeCombobox, Path=SelectedValue}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">                                                    
+                                                <DataTrigger Binding="{Binding NewQuestionSpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">                                                    
                                                     <Setter Property="IsEnabled" Value="True"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -189,13 +197,16 @@
                                 
                                 <StackPanel Margin="10 0">
                                     <Label Content="new question type"/>
-                                    <ComboBox SelectedIndex="{Binding NewQuestionTypeIndex,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                                    <!--<ComboBox SelectedIndex="{Binding NewQuestionTypeIndex,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
                                         <ComboBoxItem   IsSelected="True">Text</ComboBoxItem>
                                         <ComboBoxItem>Picture</ComboBoxItem>
                                         <ComboBoxItem>Picture series</ComboBoxItem>
                                         <ComboBoxItem>Music</ComboBoxItem>
                                         <ComboBoxItem>Video</ComboBoxItem>
-                                    </ComboBox>
+                                    </ComboBox>-->
+                                    <ComboBox ItemsSource="{Binding Source={StaticResource QuestionTypeEnum}}"
+                                              SelectedValue="{Binding NewQuestionType}"/>
+                                 
                                 </StackPanel>
                                 
                             </StackPanel>
@@ -210,7 +221,7 @@
                                                     <Setter Property="Text" Value="{Binding CurrentQuestion.TopicName}"/>                                                    
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger  Binding="{Binding ElementName=NewQuestionSpecialityTypeCombobox,Path=SelectedValue}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
+                                                        <DataTrigger  Binding="{Binding NewQuestionSpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
                                                             <Setter Property="IsEnabled" Value="True"/>
                                                             <Setter Property="Text" Value="{Binding NewTopicName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                         </DataTrigger>
