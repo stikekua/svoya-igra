@@ -356,7 +356,8 @@ namespace SvoyaIgra.Game.ViewModels
 
         private Question _currentQuestion = new Question();
         public Question CurrentQuestion 
-        {   get {  return _currentQuestion; }
+        {   
+            get {  return _currentQuestion; }
             set 
             {
                 if (_currentQuestion!=value)
@@ -373,17 +374,14 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
         }
-
         public bool IsPictureQuestion
         {
             get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Picture ? true : false; }
         }
-
         public bool IsMusicQuestion
         {
             get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Musical ? true : false; }
         }
-
         public bool IsVideoQuestion
         {
             get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Video ? true : false; }
@@ -431,6 +429,7 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
+
         private MediaElement _videoQuestionMediaElement;
         public MediaElement VideoQuestionMediaElement
         {
@@ -446,8 +445,6 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         SoundPlayer FinalMusicPlayer { get; set; } = new SoundPlayer();
-
-
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
         public RelayCommand CloseQuestionCommand { get; set; }
@@ -934,8 +931,6 @@ namespace SvoyaIgra.Game.ViewModels
                         break;
 
                     case (int)GamePhaseEnum.Question:
-
-
                         if (Players != null)
                         {
                             for (int i = 0; i < Players.Count; i++)
@@ -969,7 +964,6 @@ namespace SvoyaIgra.Game.ViewModels
                             default:
                                 ImageSourceQuestion = null;
                                 break;
-
                         }
                         break;
 
@@ -1515,7 +1509,6 @@ namespace SvoyaIgra.Game.ViewModels
                 MessageBox.Show($"Some problem in LoadMusicMediaInQustionMethod, message:{e.Message}");
             }
         }
-
         private void LoadVideoMediaInQustionMethod(object obj)
         {
             try
@@ -1528,22 +1521,9 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-
         #endregion
 
-        #region WS
-
-        private void ClearWsLogMethod(object obj)
-        {
-            try
-            {
-                WsLogOC.Clear();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Some problem in ClearWsLogMethod, message:{e.Message}");
-            }
-        }
+        #region WS        
 
         private void Wss_Opened()
         {
@@ -1556,7 +1536,6 @@ namespace SvoyaIgra.Game.ViewModels
                 MessageBox.Show($"Some problem in Wss_Opened, message:{e.Message}");
             }
         }
-
         private void Wss_Closed()
         {
             try
@@ -1568,7 +1547,6 @@ namespace SvoyaIgra.Game.ViewModels
                 MessageBox.Show($"Some problem in Wss_Closed, message:{e.Message}");
             }
         }
-
         private void Wss_Error(string message)
         {
             try
@@ -1593,7 +1571,6 @@ namespace SvoyaIgra.Game.ViewModels
                 MessageBox.Show($"Some problem in Wss_NewMessage, message:{e.Message}");
             }
         }
-
         private void AddToLogList(string message)
         {
             try
@@ -1604,6 +1581,17 @@ namespace SvoyaIgra.Game.ViewModels
             catch (Exception e)
             {
                 MessageBox.Show($"Some problem in AddToLogList, message:{e.Message}");
+            }
+        }
+        private void ClearWsLogMethod(object obj)
+        {
+            try
+            {
+                WsLogOC.Clear();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ClearWsLogMethod, message:{e.Message}");
             }
         }
 

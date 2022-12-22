@@ -549,7 +549,7 @@
                         <StackPanel Orientation="Horizontal"  Margin="0">
                             <StackPanel.Resources>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
+                                    <!--<Setter Property="Visibility" Value="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>-->
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                     <Setter Property="MinWidth" Value="150"/>
