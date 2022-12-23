@@ -4,7 +4,6 @@ using SvoyaIgra.Game.ViewModels.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using SvoyaIgra.Game.Enums;
@@ -347,44 +346,46 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void GetTestQuestionsMethod(object obj)
         {
-            var rounds = new ObservableCollection<ObservableCollection<Topic>>();
-
-            for (int z = 0; z < 3; z++)//rounds
+            try
             {
-                var topics = new ObservableCollection<Topic>();
-                for (int i = 0; i < 6; i++) //topics
-                {
-                    var listOfQuestions = new List<Question>();
-                    string topic = "Topic " + i.ToString();
-                    for (int k = 0; k < 5; k++) //questions
-                    {
-                        
-                        string questionText = topic + " question " + k.ToString();
-                        string answer = "answer for " + questionText;
-                        string mediaLink = "00000000-0000-0000-0000-000000000000";
-                        if ((QuestionTypeEnum)k+1==QuestionTypeEnum.Musical)
-                        {
-                            mediaLink = "00000000-0000-0000-0000-000000000001"; //default music
-                        }
-                        else if ((QuestionTypeEnum)k+1 == QuestionTypeEnum.Video)
-                        {
-                            mediaLink = "00000000-0000-0000-0000-000000000002"; //default video
-                        } 
-                        listOfQuestions.Add(new Question(topic, questionText, answer, (k * 100 + 100) * (z + 1), (QuestionTypeEnum)k + 1,mediaLink ));
-                    }
-                    topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
+                var rounds = new ObservableCollection<ObservableCollection<Topic>>();
 
+                for (int z = 0; z < 3; z++)//rounds
+                {
+                    var topics = new ObservableCollection<Topic>();
+                    for (int i = 0; i < 6; i++) //topics
+                    {
+                        var listOfQuestions = new List<Question>();
+                        string topic = "Topic " + i.ToString();
+                        for (int k = 0; k < 5; k++) //questions
+                        {
+
+                            string questionText = topic + " question " + k.ToString();
+                            string answer = "answer for " + questionText;
+                            string mediaLink = "00000000-0000-0000-0000-000000000000";
+                            if ((QuestionTypeEnum)k + 1 == QuestionTypeEnum.Musical)
+                            {
+                                mediaLink = "00000000-0000-0000-0000-000000000001"; //default music
+                            }
+                            else if ((QuestionTypeEnum)k + 1 == QuestionTypeEnum.Video)
+                            {
+                                mediaLink = "00000000-0000-0000-0000-000000000002"; //default video
+                            }
+                            listOfQuestions.Add(new Question(topic, questionText, answer, (k * 100 + 100) * (z + 1), (QuestionTypeEnum)k + 1, mediaLink));
+                        }
+                        topics.Add(new Topic(listOfQuestions, "Round " + (z + 1).ToString() + " Topic " + i.ToString()));
+                    }
+                    rounds.Add(topics);
                 }
 
-                rounds.Add(topics);                
+                AllRoundsQuestions = rounds;
+                FinalQuestionSetup = new Question("some final question text", "some final question answer", 0, (QuestionTypeEnum)1, true, "Just Final question");
+                RefreshQuestionMethod(null);
             }
-
-            AllRoundsQuestions = rounds;
-
-            FinalQuestionSetup = new Question("some final question text", "some final question answer", 0,(QuestionTypeEnum)1,true,"Just Final question");
-
-
-            RefreshQuestionMethod(null);
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetTestQuestionsMethod, message: {e.Message}");
+            }            
         }
 
         private bool CreateGame_CanExecute(object obj)
@@ -395,91 +396,126 @@ namespace SvoyaIgra.Game.ViewModels
 
         private async void CreateGame_Execute(object obj)
         {
-            GameId = await _gameService.CreateGameAsync();
+            try
+            {
+                GameId = await _gameService.CreateGameAsync();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in CreateGame_Execute, message: {e.Message}");
+            }
         }
 
         private async void GetLastGame_Execute(object obj)
         {
-            GameId = await _gameService.GetLastGameAsync();
+            try
+            {
+                GameId = await _gameService.GetLastGameAsync();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetLastGame_Execute, message: {e.Message}");
+            }
         }
 
         private bool GetRealQuestionsFromDb_CanExecute(object obj)
         {
-            return GameId != Guid.Empty;
+            try
+            {
+                return GameId != Guid.Empty;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetRealQuestionsFromDb_CanExecute, message: {e.Message}");
+                return false;
+            }
+            
         }
 
         private async void GetRealQuestionsFromDb_Execute(object obj)
         {
-            //get round topics
-            var topicsFromDB = await _gameService.GetTopicsAsync(GameId);
-
-            var rounds = new ObservableCollection<ObservableCollection<Topic>>();
-
-            var topics = new ObservableCollection<Topic>();
-
-            topicsFromDB.ToList().ForEach(t =>
+            try
             {
-                var listOfQuestions = new List<Question>();
-                listOfQuestions.AddRange(
-                    t.Questions!.Select(q => new Question(t.Name, q.Text, q.Answer, (int)q.Difficulty, (QuestionTypeEnum)q.Type, q.MultimediaId ?? Guid.Empty.ToString())));
 
-                topics.Add(new Topic(listOfQuestions, t.Name));                
-            });
+                //get round topics
+                var topicsFromDB = await _gameService.GetTopicsAsync(GameId);
 
-            for (int i = 0; i < topics.Count; i++)
-            {
-                if (i <= 5)
+                var rounds = new ObservableCollection<ObservableCollection<Topic>>();
+
+                var topics = new ObservableCollection<Topic>();
+
+                topicsFromDB.ToList().ForEach(t =>
                 {
-                    for (int k = 0; k < topics[i].Questions.Count; k++)
-                    {
-                        topics[i].Questions[k].Price = topics[i].Questions[k].Price * 100;
-                    }                    
-                }
-                else if (i>=6 && i<=11)
+                    var listOfQuestions = new List<Question>();
+                    listOfQuestions.AddRange(
+                        t.Questions!.Select(q => new Question(t.Name, q.Text, q.Answer, (int)q.Difficulty, (QuestionTypeEnum)q.Type, q.MultimediaId ?? Guid.Empty.ToString())));
+
+                    topics.Add(new Topic(listOfQuestions, t.Name));
+                });
+
+                for (int i = 0; i < topics.Count; i++)
                 {
-                    for (int k = 0; k < topics[i].Questions.Count; k++)
+                    if (i <= 5) //first round
                     {
-                        topics[i].Questions[k].Price = topics[i].Questions[k].Price * 200;
+                        for (int k = 0; k < topics[i].Questions.Count; k++)
+                        {
+                            topics[i].Questions[k].Price = topics[i].Questions[k].Price * 100;
+                        }
+                    }
+                    else if (i >= 6 && i <= 11) //second round
+                    {
+                        for (int k = 0; k < topics[i].Questions.Count; k++)
+                        {
+                            topics[i].Questions[k].Price = topics[i].Questions[k].Price * 200;
+                        }
+                    }
+                    else if (i >= 12) //third round
+                    {
+                        for (int k = 0; k < topics[i].Questions.Count; k++)
+                        {
+                            topics[i].Questions[k].Price = topics[i].Questions[k].Price * 300;
+                        }
                     }
                 }
-                else if (i >= 12)
+
+                rounds.Add(new ObservableCollection<Topic>(topics.Take(6)));
+                rounds.Add(new ObservableCollection<Topic>(topics.Skip(6).Take(6)));
+                rounds.Add(new ObservableCollection<Topic>(topics.Skip(12).Take(6)));
+
+                AllRoundsQuestions = rounds;
+
+                //get final topics
+                var finaltopicsFromDB = await _gameService.GetTopicsFinalAsync(GameId);
+                //TODO 
+                FinalQuestions = new List<Question>();
+                finaltopicsFromDB.ToList().ForEach(q =>
                 {
-                    for (int k = 0; k < topics[i].Questions.Count; k++)
-                    {
-                        topics[i].Questions[k].Price = topics[i].Questions[k].Price * 300;
-                    }
-                }
+                    var question = q.Questions!.ToList()[0];
+                    FinalQuestions.Add(new Question(question.Text, question.Answer, 0, QuestionTypeEnum.Text, true, q.Name));
+                });
+                //temp
+                FinalQuestionSetup = FinalQuestions[0];
+                //end temp
+                RefreshQuestionMethod(null);
             }
-
-            rounds.Add(new ObservableCollection<Topic>(topics.Take(6)));
-            rounds.Add(new ObservableCollection<Topic>(topics.Skip(6).Take(6)));
-            rounds.Add(new ObservableCollection<Topic>(topics.Skip(12).Take(6)));
-
-            AllRoundsQuestions = rounds;
-
-            //get final topics
-            var finaltopicsFromDB = await _gameService.GetTopicsFinalAsync(GameId);
-            //TODO 
-            FinalQuestions = new List<Question>();
-            finaltopicsFromDB.ToList().ForEach(q =>
+            catch (Exception e)
             {
-                var question = q.Questions!.ToList()[0];
-                FinalQuestions.Add(new Question(question.Text, question.Answer, 0, QuestionTypeEnum.Text, true, q.Name));
-            }); 
-
-
-            //temp
-            FinalQuestionSetup = FinalQuestions[0];
-            //end temp
-
-            RefreshQuestionMethod(null);
+                MessageBox.Show($"Some problem in GetRealQuestionsFromDb_Execute, message: {e.Message}");
+            }
 
         }
         void GetCurrentQuestion()
         {
-            if (AllRoundsQuestions.Count > 0)
+            try
             {
-                CurrentQuestion = AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex];
+                if (AllRoundsQuestions.Count > 0)
+                {
+                    CurrentQuestion = AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex];
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetCurrentQuestion, message: {e.Message}");
             }
         }
 
@@ -489,70 +525,95 @@ namespace SvoyaIgra.Game.ViewModels
 
         private async void GetRandomCatQuestionsMethod(object obj)
         {
+            try
+            {
+                var catTopicFromDB = await _gameService.GetCatQuestionAsync(GameId);
+                var questionItself = catTopicFromDB.Questions.ToList()[0];
+                var q = questionItself.Type;
 
-            var catTopicFromDB = await _gameService.GetCatQuestionAsync(GameId);
-            var questionItself = catTopicFromDB.Questions.ToList()[0];
-            var q = questionItself.Type;
-            
+                Question questionFromDb = new Question(questionItself.Text, questionItself.Answer, 0, (QuestionTypeEnum)questionItself.Type, true, catTopicFromDB.Name);
+                questionFromDb.MediaLink = questionItself.MultimediaId;
 
-            Question questionFromDb = new Question(questionItself.Text, questionItself.Answer, 0, (QuestionTypeEnum)questionItself.Type,true, catTopicFromDB.Name );
-            questionFromDb.MediaLink = questionItself.MultimediaId;
-
-            NewQuestionText = questionFromDb.QuestionText;
-            NewQuestionAnswer = questionFromDb.QuestionAnswer;
-            NewQuestionSpecialityType = SpecialityTypesEnum.Cat;
-            NewTopicName = questionFromDb.TopicName;
-            NewQuestionType = (QuestionTypeEnum)questionFromDb.QuestionType;
-            //NewQuestionTypeIndex = questionFromDb.QuestionType - 1;
-            NewQuestionMediaLink = questionFromDb.MediaLink;
+                NewQuestionText = questionFromDb.QuestionText;
+                NewQuestionAnswer = questionFromDb.QuestionAnswer;
+                NewQuestionSpecialityType = SpecialityTypesEnum.Cat;
+                NewTopicName = questionFromDb.TopicName;
+                NewQuestionType = (QuestionTypeEnum)questionFromDb.QuestionType;
+                NewQuestionMediaLink = questionFromDb.MediaLink;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetRandomCatQuestionsMethod, message: {e.Message}");
+            }
         }
         private void ApplyQuestionChangesMethod(object obj)
         {
-            int newCatPrice = 0;
-            if (!NewQuestionAnswer.Equals(string.Empty) && !NewQuestionText.Equals(string.Empty) && Int32.TryParse(NewQuestionSpecialityCatPrice, out newCatPrice))
+            try
             {
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityType;
-                AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionType;
+                int newCatPrice = 0;
+                if (!NewQuestionAnswer.Equals(string.Empty) && !NewQuestionText.Equals(string.Empty) && Int32.TryParse(NewQuestionSpecialityCatPrice, out newCatPrice))
+                {
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionText = NewQuestionText;
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionAnswer = NewQuestionAnswer;
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityType = NewQuestionSpecialityType;
+                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType = NewQuestionType;
 
-                if (NewQuestionType != QuestionTypeEnum.Text) 
-                {
-                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
+                    if (NewQuestionType != QuestionTypeEnum.Text)
+                    {
+                        AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].MediaLink = NewQuestionMediaLink;
+                    }
+                    if (NewQuestionSpecialityType == SpecialityTypesEnum.Cat)
+                    {
+                        AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
+                        AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].TopicName = NewTopicName;
+                    }
                 }
-                if (NewQuestionSpecialityType == SpecialityTypesEnum.Cat)
-                {
-                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].SpecialityCatPrice = newCatPrice;
-                    AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].TopicName = NewTopicName;
-                }
+                OnPropertyChanged(nameof(AllRoundsQuestions));
+
+                MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed, new question type is {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType}");
+                RefreshQuestionMethod(null);
             }
-            OnPropertyChanged(nameof(AllRoundsQuestions));
-
-            MessageBox.Show($"In round {CurrentRoundIndex + 1} in topic {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Name} Question number {CurrentQuestionIndex + 1} was changed, new question type is {AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex].QuestionType}");
-            RefreshQuestionMethod(null);
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ApplyQuestionChangesMethod, message: {e.Message}");
+            }
         }
 
         private void ClearNewQuestionFieldsMethod(object obj)
         {
-            NewQuestionText = "";
-            NewQuestionAnswer = "";
-            NewQuestionSpecialityType = SpecialityTypesEnum.NotSpecial;
-            NewTopicName = "";
-            NewQuestionType = QuestionTypeEnum.Text;
-            NewQuestionMediaLink = "00000000-0000-0000-0000-000000000000";
+            try
+            {
+                NewQuestionText = "";
+                NewQuestionAnswer = "";
+                NewQuestionSpecialityType = SpecialityTypesEnum.NotSpecial;
+                NewTopicName = "";
+                NewQuestionType = QuestionTypeEnum.Text;
+                NewQuestionMediaLink = "00000000-0000-0000-0000-000000000000";
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ClearNewQuestionFieldsMethod, message: {e.Message}");
+            }
         }
 
         private void RefreshQuestionMethod(object obj)
         {
-            GetCurrentQuestion();
-            if (CurrentQuestion!=null)
+            try
             {
-                NewQuestionText = CurrentQuestion.QuestionText;
-                NewQuestionType = CurrentQuestion.QuestionType;
-                NewQuestionAnswer = CurrentQuestion.QuestionAnswer;
-                NewQuestionSpecialityType = CurrentQuestion.SpecialityType;
-                NewTopicName = CurrentQuestion.TopicName;
-                NewQuestionMediaLink = CurrentQuestion.MediaLink;
+                GetCurrentQuestion();
+                if (CurrentQuestion != null)
+                {
+                    NewQuestionText = CurrentQuestion.QuestionText;
+                    NewQuestionType = CurrentQuestion.QuestionType;
+                    NewQuestionAnswer = CurrentQuestion.QuestionAnswer;
+                    NewQuestionSpecialityType = CurrentQuestion.SpecialityType;
+                    NewTopicName = CurrentQuestion.TopicName;
+                    NewQuestionMediaLink = CurrentQuestion.MediaLink;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in RefreshQuestionMethod, message: {e.Message}");
             }
         }
 
@@ -561,20 +622,34 @@ namespace SvoyaIgra.Game.ViewModels
         #region Final question
         private void ApplyFinalQuestionChangesMethod(object obj)
         {
-            FinalQuestionSetup = new Question(NewFinalQuestionText, NewFinalQuestionAnswer,0,QuestionTypeEnum.Text,true,NewTopicName);
+            try
+            {
+                FinalQuestionSetup = new Question(NewFinalQuestionText, NewFinalQuestionAnswer, 0, QuestionTypeEnum.Text, true, NewFinalQuestionTopicName);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ApplyFinalQuestionChangesMethod, message: {e.Message}");
+            }
         }
 
         //ToDo
         private void GetNewFinalQuestionMethod(object obj)
-        {
-            if (SelectedFinalQuestionIndex != FinalQuestions.Count - 1) SelectedFinalQuestionIndex++;
-            else SelectedFinalQuestionIndex = 0;
+        {            
+            try
+            {
+                if (FinalQuestions.Count > 0)
+                {
+                    if (SelectedFinalQuestionIndex != FinalQuestions.Count - 1) SelectedFinalQuestionIndex++;
+                    else SelectedFinalQuestionIndex = 0;
 
-            FinalQuestionSetup = FinalQuestions[SelectedFinalQuestionIndex];
+                    FinalQuestionSetup = FinalQuestions[SelectedFinalQuestionIndex];
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ApplyFinalQuestionChangesMethod, message: {e.Message}");
+            }
         }
-
-
-
         #endregion
 
         #endregion
