@@ -149,7 +149,7 @@
                                             </Style>
                                         </StackPanel.Resources>
                                         <Label Content="Cat Price" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}" />
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>

@@ -511,6 +511,7 @@ namespace SvoyaIgra.Game.ViewModels
                 if (AllRoundsQuestions.Count > 0)
                 {
                     CurrentQuestion = AllRoundsQuestions[CurrentRoundIndex][CurrentTopicIndex].Questions[CurrentQuestionIndex];
+                    OnPropertyChanged(nameof(CurrentQuestion));
                 }
             }
             catch (Exception e)

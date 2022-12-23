@@ -34,7 +34,19 @@ namespace SvoyaIgra.Game.Metadata
             }
         }
 
-        public int SpecialityCatPrice { get; set; } = 0;
+        int _specialityCatPrice = 0;
+        public int SpecialityCatPrice
+        {
+            get { return _specialityCatPrice; }
+            set
+            {
+                if (_specialityCatPrice != value)
+                {
+                    _specialityCatPrice = value;
+                    OnPropertyChanged(nameof(NotYetAsked));
+                }
+            }
+        }
 
 
         bool _notYetAsked = true;
