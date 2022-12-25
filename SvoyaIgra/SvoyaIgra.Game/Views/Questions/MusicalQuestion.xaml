@@ -10,7 +10,7 @@
 
     <Viewbox Stretch="UniformToFill" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Visible">
         <StackPanel>
-            <Image Source="pack://application:,,,/SvoyaIgra.Game;component/Resources/Images/MusicQuestion.png" Stretch="UniformToFill"  Visibility="Visible"/>
+            <Image Source="pack://application:,,,/SvoyaIgra.Game;component/Resources/Images/MusicalQuestion.png"  Visibility="Visible"/>
             <MediaElement Source="" LoadedBehavior="Manual" Stretch="Fill" UnloadedBehavior="Manual">
                 <ia:Interaction.Triggers>
                     <ia:EventTrigger EventName="Loaded">

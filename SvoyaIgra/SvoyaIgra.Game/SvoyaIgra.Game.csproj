@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\MusicalQuestion.png" />
     <None Remove="Resources\Images\MusicQuestion.png" />
     <None Remove="Resources\Sounds\FinalTime.wav" />
   </ItemGroup>
@@ -32,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\MusicQuestion.png" />
+    <Resource Include="Resources\Images\MusicalQuestion.png" />
     <Resource Include="Resources\Sounds\FinalTime.wav" />
   </ItemGroup>
 
