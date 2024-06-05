@@ -10,11 +10,11 @@ namespace SvoyaIgra.Game.ViewModels.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {         
-            switch ((int)value)
+            switch (value)
             {                    
-                case (int)SpecialityTypesEnum.Cat:
+                case SpecialityTypesEnum.Cat:
                     return "#0000FF";
-                case (int)SpecialityTypesEnum.Auction:
+                case SpecialityTypesEnum.Auction:
                     return "#FF0000";
                 default:
                     return "#000000";

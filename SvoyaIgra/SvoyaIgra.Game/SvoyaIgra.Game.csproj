@@ -8,12 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\MusicalQuestion.png" />
+    <None Remove="Resources\Images\MusicQuestion.png" />
+    <None Remove="Resources\Sounds\FinalTime.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Resources\Videos\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
@@ -24,6 +30,11 @@
     <ProjectReference Include="..\SvoyaIgra.Dal\SvoyaIgra.Dal.csproj" />
     <ProjectReference Include="..\SvoyaIgra.MultimediaProvider\SvoyaIgra.MultimediaProvider.csproj" />
     <ProjectReference Include="..\SvoyaIgra.WebSocketProvider\SvoyaIgra.WebSocketProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\MusicalQuestion.png" />
+    <Resource Include="Resources\Sounds\FinalTime.wav" />
   </ItemGroup>
 
   <ItemGroup>

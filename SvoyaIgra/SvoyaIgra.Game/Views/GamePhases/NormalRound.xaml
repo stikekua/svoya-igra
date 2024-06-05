@@ -196,7 +196,10 @@
                 <DataGridTemplateColumn Width="2*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}" Style="{StaticResource TopicTextBlockStyle}" />
+                            <Viewbox Stretch="Uniform" Height="50" Width="500">
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource TopicTextBlockStyle}" TextWrapping="WrapWithOverflow"  />
+                            </Viewbox>
+                            
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -21,6 +21,8 @@ using SvoyaIgra.Game.Helpers;
 using SvoyaIgra.Dal.Bo;
 using Topic = SvoyaIgra.Game.Metadata.Topic;
 using Question = SvoyaIgra.Game.Metadata.Question;
+using System.Media;
+using log4net;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -107,7 +109,7 @@ namespace SvoyaIgra.Game.ViewModels
                     _buttonsMessageText = value;
                     OnPropertyChanged(nameof(ButtonsMessageText));
 
-                    if (AutoPlayerSelection)
+                    if (PlayerSelectionMode==PlayerSelectionModeEnum.Auto)
                     {
                         SelectPlayerMethod((int)ButtonMessageDecoder.GetSelectedPlayerIndex(ButtonsMessageText));
                         PlayerInQueueDetector(ButtonsMessageText);
@@ -122,26 +124,19 @@ namespace SvoyaIgra.Game.ViewModels
         public RelayCommand ResetButtonsStateCommand { get; set; }
         public RelayCommand ClearWsLogCommand { get; set; }
         #endregion
-
-        public bool AutoPlayerSelection
+        
+        PlayerSelectionModeEnum _playerSelectionMode = PlayerSelectionModeEnum.Auto;
+        public PlayerSelectionModeEnum PlayerSelectionMode
         {
-            get { return AutoPlayerSelectionIndex == 0 ? true : false; }
-
-        }
-
-        int _autoPlayerSelectionIndex = 0; //0 = auto, 1=manual
-        public int AutoPlayerSelectionIndex
-        {
-            get { return _autoPlayerSelectionIndex; }
+            get { return _playerSelectionMode; }
             set
             {
-                if (_autoPlayerSelectionIndex != value)
+                if (_playerSelectionMode != value)
                 {
-                    _autoPlayerSelectionIndex = value;
-                    OnPropertyChanged(nameof(AutoPlayerSelectionIndex));
-                    OnPropertyChanged(nameof(AutoPlayerSelection));
+                    _playerSelectionMode = value;
+                    OnPropertyChanged(nameof(PlayerSelectionMode));
 
-                    if (_autoPlayerSelectionIndex == 1)
+                    if (_playerSelectionMode == PlayerSelectionModeEnum.Manual)
                     {
                         ButtonsMessageText = ButtonMessageDecoder.EmptyMessage;
                         SelectPlayerMethod(-1);
@@ -354,14 +349,17 @@ namespace SvoyaIgra.Game.ViewModels
 
         private Question _currentQuestion = new Question();
         public Question CurrentQuestion 
-        {   get {  return _currentQuestion; }
+        {   
+            get {  return _currentQuestion; }
             set 
             {
                 if (_currentQuestion!=value)
                 {                    
                     _currentQuestion = value;
                     OnPropertyChanged(nameof(CurrentQuestion));
-                    OnPropertyChanged(nameof(IsPictureQuestion)); 
+                    OnPropertyChanged(nameof(IsPictureQuestion));
+                    OnPropertyChanged(nameof(IsMusicQuestion));
+                    OnPropertyChanged(nameof(IsVideoQuestion));
                 } 
             } 
         }
@@ -369,10 +367,17 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
         }
-
         public bool IsPictureQuestion
         {
-            get { return CurrentQuestion.QuestionType == (int)QuestionTypeEnum.Picture ? true : false; }
+            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Picture ? true : false; }
+        }
+        public bool IsMusicQuestion
+        {
+            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Musical ? true : false; }
+        }
+        public bool IsVideoQuestion
+        {
+            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Video ? true : false; }
         }
 
 
@@ -404,20 +409,52 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private MediaElement _musicQuestionMediaElement;
+        public MediaElement MusicQuestionMediaElement
+        {
+            get { return _musicQuestionMediaElement; }
+            set
+            {
+                if (_musicQuestionMediaElement != value)
+                {
+                    _musicQuestionMediaElement = value;
+                    OnPropertyChanged(nameof(MusicQuestionMediaElement));
+                }
+            }
+        }
 
+        private MediaElement _videoQuestionMediaElement;
+        public MediaElement VideoQuestionMediaElement
+        {
+            get { return _videoQuestionMediaElement; }
+            set
+            {
+                if (_videoQuestionMediaElement != value)
+                {
+                    _videoQuestionMediaElement = value;
+                    OnPropertyChanged(nameof(VideoQuestionMediaElement));
+                }
+            }
+        }
+
+        SoundPlayer FinalMusicPlayer { get; set; } = new SoundPlayer();
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
-        public RelayCommand CloseQuestion { get; set; }
+        public RelayCommand CloseQuestionCommand { get; set; }
         public RelayCommand ShowPictureInQustionCommand { get; set; }
+        public RelayCommand PlayMediaInQustionCommand { get; set; }
+        public RelayCommand StopMediaInQustionCommand { get; set; }
+
+        public RelayCommand LoadMusicMediaInQustionCommand { get; set; }
+        public RelayCommand LoadVideoMediaInQustionCommand { get; set; }
+        public RelayCommand PlayFinalMusicCommand { get; set; }
 
 
-
-
-        #endregion
+    #endregion
 
         #region Players
 
-        ObservableCollection<Player> _players = new ObservableCollection<Player>();
+    ObservableCollection<Player> _players = new ObservableCollection<Player>();
         public ObservableCollection<Player> Players
         {
             get
@@ -450,6 +487,47 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         public RelayCommand SelectPlayerCommand { get; set; }
+
+        #endregion
+
+        #region Statistics
+
+        string _statisticsCsvPath = "";
+        public string StatisticsCsvPath
+        {
+            get
+            {
+                return _statisticsCsvPath;
+            }
+            set
+            {
+                if (_statisticsCsvPath != value)
+                {
+                    _statisticsCsvPath = value;
+                    OnPropertyChanged(nameof(ScoreBoardText));
+                }
+            }
+        }
+
+        bool _statisticsRecordingIsActive = false;
+        public bool StatisticsRecordingIsActive
+        {
+            get
+            {
+                return _statisticsRecordingIsActive;
+            }
+            set
+            {
+                if (_statisticsRecordingIsActive != value)
+                {
+                    _statisticsRecordingIsActive = value;
+                    OnPropertyChanged(nameof(StatisticsRecordingIsActive));
+                }
+            }
+        }
+
+        public RelayCommand StartRecordStatisticsCommand { get; set; }
+        public RelayCommand RecordScoresCommand { get; set; }
 
         #endregion
 
@@ -492,7 +570,9 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                return (SelectedPlayerIndex != -1 && ((GamePhase == (int)GamePhaseEnum.Question && AutoPlayerSelectionIndex==0) || AutoPlayerSelectionIndex == 1)) ? true : false;
+                return (SelectedPlayerIndex != -1 && 
+                    ((GamePhase == (int)GamePhaseEnum.Question && PlayerSelectionMode==PlayerSelectionModeEnum.Auto) || PlayerSelectionMode == PlayerSelectionModeEnum.Manual)) 
+                    ? true : false;
             }
         }
 
@@ -557,7 +637,7 @@ namespace SvoyaIgra.Game.ViewModels
             WindowLocator = new WindowLocator();
             _multimediaService = multimediaService;
 
-            CloseAppCommand  = new RelayCommand(CloseAppMethod);
+            CloseAppCommand = new RelayCommand(CloseAppMethod);
             OpenPresentScreenCommand = new RelayCommand(OpenPresentScreenMethod);
             ClosePresentScreenCommand = new RelayCommand(ClosePresentScreenMethod);
 
@@ -568,18 +648,25 @@ namespace SvoyaIgra.Game.ViewModels
 
 
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
+            CloseQuestionCommand = new RelayCommand(CloseQuestionMethod);
             ShowPictureInQustionCommand = new RelayCommand(ShowPictureInQustionMethod);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
+            PlayMediaInQustionCommand = new RelayCommand(PlayMediaInQustionMethod);
+            StopMediaInQustionCommand = new RelayCommand(StopMediaInQustionMethod);
+            LoadMusicMediaInQustionCommand = new RelayCommand(LoadMusicMediaInQustionMethod);
+            LoadVideoMediaInQustionCommand = new RelayCommand(LoadVideoMediaInQustionMethod);
+            PlayFinalMusicCommand = new RelayCommand(PlayFinalMusicMethod);
 
 
             MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
             SpecialtyVideoMediaElementLoadedCommand = new RelayCommand(SpecialtyVideoMediaElementLoadedMethod);
-            ///test
-            //GetTestQuestionsMethod(null);
+
+            StartRecordStatisticsCommand = new RelayCommand(StartRecordStatisticsMethod);
+            RecordScoresCommand = new RelayCommand(RecordScoresMethod);
+
+
             GetPlayers();
-            //OpenPresentScreenMethod(null);
-            ///
 
             #region Buttons control
 
@@ -591,10 +678,8 @@ namespace SvoyaIgra.Game.ViewModels
 
             ClearWsLogCommand = new RelayCommand(ClearWsLogMethod);
             #endregion
-
-    }
-
-
+        
+        }
 
         #region Methods
 
@@ -604,196 +689,179 @@ namespace SvoyaIgra.Game.ViewModels
         {
             if (GamePhase==(int)GamePhaseEnum.Question) ReadyToCollectAnswers = true;
         }
-
         private void ResetButtonsStateMethod(object obj)
         {
-            //_log.Info("OnResetButtonPressed");
-            if (ButtonsConnectionStatus == BtnsConnectionStatus.Connected)
+            try
             {
-                if (WebSocketClient.Send(WsMessages.ResetCommand))
+                if (ButtonsConnectionStatus == BtnsConnectionStatus.Connected)
                 {
-                    AddToLogList($"C: {WsMessages.ResetCommand}");
+                    if (WebSocketClient.Send(WsMessages.ResetCommand))
+                    {
+                        AddToLogList($"C: {WsMessages.ResetCommand}");
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ResetButtonsStateMethod, message:{e.Message}");
+            }
+            //_log.Info("OnResetButtonPressed");
+   
         }
-
         private void RequestNextPlayerMethod(object obj)
         {
-            //_log.Info("OnNextButtonPressed");
-            if (WebSocketClient.Send(WsMessages.NextCommand))
+            try
             {
-                AddToLogList($"C: {WsMessages.NextCommand}");
+                if (WebSocketClient.Send(WsMessages.NextCommand))
+                {
+                    AddToLogList($"C: {WsMessages.NextCommand}");
+                }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in RequestNextPlayerMethod, message:{e.Message}");
+            }
+            //_log.Info("OnNextButtonPressed");
+
         }
         private bool ConnectButtonsServer_CanExecute(object obj)
         {
-            return ButtonsConnectionStatus != BtnsConnectionStatus.Connected && ButtonsConnectionStatus != BtnsConnectionStatus.Connecting;
+            try
+            {
+                return ButtonsConnectionStatus != BtnsConnectionStatus.Connected && ButtonsConnectionStatus != BtnsConnectionStatus.Connecting;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ConnectButtonsServer_CanExecute, message:{e.Message}");
+                return false;
+            }            
         }
-
         private void DisconnectButtonsServerMethod(object obj)
         {
-            WebSocketClient.Dispose();
-            AddToLogList("Connected to buttons server");
+            try
+            {
+                WebSocketClient.Dispose();
+                AddToLogList("Connected to buttons server");
 
-            ButtonsConnectionStatus = "Disconnected";
+                ButtonsConnectionStatus = "Disconnected";
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in DisconnectButtonsServerMethod, message:{e.Message}");
+            }
+
+
         }
-
         private void ConnectButtonsServerMethod(object obj)
         {
-
-            WebSocketClient = new WebSocketClientProvider(ButtonServerAddress);
-            WebSocketClient.Opened += Wss_Opened;
-            WebSocketClient.Closed += Wss_Closed;
-            WebSocketClient.Error += Wss_Error;
-            WebSocketClient.Received += Wss_NewMessage;
-
-            ButtonsConnectionStatus = BtnsConnectionStatus.Connecting;
-
-            if (WebSocketClient.Connect())
+            try
             {
-                AddToLogList("Connected to buttons server");
-                //_log.Info("WebSocketClient Connect");
+                WebSocketClient = new WebSocketClientProvider(ButtonServerAddress);
+                WebSocketClient.Opened += Wss_Opened;
+                WebSocketClient.Closed += Wss_Closed;
+                WebSocketClient.Error += Wss_Error;
+                WebSocketClient.Received += Wss_NewMessage;
 
-                ButtonsConnectionStatus = BtnsConnectionStatus.Connected;
+                ButtonsConnectionStatus = BtnsConnectionStatus.Connecting;
+
+                if (WebSocketClient.Connect())
+                {
+                    AddToLogList("Connected to buttons server");
+                    //_log.Info("WebSocketClient Connect");
+
+                    ButtonsConnectionStatus = BtnsConnectionStatus.Connected;
+                }
+                else
+                {
+                    AddToLogList($"Error while connection to buttons server");
+                    //_log.Error("WebSocketClient Error");
+
+                    ButtonsConnectionStatus = BtnsConnectionStatus.Error;
+                }
             }
-            else
+            catch (Exception e)
             {
-                AddToLogList($"Error while connection to buttons server");
-                //_log.Error("WebSocketClient Error");
-
-                ButtonsConnectionStatus = BtnsConnectionStatus.Error;
+                MessageBox.Show($"Some problem in ConnectButtonsServerMethod, message:{e.Message}");
             }
         }
         private bool DisconnectButtonsServer_CanExecute(object obj)
         {
-            return ButtonsConnectionStatus == BtnsConnectionStatus.Connected || ButtonsConnectionStatus == BtnsConnectionStatus.Error;
+            try
+            {
+                return ButtonsConnectionStatus == BtnsConnectionStatus.Connected || ButtonsConnectionStatus == BtnsConnectionStatus.Error;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in DisconnectButtonsServer_CanExecute, message:{e.Message}");
+                return false;
+            }            
         }
 
-        void PlayerInQueueDetector(string message)
-        {
-            if (Players!=null)
-            {
+        //private int DecodeButtonMessage(string message)
+        //{
+        //    char[] separator = ";".ToCharArray();
+        //    string[] buttonsIndexes = message.Split(separator);
+        //    int qIndex = Convert.ToInt32(buttonsIndexes[0]);
 
-                char[] separator = ";".ToCharArray();
-                string[] buttonsIndexes = message.Split(separator);
-                int qIndex = Convert.ToInt32(buttonsIndexes[0]);
+        //    List<int> queue = new List<int>()
+        //    {
+        //        Convert.ToInt32(buttonsIndexes[1]),
+        //        Convert.ToInt32(buttonsIndexes[2]),
+        //        Convert.ToInt32(buttonsIndexes[3]),
+        //        Convert.ToInt32(buttonsIndexes[4])
+        //    };
+        //    bool allZeros = queue.TrueForAll(x => x == 0);
 
-                List<int> queue = new List<int>()
-            {
-                Convert.ToInt32(buttonsIndexes[1]),
-                Convert.ToInt32(buttonsIndexes[2]),
-                Convert.ToInt32(buttonsIndexes[3]),
-                Convert.ToInt32(buttonsIndexes[4])
-            };
+        //    for (int i = 0; i < queue.Count; i++)
+        //    {
 
+        //        if (queue[i] != 0)
+        //        {
+        //            switch (queue[i])
+        //            {
+        //                case (int)ButtonEnum.Red://1
+        //                    Players[(int)PlayerIndexEnum.Red]   .isInQueue = true;
+        //                    break;
+        //                case (int)ButtonEnum.Green://2
+        //                    Players[(int)PlayerIndexEnum.Green] .isInQueue = true;
+        //                    break;
+        //                case (int)ButtonEnum.Blue://4
+        //                    Players[(int)PlayerIndexEnum.Blue]  .isInQueue = true;
+        //                    break;
+        //                case (int)ButtonEnum.Yellow://8
+        //                    Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
+        //                    break;
 
-                if (Players != null)
-                {
-                    for (int i = 0; i < Players.Count; i++)
-                    {
-                        Players[i].isInQueue = false;
-                    }
-                    OnPropertyChanged(nameof(Players));
-                }
+        //                default:
+        //                    break;
+        //            }
 
-                for (int i = 0; i < queue.Count; i++)
-                {
+        //        }
+        //    }
 
-                    if (queue[i] != 0)
-                    {
-                        switch (queue[i])
-                        {
-                            case (int)ButtonEnum.Red://1
-                                Players[(int)PlayerIndexEnum.Red].isInQueue = true;
-                                break;
-                            case (int)ButtonEnum.Green://2
-                                Players[(int)PlayerIndexEnum.Green].isInQueue = true;
-                                break;
-                            case (int)ButtonEnum.Blue://4
-                                Players[(int)PlayerIndexEnum.Blue].isInQueue = true;
-                                break;
-                            case (int)ButtonEnum.Yellow://8
-                                Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
-                                break;
+        //    OnPropertyChanged(nameof(Players));
 
-                            default:
-                                break;
-                        }
-                    }
-                }
+        //    if (allZeros) return -1;
+        //    else
+        //    {
+        //        switch (queue[qIndex - 1])
+        //        {
+        //            case (int)ButtonEnum.Red://1
+        //                return (int)PlayerIndexEnum.Red;
+        //            case (int)ButtonEnum.Green://2
+        //                return (int)PlayerIndexEnum.Green;
+        //            case (int)ButtonEnum.Blue://4
+        //                return (int)PlayerIndexEnum.Blue;
+        //            case (int)ButtonEnum.Yellow://8
+        //                return (int)PlayerIndexEnum.Yellow;
 
-                OnPropertyChanged(nameof(Players));
-            }
-
-        }
-
-
-        private int DecodeButtonMessage(string message)
-        {
-            char[] separator = ";".ToCharArray();
-            string[] buttonsIndexes = message.Split(separator);
-            int qIndex = Convert.ToInt32(buttonsIndexes[0]);
-
-            List<int> queue = new List<int>()
-            {
-                Convert.ToInt32(buttonsIndexes[1]),
-                Convert.ToInt32(buttonsIndexes[2]),
-                Convert.ToInt32(buttonsIndexes[3]),
-                Convert.ToInt32(buttonsIndexes[4])
-            };
-            bool allZeros = queue.TrueForAll(x => x == 0);
-
-            for (int i = 0; i < queue.Count; i++)
-            {
-
-                if (queue[i] != 0)
-                {
-                    switch (queue[i])
-                    {
-                        case (int)ButtonEnum.Red://1
-                            Players[(int)PlayerIndexEnum.Red].isInQueue = true;
-                            break;
-                        case (int)ButtonEnum.Green://2
-                            Players[(int)PlayerIndexEnum.Green].isInQueue = true;
-                            break;
-                        case (int)ButtonEnum.Blue://4
-                            Players[(int)PlayerIndexEnum.Blue].isInQueue = true;
-                            break;
-                        case (int)ButtonEnum.Yellow://8
-                            Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                }
-            }
-
-            OnPropertyChanged(nameof(Players));
-
-            if (allZeros) return -1;
-            else
-            {
-                switch (queue[qIndex - 1])
-                {
-                    case (int)ButtonEnum.Red://1
-                        return (int)PlayerIndexEnum.Red;
-                    case (int)ButtonEnum.Green://2
-                        return (int)PlayerIndexEnum.Green;
-                    case (int)ButtonEnum.Blue://4
-                        return (int)PlayerIndexEnum.Blue;
-                    case (int)ButtonEnum.Yellow://8
-                        return (int)PlayerIndexEnum.Yellow;
-
-                    default:
-                        return -1;
-                }
-            }
+        //            default:
+        //                return -1;
+        //        }
+        //    }
 
 
-        }
+        //}
 
         #endregion
 
@@ -801,61 +869,397 @@ namespace SvoyaIgra.Game.ViewModels
 
         void GamePhaseUpdate()
         {
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-            switch (GamePhase)
+            try
             {
-                case (int)GamePhaseEnum.GameIntro:
-                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Intro.wmv", UriKind.Relative);
-                    VideoMediaElement.Play();
-                    break;
+                string workingDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
 
-                case (int)GamePhaseEnum.FirstRoundIntro:
-                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FirstRound.wmv", UriKind.RelativeOrAbsolute);
-                    VideoMediaElement.Play();
-                    break;
+                switch (GamePhase)
+                {
+                    case (int)GamePhaseEnum.GameIntro:
+                        VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Intro.wmv", UriKind.Relative);
+                        VideoMediaElement.Play();
+                        break;
 
-                case (int)GamePhaseEnum.FirstRound:
-                    CurrentRoundQuestions = AllRoundsQuestions[0];
-                    if (AutoPlayerSelectionIndex==0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null); 
-                    break;
+                    case (int)GamePhaseEnum.FirstRoundIntro:
+                        VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FirstRound.wmv", UriKind.RelativeOrAbsolute);
+                        VideoMediaElement.Play();
+                        break;
 
-                case (int)GamePhaseEnum.SecondRoundIntro:
-                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/SecondRound.wmv", UriKind.RelativeOrAbsolute);
-                    VideoMediaElement.Play();
-                    break;
+                    case (int)GamePhaseEnum.FirstRound:
+                        CurrentRoundQuestions = AllRoundsQuestions[0];
+                        if (PlayerSelectionMode == PlayerSelectionModeEnum.Auto && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+                        break;
 
-                case (int)GamePhaseEnum.SecondRound:
-                    CurrentRoundQuestions = AllRoundsQuestions[1];
-                    if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+                    case (int)GamePhaseEnum.SecondRoundIntro:
+                        VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/SecondRound.wmv", UriKind.RelativeOrAbsolute);
+                        VideoMediaElement.Play();
+                        break;
 
-                    break;
+                    case (int)GamePhaseEnum.SecondRound:
+                        CurrentRoundQuestions = AllRoundsQuestions[1];
+                        if (PlayerSelectionMode == PlayerSelectionModeEnum.Auto && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
 
-                case (int)GamePhaseEnum.ThirdRoundIntro:
-                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/ThirdRound.wmv", UriKind.RelativeOrAbsolute);
-                    VideoMediaElement.Play();
-                    break;
+                        break;
 
-                case (int)GamePhaseEnum.ThirdRound:
-                    CurrentRoundQuestions = AllRoundsQuestions[2];
-                    if (AutoPlayerSelectionIndex == 0 && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
+                    case (int)GamePhaseEnum.ThirdRoundIntro:
+                        VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/ThirdRound.wmv", UriKind.RelativeOrAbsolute);
+                        VideoMediaElement.Play();
+                        break;
 
-                    break;
+                    case (int)GamePhaseEnum.ThirdRound:
+                        CurrentRoundQuestions = AllRoundsQuestions[2];
+                        if (PlayerSelectionMode == PlayerSelectionModeEnum.Auto && ButtonsConnectionStatus == BtnsConnectionStatus.Connected) ResetButtonsStateMethod(null);
 
-                case (int)GamePhaseEnum.FinalRoundIntro:
-                    VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FinalRound.wmv", UriKind.RelativeOrAbsolute);
-                    VideoMediaElement.Play();
-                    break;
+                        break;
 
-                case (int)GamePhaseEnum.FinalRound:
-                    AutoCloseuestionOnPositiveAnswer = false;
-                    AutoPlayerSelectionIndex = 1; //manual
-                    CurrentQuestion = FinalQuestion;
-                    GamePhase = (int)GamePhaseEnum.Question;
-                    break;
+                    case (int)GamePhaseEnum.FinalRoundIntro:
+                        CurrentQuestion = FinalQuestion;
+                        VideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/FinalRound.wmv", UriKind.RelativeOrAbsolute);
+                        VideoMediaElement.Play();
+                        break;
 
-                case (int)GamePhaseEnum.Question:
+                    case (int)GamePhaseEnum.FinalRound:
+                        AutoCloseuestionOnPositiveAnswer = false;
+                        PlayerSelectionMode = PlayerSelectionModeEnum.Manual;                   
+                        GamePhase = (int)GamePhaseEnum.Question;
+                        break;
+
+                    case (int)GamePhaseEnum.Question:
+                        if (Players != null)
+                        {
+                            for (int i = 0; i < Players.Count; i++)
+                            {
+                                Players[i].isInQueue = false;
+                            }
+                            OnPropertyChanged(nameof(Players));
+                        }
+
+                        switch (CurrentQuestion.SpecialityType)
+                        {
+                            case SpecialityTypesEnum.Cat:
+                                SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Cat.wmv", UriKind.RelativeOrAbsolute);
+                                SpecialtyVideoMediaElement.Play();
+                                break;
+                            case SpecialityTypesEnum.Auction:
+                                SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Auction.wmv", UriKind.RelativeOrAbsolute);
+                                SpecialtyVideoMediaElement.Play();
+                                break;
+                            default:
+                                SpecialtyVideoMediaElement.Source = null;
+                                break;
+                        }
+
+                        switch (CurrentQuestion.QuestionType)
+                        {
+                            case QuestionTypeEnum.Picture:
+                                GetImageSource(CurrentQuestion.MediaLink);
+                                break;
+
+                            default:
+                                ImageSourceQuestion = null;
+                                break;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (GamePhase != (int)GamePhaseEnum.Question)
+                {
+                    SelectPlayerMethod(-1);
+                    ReadyToCollectAnswers = false;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GamePhaseUpdate, message:{e.Message}");
+            }
+        }
+        private void ChangeGamePhaseMethod(object obj)
+        {
+            try
+            {
+                GamePhase = Convert.ToInt32(obj);
+                CurrentQuestion.SpecialIntroWasNotPlayed = true;
+                VideoQuestionMediaElement.Source = null;
+                MusicQuestionMediaElement.Source = null;
+                OnPropertyChanged(nameof(CurrentQuestion));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ChangeGamePhaseMethod, message:{e.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Present screen methods
+
+        private void LockPresentScreenMethod(bool parameter)
+        {
+            try
+            {
+                if (PlayScreenWindow != null)
+                {
+                    if (parameter)
+                    {
+                        PlayScreenWindowState = WindowState.Normal;
+                        PlayScreenWindow.WindowStyle = WindowStyle.None;
+                        PlayScreenWindowState = WindowState.Maximized;
+                        PlayScreenWindow.Topmost = true;
+                    }
+                    else
+                    {
+                        PlayScreenWindow.Topmost = false;
+                        PlayScreenWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in LockPresentScreenMethod, message:{e.Message}");
+            }            
+        }
+
+        private void ClosePresentScreenMethod(object obj)
+        {
+            if (PlayScreenWindow != null) PlayScreenWindow.Close();
+        }
+        private void OpenPresentScreenMethod(object obj)
+        {
+            try
+            {
+                PlayScreenWindow = WindowLocator.PlayScreenWindow;
+                PlayScreenWindow.WindowState = WindowState.Maximized;
+                PlayScreenWindow.Show();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in OpenPresentScreenMethod, message:{e.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Image
+
+        void GetImageSource(string Id)
+        {
+            try
+            {
+                var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
+
+                //Qfiles = mutimediaCfg.QuestionFiles;
+                //Afiles = mutimediaCfg.AnswerFiles;
+
+
+                var mutimediaStream = _multimediaService.GetMultimedia(Id, 0, mutimediaCfg.QuestionFiles.ToList()[0]);
+
+                if (mutimediaStream.mediaType == MediaType.Image)
+                {
+                    var ms = ConverToMemoryStream(mutimediaStream.stream);
+                    SetImageSource(ms);
+                }
+                else if (mutimediaStream.mediaType == MediaType.Audio)
+                {
+                    //var ms = ConverToMemoryStream(mutimediaStream.stream);
+                    //_mediaPlayer.Open(new Uri(@"C:\SvoyaIgra\MultimediaStore\29FDBD16-9DA1-4495-B67A-87BCF0942881\Answer\Sinitana - No Rules.mp3"));
+                    //_mediaPlayer.Play();
+                }
+                else if (mutimediaStream.mediaType == MediaType.Video)
+                {
+
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetImageSource, message:{e.Message}");
+            }
+        }
+
+        private MemoryStream ConverToMemoryStream(Stream stream)
+        {
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                stream.CopyTo(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                stream.Close();
+
+                return ms;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ConverToMemoryStream, message:{e.Message}");
+                return null;
+            }
+        }
+        private void SetImageSource(MemoryStream ms)
+        {
+            try
+            {
+                var imgsrc = new BitmapImage();
+                imgsrc.BeginInit();
+                imgsrc.StreamSource = ms;
+                imgsrc.EndInit();
+                ImageSourceQuestion = imgsrc;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in SetImageSource, message:{e.Message}");
+            }
+        }
+        private void ShowPictureInQustionMethod(object obj)
+        {
+            try
+            {
+                string Id = CurrentQuestion.MediaLink;
+                MultimediaForEnum questionFor = (MultimediaForEnum)obj;
+
+                var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
+
+                string fileName = string.Empty;
+                if ((int)questionFor == (int)MultimediaForEnum.Question)
+                {
+                    fileName = mutimediaCfg.QuestionFiles.ToList()[0];
+                }
+                else if ((int)questionFor == (int)MultimediaForEnum.Answer)
+                {
+                    fileName = mutimediaCfg.AnswerFiles.ToList()[0];
+                }
+
+                var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
+
+
+                if (mutimediaStream.mediaType == MediaType.Image)
+                {
+                    var ms = ConverToMemoryStream(mutimediaStream.stream);
+                    SetImageSource(ms);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ShowPictureInQustionMethod, message:{e.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Players
+
+        private void GetPlayers()
+        {
+            try
+            {
+                var colors = DefaultPlayers.GetColors();
+                var names = DefaultPlayers.GetNames();
+
+                for (var i = 0; i < 4; i++)
+                {
+                    Players.Add(new Player($"Player {names[i]}", colors[i]));
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in GetPlayers, message:{e.Message}");
+            }
+        }
+
+        private void ChangePlayerScoreMethod(object obj)
+        {
+            try
+            {
+                if (SelectedPlayerIndex > -1)
+                {
+                    switch ((string)obj)
+                    {
+                        case "+":
+                            Players[SelectedPlayerIndex].Score += ScoreToChange;
+                            OnPropertyChanged(nameof(Players));
+                            if (GamePhase == (int)GamePhaseEnum.Question && AutoCloseuestionOnPositiveAnswer)
+                            {
+                                CloseQuestionMethod(null);
+                                //ChangeGamePhaseMethod(ActualRoundGamePhase);
+                            }
+                            ScoreBoardText = "0";
+                            break;
+                        case "-":
+                            Players[SelectedPlayerIndex].Score -= ScoreToChange;
+                            OnPropertyChanged(nameof(Players));
+                            if (PlayerSelectionMode==PlayerSelectionModeEnum.Auto)
+                            {
+                                RequestNextPlayerMethod(null);
+                            }
+
+                            break;
+                        default:
+                            break;
+                    }
+                    if (PlayerSelectionMode == PlayerSelectionModeEnum.Manual)
+                    {
+                        SelectPlayerMethod(-1);
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ChangePlayerScoreMethod, message:{e.Message}");
+            }
+        }
+
+        private void SelectPlayerMethod(object obj)
+        {
+            try
+            {
+                int index = Convert.ToInt32(obj);
+
+                if (index != -1)
+                {
+                    if (Players[index].isSelected && PlayerSelectionMode == PlayerSelectionModeEnum.Manual)
+                    {
+                        Players[index].isSelected = false;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
+                        Players[index].isSelected = true;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
+                }
+
+                OnPropertyChanged(nameof(Players));
+                SelectedPlayerIndex = Players.IndexOf(Players.FirstOrDefault(x => x.isSelected));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in SelectPlayerMethod, message:{e.Message}");
+            }
+        }
+
+        void PlayerInQueueDetector(string message)
+        {
+            try
+            {
+                if (Players != null)
+                {
+
+                    char[] separator = ";".ToCharArray();
+                    string[] buttonsIndexes = message.Split(separator);
+                    int qIndex = Convert.ToInt32(buttonsIndexes[0]);
+
+                    List<int> queue = new List<int>()
+                    {
+                        Convert.ToInt32(buttonsIndexes[1]),
+                        Convert.ToInt32(buttonsIndexes[2]),
+                        Convert.ToInt32(buttonsIndexes[3]),
+                        Convert.ToInt32(buttonsIndexes[4])
+                    };
 
 
                     if (Players != null)
@@ -867,244 +1271,39 @@ namespace SvoyaIgra.Game.ViewModels
                         OnPropertyChanged(nameof(Players));
                     }
 
-                    switch (CurrentQuestion.SpecialityType)
+                    for (int i = 0; i < queue.Count; i++)
                     {
-                        case (int)SpecialityTypesEnum.Cat:
-                            SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Cat.wmv", UriKind.RelativeOrAbsolute);
-                            SpecialtyVideoMediaElement.Play();
-                            break;
-                        case (int)SpecialityTypesEnum.Auction:
-                            SpecialtyVideoMediaElement.Source = new Uri(projectDirectory + "/Resources/Videos/Auction.wmv", UriKind.RelativeOrAbsolute);
-                            SpecialtyVideoMediaElement.Play();
-                            break;
-                        default:
-                            SpecialtyVideoMediaElement.Source = null;
-                            break;
+
+                        if (queue[i] != 0)
+                        {
+                            switch (queue[i])
+                            {
+                                case (int)ButtonEnum.Red://1
+                                    Players[(int)PlayerIndexEnum.Red].isInQueue = true;
+                                    break;
+                                case (int)ButtonEnum.Green://2
+                                    Players[(int)PlayerIndexEnum.Green].isInQueue = true;
+                                    break;
+                                case (int)ButtonEnum.Blue://4
+                                    Players[(int)PlayerIndexEnum.Blue].isInQueue = true;
+                                    break;
+                                case (int)ButtonEnum.Yellow://8
+                                    Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
                     }
 
-                    switch (CurrentQuestion.QuestionType)
-                    {
-                        case (int)QuestionTypeEnum.Picture:
-                            GetImageSource(CurrentQuestion.MediaLink);
-                            break;
-
-                        default:
-                            ImageSourceQuestion = null;
-                            break;
-
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-
-            if (GamePhase != (int)GamePhaseEnum.Question)
-            {
-                SelectPlayerMethod(-1);
-                ReadyToCollectAnswers = false;
-            }
-
-        }
-        private void ChangeGamePhaseMethod(object obj)
-        {
-            GamePhase = Convert.ToInt32(obj);
-            CurrentQuestion.SpecialIntroWasNotPlayed = true;
-            OnPropertyChanged(nameof(CurrentQuestion));
-
-        }
-
-        #endregion
-
-        #region Present screen methods
-
-        private void LockPresentScreenMethod(bool parameter)
-        {
-            if (PlayScreenWindow != null)
-            {
-                if (parameter)
-                {
-                    PlayScreenWindowState = WindowState.Normal;
-                    PlayScreenWindow.WindowStyle = WindowStyle.None;
-                    PlayScreenWindowState = WindowState.Maximized;
-                    PlayScreenWindow.Topmost = true;
-                }
-                else
-                {
-                    PlayScreenWindow.Topmost = false;
-                    PlayScreenWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+                    OnPropertyChanged(nameof(Players));
                 }
             }
-        }
-
-        private void ClosePresentScreenMethod(object obj)
-        {
-            if (PlayScreenWindow != null) PlayScreenWindow.Close();
-        }
-
-        private void OpenPresentScreenMethod(object obj)
-        {
-            PlayScreenWindow = WindowLocator.PlayScreenWindow;
-            PlayScreenWindow.WindowState = WindowState.Maximized;
-            PlayScreenWindow.Show();
-        }
-
-        #endregion
-
-        #region Image
-
-        void GetImageSource(string Id)
-        {
-            var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
-
-            //Qfiles = mutimediaCfg.QuestionFiles;
-            //Afiles = mutimediaCfg.AnswerFiles;
-
-
-            var mutimediaStream = _multimediaService.GetMultimedia(Id, 0, mutimediaCfg.QuestionFiles.ToList()[0]);
-
-            if (mutimediaStream.mediaType == MediaType.Image)
+            catch (Exception e)
             {
-                var ms = ConverToMemoryStream(mutimediaStream.stream);
-                SetImageSource(ms);
+                MessageBox.Show($"Some problem in PlayerInQueueDetector, message:{e.Message}");
             }
-            else if (mutimediaStream.mediaType == MediaType.Audio)
-            {
-                //var ms = ConverToMemoryStream(mutimediaStream.stream);
-                //_mediaPlayer.Open(new Uri(@"C:\SvoyaIgra\MultimediaStore\29FDBD16-9DA1-4495-B67A-87BCF0942881\Answer\Sinitana - No Rules.mp3"));
-                //_mediaPlayer.Play();
-            }
-            else if (mutimediaStream.mediaType == MediaType.Video)
-            {
-
-            }
-
-        }
-
-        private MemoryStream ConverToMemoryStream(Stream stream)
-        {
-            MemoryStream ms = new MemoryStream();
-            stream.CopyTo(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            stream.Close();
-
-            return ms;
-        }
-
-        private void SetImageSource(MemoryStream ms)
-        {
-            var imgsrc = new BitmapImage();
-            imgsrc.BeginInit();
-            imgsrc.StreamSource = ms;
-            imgsrc.EndInit();
-            ImageSourceQuestion = imgsrc;
-        }
-
-
-        private void ShowPictureInQustionMethod(object obj)
-        {
-            string Id = CurrentQuestion.MediaLink;
-            MultimediaForEnum questionFor = (MultimediaForEnum)obj;
-
-            var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
-
-            string fileName = string.Empty;
-            if ((int)questionFor == (int)MultimediaForEnum.Question)
-            {
-                fileName = mutimediaCfg.QuestionFiles.ToList()[0];
-                Debug.WriteLine($"{fileName}");
-            }
-            else if ((int)questionFor == (int)MultimediaForEnum.Answer)
-            {
-                fileName = mutimediaCfg.AnswerFiles.ToList()[0];
-                Debug.WriteLine($"{fileName}");
-            }
-
-            var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
-
-
-            if (mutimediaStream.mediaType == MediaType.Image)
-            {
-                var ms = ConverToMemoryStream(mutimediaStream.stream);
-                SetImageSource(ms);
-            }
-        }
-
-        #endregion
-
-        #region Players
-
-        private void GetPlayers()
-        {
-            var colors = DefaultPlayers.GetColors();
-            var names = DefaultPlayers.GetNames();
-            
-            for (var i = 0; i < 4; i++)
-            {
-                Players.Add(new Player($"Player {names[i]}", colors[i]));
-            }
-        }
-
-        private void ChangePlayerScoreMethod(object obj)
-        {
-
-            if (SelectedPlayerIndex > -1)
-            {
-                switch ((string)obj)
-                {
-                    case "+":
-                        Players[SelectedPlayerIndex].Score += ScoreToChange;
-                        OnPropertyChanged(nameof(Players));
-                        if (GamePhase == (int)GamePhaseEnum.Question && AutoCloseuestionOnPositiveAnswer)
-                        {
-                            ChangeGamePhaseMethod(ActualRoundGamePhase);
-                        }
-                        ScoreBoardText = "0";
-                        break;
-                    case "-":
-                        Players[SelectedPlayerIndex].Score -= ScoreToChange;
-                        OnPropertyChanged(nameof(Players));
-                        if (AutoPlayerSelection)
-                        {
-                            RequestNextPlayerMethod(null);
-                        }
-                        
-                        break;
-                    default:
-                        break;
-                }
-                if (!AutoPlayerSelection)
-                {
-                    SelectPlayerMethod(-1);
-                }
-                
-            }
-
-        }
-
-        private void SelectPlayerMethod(object obj)
-        {
-            int index = Convert.ToInt32(obj);
-
-            if (index != -1)
-            {
-                if (Players[index].isSelected && !AutoPlayerSelection)
-                {
-                    Players[index].isSelected = false;
-                }
-                else
-                {
-                    for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
-                    Players[index].isSelected = true;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < Players.Count; i++) Players[i].isSelected = false;
-            }
-
-            OnPropertyChanged(nameof(Players));
-            SelectedPlayerIndex = Players.IndexOf(Players.FirstOrDefault(x => x.isSelected));
         }
 
         #endregion
@@ -1113,38 +1312,140 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void OpenQuestionsSetupWindowMethod(object obj)
         {
-            var questionsSetupWindow = WindowLocator.QuestionsSetupWindow;
-            questionsSetupWindow.ShowDialog();
+            try
+            {
+                var questionsSetupWindow = WindowLocator.QuestionsSetupWindow;
+                questionsSetupWindow.ShowDialog();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in OpenQuestionsSetupWindowMethod, message:{e.Message}");
+            }
         }
 
         private void OpenQuestionMethod(object obj)
         {
-            Question q = (Question)obj;
-
-            int topicIndex = -2;
-            int questionIndex = -2;
-            for (int i = 0; i < CurrentRoundQuestions.Count; i++)
+            try
             {
-                questionIndex = CurrentRoundQuestions[i].Questions.IndexOf(q);
-                if (questionIndex > -1)
+                Question q = (Question)obj;
+
+                int topicIndex = -2;
+                int questionIndex = -2;
+                for (int i = 0; i < CurrentRoundQuestions.Count; i++)
                 {
-                    topicIndex = i;
-                    break;
+                    questionIndex = CurrentRoundQuestions[i].Questions.IndexOf(q);
+                    if (questionIndex > -1)
+                    {
+                        topicIndex = i;
+                        break;
+                    }
+                }
+                CurrentQuestion = CurrentRoundQuestions[topicIndex].Questions[questionIndex];
+                CurrentRoundQuestions[topicIndex].Questions[questionIndex].NotYetAsked = false;
+
+
+                GamePhase = (int)GamePhaseEnum.Question;
+                if (CurrentQuestion.SpecialityType == SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
+                else ScoreBoardText = CurrentQuestion.Price.ToString();
+
+                OnPropertyChanged(nameof(CurrentRoundQuestions));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in OpenQuestionMethod, message:{e.Message}");
+            }
+        }
+
+        private void StopMediaInQustionMethod(object obj)
+        {
+            try
+            {
+                if (MusicQuestionMediaElement != null && VideoQuestionMediaElement != null)
+                {
+                    MusicQuestionMediaElement.Stop();
+                    VideoQuestionMediaElement.Stop();
                 }
 
+                FinalMusicPlayer.Stop();
             }
-            CurrentQuestion = CurrentRoundQuestions[topicIndex].Questions[questionIndex];
-            CurrentRoundQuestions[topicIndex].Questions[questionIndex].NotYetAsked = false;
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in StopMediaInQustionMethod, message:{e.Message}");
+            }
+        }
 
+        private void PlayMediaInQustionMethod(object obj)
+        {
+            try
+            {
+                string Id = CurrentQuestion.MediaLink;
+                MultimediaForEnum questionFor = (MultimediaForEnum)obj;
 
-            GamePhase = (int)GamePhaseEnum.Question;
-            if (CurrentQuestion.SpecialityType == (int)SpecialityTypesEnum.Cat) ScoreBoardText = CurrentQuestion.SpecialityCatPrice.ToString();
-            else ScoreBoardText = CurrentQuestion.Price.ToString();
+                var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
 
-            OnPropertyChanged(nameof(CurrentRoundQuestions));
+                string fileName = string.Empty;
+                if ((int)questionFor == (int)MultimediaForEnum.Question)
+                {
+                    fileName = mutimediaCfg.QuestionFiles.ToList()[0];
+                }
+                else if ((int)questionFor == (int)MultimediaForEnum.Answer)
+                {
+                    fileName = mutimediaCfg.AnswerFiles.ToList()[0];
+                }
+
+                var whatToPlay = _multimediaService.GetMultimediaPath(Id, questionFor, fileName);
+
+                if (CurrentQuestion.QuestionType == QuestionTypeEnum.Musical)
+                {
+                    MusicQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
+                    VideoQuestionMediaElement.Source = null;
+
+                    MusicQuestionMediaElement.Play();
+                }
+                else if (CurrentQuestion.QuestionType == QuestionTypeEnum.Video)
+                {
+                    VideoQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
+                    MusicQuestionMediaElement.Source = null;
+
+                    VideoQuestionMediaElement.Play();
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in PlayMediaInQustionMethod, message:{e.Message}");
+            }
+
+        }
+
+        private void CloseQuestionMethod(object obj)
+        {
+            try
+            {
+                if (StatisticsRecordingIsActive) RecordScoresMethod(null);
+                ChangeGamePhaseMethod(ActualRoundGamePhase);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in CloseQuestionMethod, message:{e.Message}");
+            }
         }
 
 
+        private void PlayFinalMusicMethod(object obj)
+        {
+            try
+            {
+                string workingDirectory = Environment.CurrentDirectory;
+                string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+                string finalFile = projectDirectory + @"\Resources\Sounds\FinalTime.wav";
+                FinalMusicPlayer = new SoundPlayer(finalFile); //put your own .wave file path
+                FinalMusicPlayer.Play();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in PlayFinalMusicMethod, message:{e.Message}");
+            }
+        }
 
         #endregion
 
@@ -1152,71 +1453,212 @@ namespace SvoyaIgra.Game.ViewModels
 
         private void SpecialtyVideoMediaElementLoadedMethod(object obj)
         {
-            SpecialtyVideoMediaElement = (MediaElement)obj;
+            try
+            {
+                SpecialtyVideoMediaElement = (MediaElement)obj;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in SpecialtyVideoMediaElementLoadedMethod, message:{e.Message}");
+            }
         }
 
         private void MediaElementLoadedMethod(object obj)
         {
-            VideoMediaElement = (MediaElement)obj;
+            try
+            {
+                VideoMediaElement = (MediaElement)obj;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in MediaElementLoadedMethod, message:{e.Message}");
+            }
         }
 
         private void CloseSpecialIntroMethod(object obj)
         {
-            if (CurrentQuestion != null)
+            try
             {
-                CurrentQuestion.SpecialIntroWasNotPlayed = false;
-                OnPropertyChanged(nameof(CurrentQuestion));
-                OnPropertyChanged(nameof(CurrentRoundQuestions));
+                if (CurrentQuestion != null)
+                {
+                    CurrentQuestion.SpecialIntroWasNotPlayed = false;
+                    OnPropertyChanged(nameof(CurrentQuestion));
+                    OnPropertyChanged(nameof(CurrentRoundQuestions));
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in CloseSpecialIntroMethod, message:{e.Message}");
+            }
+        }
+
+        private void LoadMusicMediaInQustionMethod(object obj)
+        {
+            try
+            {
+                MusicQuestionMediaElement = (MediaElement)obj;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in LoadMusicMediaInQustionMethod, message:{e.Message}");
+            }
+        }
+        private void LoadVideoMediaInQustionMethod(object obj)
+        {
+            try
+            {
+                VideoQuestionMediaElement = (MediaElement)obj;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in LoadVideoMediaInQustionMethod, message:{e.Message}");
             }
         }
 
         #endregion
 
-        #region WS
-
-        private void ClearWsLogMethod(object obj)
-        {
-            WsLogOC.Clear();
-        }
+        #region WS        
 
         private void Wss_Opened()
         {
-            AddToLogList($"Opened");
+            try
+            {
+                AddToLogList($"Opened");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in Wss_Opened, message:{e.Message}");
+            }
         }
-
         private void Wss_Closed()
         {
-            AddToLogList($"Closed");
+            try
+            {
+                AddToLogList($"Closed");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in Wss_Closed, message:{e.Message}");
+            }
         }
-
         private void Wss_Error(string message)
         {
-            AddToLogList($"Error {message}");
-            ButtonsConnectionStatus = BtnsConnectionStatus.Error;
+            try
+            {
+                AddToLogList($"Error {message}");
+                ButtonsConnectionStatus = BtnsConnectionStatus.Error;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in Wss_Error, message:{e.Message}");
+            }
         }
         private void Wss_NewMessage(string message)
         {
-            AddToLogList($"S: {message}");
-            ButtonsMessageText = message;
+            try
+            {
+                AddToLogList($"S: {message}");
+                ButtonsMessageText = message;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in Wss_NewMessage, message:{e.Message}");
+            }
         }
-
         private void AddToLogList(string message)
         {
-            _dispatcher.Invoke(() => WsLogOC.Add($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}\t {message}"));
-            OnPropertyChanged(nameof(WsLogSelectedIndex));
+            try
+            {
+                _dispatcher.Invoke(() => WsLogOC.Add($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}\t {message}"));
+                OnPropertyChanged(nameof(WsLogSelectedIndex));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in AddToLogList, message:{e.Message}");
+            }
+        }
+        private void ClearWsLogMethod(object obj)
+        {
+            try
+            {
+                WsLogOC.Clear();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in ClearWsLogMethod, message:{e.Message}");
+            }
         }
 
         #endregion
 
+        #region Statistics
 
+        private void RecordScoresMethod(object obj)
+        {
+            try
+            {
+                if (StatisticsRecordingIsActive)
+                {
+                    using (StreamWriter sw = File.AppendText(StatisticsCsvPath))
+                    {
+                        string raw = "";
+                        for (int i = 0; i < Players.Count; i++)
+                        {
+                            raw = raw + Players[i].Score.ToString() + ";";
+                        }
+                        raw = raw.Remove(raw.Length - 1);
+                        sw.WriteLine(raw);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in RecordScoresMethod, message:{e.Message}");
+            }
+        }
 
+        private void StartRecordStatisticsMethod(object obj)
+        {
+            try
+            {
+                StatisticsCsvPath = @"C:\SvoyaIgra\Statistics_" + DateTime.Now.ToString("HH_mm_ddMMyyyy") + ".csv";
+
+                MessageBoxResult result = MessageBox.Show("Do you really want to start game statistics recording with these names?", "Statistics", MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+
+                    StatisticsRecordingIsActive = true;
+                    using (StreamWriter sw = File.AppendText(StatisticsCsvPath))
+                    {
+                        string raw = "";
+                        for (int i = 0; i < Players.Count; i++)
+                        {
+                            raw = raw + Players[i].Name + ";";
+                        }
+                        raw = raw.Remove(raw.Length - 1);
+                        sw.WriteLine(raw);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in StartRecordStatisticsMethod, message:{e.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Overall SW methods
         private void CloseAppMethod(object obj)
         {
+            //https://preview.redd.it/wudbck9rhuw61.jpg?auto=webp&s=75ebd5191a97a9f6a4e3b2e3d5ae16c7016f57e9
             App.Current.Shutdown();
         }
+        #endregion
 
         #endregion
 
-        
+
     }
 }

@@ -25,6 +25,13 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
+        <ObjectDataProvider x:Key="PlayerSelectionModeEnum"
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:PlayerSelectionModeEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
 
         <Style TargetType="Button" x:Key="WindowButtons" >
             <Setter Property="MinWidth" Value="100"/>
@@ -82,8 +89,13 @@
                             Command="{Binding OpenQuestionsSetupWindowCommand}" 
                             Style="{StaticResource WindowButtons}"/>
                 </GroupBox>
+                <GroupBox Header="2. Game statistics" >
+                    <Button Content="Start recording scores" 
+                            Command="{Binding StartRecordStatisticsCommand}" 
+                            Style="{StaticResource WindowButtons}"/>
+                </GroupBox>
 
-                <GroupBox Header="2. Playscreen" Margin="10 0 0 0">
+                <GroupBox Header="3. Playscreen" Margin="10 0 0 0">
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Open" 
                         Command="{Binding OpenPresentScreenCommand}"
@@ -177,7 +189,7 @@
                                  Content="Final round Intro" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FinalRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" 
+                        <RadioButton GroupName="GamePhase" x:Name="FinalRoundRadioButton"
                                  Content="Final round" 
                                  Command="{Binding ChangeGamePhaseCommand}"
                                  CommandParameter="{x:Static enums:GamePhaseEnum.FinalRound}"/>
@@ -190,12 +202,18 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                 <Label Content="How to select player: " FontSize="20"/>
-                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
+                <!--<ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
                       MinWidth="100" FontSize="20"
                       SelectedIndex="{Binding AutoPlayerSelectionIndex, Mode=TwoWay}">
                     <ComboBoxItem Content="Auto (Buttons)" IsSelected="True" />
                     <ComboBoxItem Content="Manual (here in cockpit)" />
-                </ComboBox>
+                </ComboBox>-->
+                <ComboBox VerticalAlignment="Center" 
+                          HorizontalAlignment="Center"
+                          MinWidth="100" FontSize="20"
+                          ItemsSource="{Binding Source={StaticResource PlayerSelectionModeEnum}}"
+                          SelectedValue="{Binding PlayerSelectionMode,Mode=TwoWay}"/>
+                
             </StackPanel>
             <Grid Grid.Row="1" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
@@ -211,12 +229,11 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal"  VerticalAlignment="Top" HorizontalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="StackPanel">
+                                <Setter Property="IsEnabled" Value="False"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding AutoPlayerSelection, UpdateSourceTrigger=PropertyChanged}" Value="False">
+
+                                    <DataTrigger Binding="{Binding PlayerSelectionMode, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static enums:PlayerSelectionModeEnum.Manual}">
                                         <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding AutoPlayerSelection, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                                        <Setter Property="IsEnabled" Value="False"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -316,14 +333,19 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" 
-                            IsEnabled="{Binding AutoPlayerSelection}">
+                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center"  >
                     <StackPanel Orientation="Horizontal">
                         <StackPanel.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="Padding" Value="5"/>
                                 <Setter Property="MinWidth" Value="100"/>
+                                <Setter Property="IsEnabled" Value="True"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlayerSelectionMode}" Value="{x:Static enums:PlayerSelectionModeEnum.Manual}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
 
@@ -419,14 +441,20 @@
                                     <Button Content="{Binding Questions[0].Price}"                                            
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[0]}" 
-                                            Foreground="{Binding Questions[0].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                            Foreground="{Binding Questions[0].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[0].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[0].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[0].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                    </DataTrigger>
+                                                    
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
@@ -440,13 +468,18 @@
                                     <Button Content="{Binding Questions[1].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[1]}"
-                                            Foreground="{Binding Questions[1].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                            Foreground="{Binding Questions[1].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[1].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Setter Property="Background" Value="gray"/>
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[1].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[1].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -462,13 +495,18 @@
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[2]}"
                                             Foreground="{Binding Questions[2].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[2].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}"
                                             >
                                         <Button.Resources>
                                             <Style TargetType="Button">
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[2].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[2].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
 
                                                 </Style.Triggers>
@@ -484,13 +522,18 @@
                                     <Button Content="{Binding Questions[3].Price}"
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[3]}"
-                                            Foreground="{Binding Questions[3].SpecialityType,Converter={StaticResource specialityColorConverter}}">
+                                            Foreground="{Binding Questions[3].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[3].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}">
                                         <Button.Resources>
                                             <Style TargetType="Button">
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[3].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[3].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
 
                                                 </Style.Triggers>
@@ -507,14 +550,18 @@
                                             Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=Window},Path=DataContext.OpenQuestionCommand}"
                                             CommandParameter="{Binding Questions[4]}"
                                             Foreground="{Binding Questions[4].SpecialityType,Converter={StaticResource specialityColorConverter}}"
+                                            BorderBrush="{Binding Questions[4].QuestionType,Converter={StaticResource questionTypeBorderBrushConverter}}"
                                             >
                                         <Button.Resources>
                                             <Style TargetType="Button">
-
+                                                <Setter Property="BorderThickness" Value="2"/>
                                                 <Setter Property="Background" Value="gray"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Questions[4].NotYetAsked}" Value="False">
                                                         <Setter Property="Background" Value="Transparent"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Questions[4].QuestionType}" Value="{x:Static enums:QuestionTypeEnum.Text}">
+                                                        <Setter Property="BorderThickness" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -544,7 +591,7 @@
                         <StackPanel Orientation="Horizontal"  Margin="0">
                             <StackPanel.Resources>
                                 <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
+                                    <!--<Setter Property="Visibility" Value="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>-->
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="TextWrapping" Value="Wrap"/>
                                     <Setter Property="MinWidth" Value="150"/>
@@ -578,8 +625,20 @@
                             </StackPanel>
                             
                             <StackPanel Grid.Row="5" Orientation="Horizontal">
-                                <Label Content="SpecialityCatPrice: "  />
-                                <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"/>
+                                <StackPanel.Resources>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CurrentQuestion.SpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Resources>
+                                        <Label Content="SpecialityCatPrice: "  />
+                                <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}">
+                                    
+                                </TextBlock>
                             </StackPanel>
 
                         </StackPanel>
@@ -653,7 +712,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <Button Content="Close Question" Grid.Column="0"
-                                            Command="{Binding ChangeGamePhaseCommand}" 
+                                            Command="{Binding CloseQuestionCommand}" 
                                             CommandParameter="{Binding ActualRoundGamePhase, UpdateSourceTrigger=PropertyChanged}"
                                             MinWidth="150" MinHeight="50"
                                             Margin="10" Padding="10"
@@ -716,11 +775,49 @@
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
                                             Margin="5,0,0,0"/>
 
-                                </StackPanel>
- 
+                                </StackPanel> 
                             </GroupBox>
+                            <GroupBox Header="Music" Grid.Column="1" IsEnabled="{Binding IsMusicQuestion}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" Margin="5,0,0,0"/>
+                                    <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
+                                            Margin="5,0,0,0"/>
+                                </StackPanel>
                                 
-                            </Grid>     
+                            </GroupBox>
+                            <GroupBox Header="Video" Grid.Column="2" IsEnabled="{Binding IsVideoQuestion}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" Margin="5,0,0,0"/>
+                                    <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
+                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
+                                            Margin="5,0,0,0"/>
+                                </StackPanel>
+
+                            </GroupBox>
+                            <GroupBox Header="Final round music" Grid.Column="3" IsEnabled="{Binding ElementName=FinalRoundRadioButton, Path=IsChecked}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Play" Command="{Binding PlayFinalMusicCommand}"
+                                                  MinWidth="30"/>
+                                    <Button Content="Stop" 
+                                            Command="{Binding StopMediaInQustionCommand}" 
+                                            CommandParameter="Play"
+                                            MinWidth="30" Margin="5,0,0,0"/>
+
+                                    <Button Content="Record final results" 
+                                            Command="{Binding RecordScoresCommand}" 
+                                            CommandParameter="Play"
+                                            MinWidth="50" Margin="15,0,0,0"/>
+
+                                </StackPanel>
+
+                            </GroupBox>
+
+                        </Grid>     
                             
                         </GroupBox>
                 </Grid>

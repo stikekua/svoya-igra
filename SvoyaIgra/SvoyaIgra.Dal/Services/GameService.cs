@@ -4,6 +4,7 @@ using SvoyaIgra.Dal.Dto;
 using SvoyaIgra.Dal.Helpers;
 using SvoyaIgra.Shared.Entities;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.Dal.Services;
@@ -44,10 +45,10 @@ public class GameService<TContext> : IGameService where TContext : DbContext
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
 
-        if (topicConfig?.RoundTopicIds != null && topicConfig?.RoundTopicIds.Count() == GameConstants.RoundTopicsCount) //topic once generated, return it
+        if (topicConfig?.RoundTopicIds != null && topicConfig?.RoundTopicIds.Count() == GameConstants.Round.TopicsCount) //topic once generated, return it
         {
             topics.AddRange(_dbContext.Set<Topic>()
-                .Where(t => topicConfig.RoundTopicIds.Contains(t.Id))                
+                .Where(t => topicConfig.RoundTopicIds.Contains(t.Id))
                 .Select(t => t.ToDto())
             );
 
@@ -56,9 +57,8 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         }
         else //new topic set  
         {
-            topics.AddRange(_dbContext.Set<Topic>()
-                .Where(t => t.Difficulty == TopicDifficulty.Round)
-                .OrderBy(x => Guid.NewGuid()).Take(GameConstants.RoundTopicsCount)
+            topics.AddRange(GetValidRoundTopics()
+                .OrderBy(x => Guid.NewGuid()).Take(GameConstants.Round.TopicsCount)
                 .Select(t => t.ToDto())
             );
 
@@ -69,11 +69,11 @@ public class GameService<TContext> : IGameService where TContext : DbContext
             await _dbContext.SaveChangesAsync();
         }
 
-        var qLevels = new[] { 
-            QuestionDifficulty.Level1, 
-            QuestionDifficulty.Level2, 
+        var qLevels = new[] {
+            QuestionDifficulty.Level1,
+            QuestionDifficulty.Level2,
             QuestionDifficulty.Level3,
-            QuestionDifficulty.Level4, 
+            QuestionDifficulty.Level4,
             QuestionDifficulty.Level5
         };
 
@@ -93,7 +93,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
 
         return topics;
     }
-    
+
     public async Task<IEnumerable<TopicDto>> GetTopicsFinalAsync(Guid gameId)
     {
         var game = _dbContext.Set<GameSession>().FirstOrDefault(g => g.Id == gameId);
@@ -103,7 +103,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
 
-        if (topicConfig?.FinalTopicIds != null && topicConfig?.FinalTopicIds.Count() == GameConstants.FinalTopicsCount) //topic once generated, return it
+        if (topicConfig?.FinalTopicIds != null && topicConfig?.FinalTopicIds.Count() == GameConstants.Final.TopicsCount) //topic once generated, return it
         {
             topics.AddRange(_dbContext.Set<Topic>()
                 .Where(t => topicConfig.FinalTopicIds.Contains(t.Id))
@@ -117,7 +117,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         {
             topics.AddRange(_dbContext.Set<Topic>()
                 .Where(t => t.Difficulty == TopicDifficulty.Final)
-                .OrderBy(x => Guid.NewGuid()).Take(GameConstants.FinalTopicsCount)
+                .OrderBy(x => Guid.NewGuid()).Take(GameConstants.Final.TopicsCount)
                 .Select(t => t.ToDto())
             );
 
@@ -127,7 +127,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
             _dbContext.Set<GameSession>().Update(game);
             await _dbContext.SaveChangesAsync();
         }
-        
+
         foreach (var topic in topics)
         {
             var questions = new List<QuestionDto>();
@@ -155,16 +155,51 @@ public class GameService<TContext> : IGameService where TContext : DbContext
             .Where(t => !topicConfig.RoundTopicIds.Contains(t.Id) && t.Difficulty == TopicDifficulty.Round)
             .OrderBy(x => Guid.NewGuid()).Take(1)
             .First().ToDto();
-        
+
         var questions = new List<QuestionDto>();
         questions.Add(_dbContext.Set<Question>()
             .Where(q => q.TopicId == topic.Id)
             .OrderBy(x => Guid.NewGuid()).Take(1)
             .First().ToDto()
         );
-        
+
         topic.Questions = questions;
 
         return topic;
+    }
+
+    private IEnumerable<Topic> GetValidRoundTopics()
+    {
+        var dbList = _dbContext.Set<Topic>()
+            .Where(t => t.Difficulty == TopicDifficulty.Round)
+            .ToList()
+            .GroupJoin(_dbContext.Set<Question>(),
+                topic => topic.Id,
+                question => question.TopicId,
+                (x, y) => new { Topic = x, Questions = y })
+            .Where(t => t.Questions.Count() >= GameConstants.Round.QuestionDifficultiesCount);
+
+        var qs = dbList.Select(x => x.Questions);
+
+        var validTopicIds = new List<int>();
+        foreach (var q in qs)
+        {
+            var topicId = q.First().TopicId;
+            var g = q.GroupBy(
+                    q => q.Difficulty,
+                    q => q.Id,
+                    (key, g) => new { Difficulty = key, Ids = g.ToList() })
+                .ToList();
+
+            if (g.Count() < GameConstants.Round.QuestionDifficultiesCount) continue;
+
+            if (g.Select(x => x.Ids.Count).All(x => x >= 1))
+            {
+                validTopicIds.Add(topicId);
+            }
+        }
+
+        return dbList.Select(x => x.Topic)
+            .Where(t => validTopicIds.Contains(t.Id));
     }
 }

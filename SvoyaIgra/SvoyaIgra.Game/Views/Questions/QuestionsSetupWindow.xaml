@@ -2,12 +2,30 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SvoyaIgra.Game.Views.Questions"
+        xmlns:enums="clr-namespace:SvoyaIgra.Game.Enums"
         mc:Ignorable="d"
         Title="QuestionsSetupWindow" Height="900" Width="1020"
         DataContext="{Binding Source={StaticResource Locator}, Path=QuestionsSetupViewModel}">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="SpecialityTypesEnum"
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:SpecialityTypesEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="QuestionTypeEnum"
+                            MethodName="GetValues" 
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:QuestionTypeEnum"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -71,6 +89,13 @@
                                     <ComboBoxItem>6th topic</ComboBoxItem>
                                 </ComboBox>
                             </StackPanel>
+                            <StackPanel Margin="5 ">
+                                <Label Content="topics count"/>
+                                <TextBlock Text="{Binding TopicsCount}">
+                                    
+                                </TextBlock>
+                                  
+                            </StackPanel>
                             <StackPanel Margin="5">
                                 <Label Content="Select Question" />
                                 <ComboBox Text="Question" SelectedIndex="{Binding CurrentQuestionIndex}">
@@ -110,6 +135,22 @@
                                         <Label Content="Speciality Type" FontWeight="Bold"/>
                                         <TextBlock Text="{Binding CurrentQuestion.SpecialityType}" TextWrapping="Wrap"/>
                                     </StackPanel>
+                                    <StackPanel Margin="5">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentQuestion.SpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
+                                                        <DataTrigger.Setters>
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger.Setters>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <Label Content="Cat Price" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}" />
+                                    </StackPanel>
                                 </StackPanel>
                             </StackPanel>
 
@@ -122,10 +163,8 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                                 <StackPanel x:Name="Specility"  HorizontalAlignment="Center" >
                                     <Label Content="new speciality type" />
-                                    <ComboBox x:Name="NewSpecialityTypeCombobox" SelectedIndex="{Binding NewQuestionSpecialityTypeIndex, UpdateSourceTrigger=PropertyChanged}">
-                                        <ComboBoxItem IsSelected="True">simple question</ComboBoxItem>
-                                        <ComboBoxItem>Cat</ComboBoxItem>
-                                        <ComboBoxItem>Auction</ComboBoxItem>
+                                    <ComboBox x:Name="NewQuestionSpecialityTypeCombobox" ItemsSource="{Binding Source={StaticResource SpecialityTypesEnum}}"
+                                              SelectedValue="{Binding NewQuestionSpecialityType}">
                                     </ComboBox>
                                 </StackPanel>
                                 <Button Content="Get Cat"
@@ -137,7 +176,7 @@
                                         <Style TargetType="Button">
                                             <Setter Property="IsEnabled" Value="False"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox, Path=SelectedIndex}" Value="1">
+                                                <DataTrigger Binding="{Binding NewQuestionSpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">                                                    
                                                     <Setter Property="IsEnabled" Value="True"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -158,13 +197,9 @@
                                 
                                 <StackPanel Margin="10 0">
                                     <Label Content="new question type"/>
-                                    <ComboBox SelectedIndex="{Binding NewQuestionTypeIndex,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
-                                        <ComboBoxItem   IsSelected="True">Text</ComboBoxItem>
-                                        <ComboBoxItem>Picture</ComboBoxItem>
-                                        <ComboBoxItem>Picture series</ComboBoxItem>
-                                        <ComboBoxItem>Music</ComboBoxItem>
-                                        <ComboBoxItem>Video</ComboBoxItem>
-                                    </ComboBox>
+                                    <ComboBox ItemsSource="{Binding Source={StaticResource QuestionTypeEnum}}"
+                                              SelectedValue="{Binding NewQuestionType}"/>
+                                 
                                 </StackPanel>
                                 
                             </StackPanel>
@@ -176,22 +211,12 @@
                                         <TextBox TextWrapping="Wrap" Width="200">
                                             <TextBox.Resources>
                                                 <Style TargetType="TextBox">
-                                                    <Style.Setters>
-                                                        <Setter Property="Text" Value="{Binding NewTopicName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                    </Style.Setters>
+                                                    <Setter Property="Text" Value="{Binding CurrentQuestion.TopicName}"/>                                                    
+                                                    <Setter Property="IsEnabled" Value="False"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger  Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="1">
+                                                        <DataTrigger  Binding="{Binding NewQuestionSpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
                                                             <Setter Property="IsEnabled" Value="True"/>
-
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="0">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                            <Setter Property="Text" Value="{Binding CurrentQuestion.TopicName}"/>
-
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="2">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                            <Setter Property="Text"  Value="{Binding CurrentQuestion.TopicName}"/>
+                                                            <Setter Property="Text" Value="{Binding NewTopicName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -201,28 +226,18 @@
                                 </StackPanel>
 
                                 <StackPanel Margin="10,0,0,0">
-                                    <Label Content="new Cat price"/>
+                                    <Label Content="New Cat price"/>
                                     <TextBox TextWrapping="Wrap">
                                         <TextBox.Resources>
                                             <Style TargetType="TextBox">
-                                                <Style.Setters>
-                                                    <Setter Property="Text" Value="{Binding NewQuestionSpecialityCatPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                                </Style.Setters>
+                                                
+                                                <Setter Property="Text" Value="{Binding CurrentQuestion.Price}"/>
+                                                <Setter Property="IsEnabled" Value="False"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger  Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="1">
+
+                                                    <DataTrigger  Binding="{Binding NewQuestionSpecialityType}" Value="{x:Static enums:SpecialityTypesEnum.Cat}">
                                                         <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="0">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Text">
-                                                            <Setter.Value>
-                                                                <system:String>0</system:String>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ElementName=NewSpecialityTypeCombobox,Path=SelectedIndex}" Value="2">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Text" Value="{Binding CurrentQuestion.Price}"/>
+                                                        <Setter Property="Text" Value="{Binding NewQuestionSpecialityCatPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -279,7 +294,10 @@
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Question text" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding FinalQuestionSetup.QuestionText}" TextWrapping="Wrap" Height="40"/>
+                            <TextBlock x:Name="finalQuestionTextBlock" Text="{Binding FinalQuestionSetup.QuestionText}" 
+                                       TextWrapping="Wrap" 
+                                       Height="80" 
+                                       ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Answer" FontWeight="Bold"/>
@@ -299,7 +317,10 @@
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Question text" FontWeight="Bold"/>
-                            <TextBox Text="{Binding NewFinalQuestionText}" TextWrapping="Wrap" Height="40"/>
+                            <TextBox Text="{Binding NewFinalQuestionText}" 
+                                     Height="{Binding ElementName=finalQuestionTextBlock, Path=Height}"
+                                     TextWrapping="{Binding ElementName=finalQuestionTextBlock, Path=TextWrapping}"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                         </StackPanel>
                         <StackPanel Margin="5">
                             <Label Content="Answer" FontWeight="Bold"/>

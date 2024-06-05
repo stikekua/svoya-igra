@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.MultimediaProvide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvoyaIgra.MultimediaViewer", "SvoyaIgra.MultimediaViewer\SvoyaIgra.MultimediaViewer.csproj", "{9C4F28A9-0D2C-4B7B-ACFB-5ED6A2558123}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvoyaIgra.QuestionTool", "SvoyaIgra.QuestionTool\SvoyaIgra.QuestionTool.csproj", "{19A35F3C-9673-4E88-86FC-F8E714F9A11B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{9C4F28A9-0D2C-4B7B-ACFB-5ED6A2558123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C4F28A9-0D2C-4B7B-ACFB-5ED6A2558123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C4F28A9-0D2C-4B7B-ACFB-5ED6A2558123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19A35F3C-9673-4E88-86FC-F8E714F9A11B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19A35F3C-9673-4E88-86FC-F8E714F9A11B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19A35F3C-9673-4E88-86FC-F8E714F9A11B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19A35F3C-9673-4E88-86FC-F8E714F9A11B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
