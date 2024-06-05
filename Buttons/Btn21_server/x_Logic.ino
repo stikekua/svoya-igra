@@ -19,7 +19,11 @@ void EVH_next() {
     //select next in queue if someone
     if (queue[queueSelector] != 0){
       EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
-    }    
+      LED_setColor(static_cast<cButton>(queue[queueSelector]));
+    }
+    else{
+      LED_Off();
+    }
   }
   //send actulal status
   makeWSMessage();
@@ -38,6 +42,7 @@ void EVH_reset() {
   }
   //release buttons
   EN_broadcastMsg(CMD_RELEASE);
+  LED_Off();
   //send actulal status
   makeWSMessage();
   webSocket.broadcastTXT(ButtonStateMsg, strlen(ButtonStateMsg));
@@ -49,6 +54,7 @@ void EVH_buttonPressed(int button) {
   // added button is first in queue
   if (queue[queueSelector] == button) {
     EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
+    LED_setColor(static_cast<cButton>(queue[queueSelector]));
   }
   //send actulal status
   makeWSMessage();

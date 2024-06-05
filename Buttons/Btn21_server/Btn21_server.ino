@@ -7,6 +7,11 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <timer.h>
+#include <Adafruit_NeoPixel.h>
+
+#define LED_PIN 2
+#define LED_COUNT 5
+bool ledon = false;
 
 IPAddress _apIP(192, 168, 5, 1);
 String _ssidAP = "SvoyaIgraAP2";
@@ -18,6 +23,8 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 
 Timer printTimer(2000);
 
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+
 // Web2Server
 const char SG_NEXT[] = "SGNext";
 const char SG_RESET[] = "SGReset";
@@ -25,6 +32,7 @@ char ButtonStateMsg[20];
 
 enum cButton { RED = 1, GREEN = 2, BLUE = 4, YELLOW = 8 };
 enum cCommand { CMD_NULL, CMD_SELECT, CMD_DESELECT, CMD_RELEASE };
+uint32_t buttonColors[] = {0, 0, 0, 0};
 
 //memory queue
 int queue[4] = {0, 0, 0, 0};
@@ -89,16 +97,35 @@ void setup() {
     Serial.println("Error initializing ESP-NOW");
   }
 
+  //LED
+  ledInit();
+  buttonColors[0]= strip.Color(125, 0, 0); // red
+  buttonColors[1]= strip.Color(0,  125, 0); // green
+  buttonColors[2]= strip.Color(0,  0, 125); // blue
+  buttonColors[3]= strip.Color(125, 125, 0);  // yellow
+  Serial.println(buttonColors[0]);
+  Serial.println(buttonColors[1]);
+  Serial.println(buttonColors[2]);
+  Serial.println(buttonColors[3]);
 }
 
 void loop() {
   webSocket.loop();
   server.handleClient();
 
-//  if (printTimer.ready()) {
+  if (printTimer.ready()) {
 //    Serial.print("msgIn.pressed ");
 //    Serial.println(msgIn.pressed);
 //    Serial.print("msgIn.selected ");
 //    Serial.println(msgIn.selected);
-//  }
+
+//    ledon = !ledon;
+//    if(ledon){
+//      LED_Off();
+//    }
+//    else{
+//      LED_On();
+//    }    
+    
+  }
 }
