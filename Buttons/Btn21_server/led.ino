@@ -1,3 +1,6 @@
+
+uint32_t warmColor = strip.Color(252, 113, 25);
+
 void ledInit() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
@@ -5,28 +8,33 @@ void ledInit() {
 }
 
 void LED_On(){
-  strip.clear(); // Set all pixel colors to 'off'
-
-  // The first NeoPixel in a strand is #0, second is 1, all the way up
-  // to the count of pixels minus one.
-  for(int i=0; i<LED_COUNT; i++) { // For each pixel...
-
-    // pixels.Color() takes RGB values, from 0,0,0 up to 255,255,255
-    // Here we're using a moderately bright green color:
-    strip.setPixelColor(i, strip.Color(0, 150, 0));
-
-    strip.show();   // Send the updated pixel colors to the hardware.
-  }
+  strip.clear();
+  strip.fill(warmColor, 0, LED_COUNT);
+  strip.show();
 }
 
 void LED_Off(){
    strip.clear(); // Set all pixel colors to 'off'
-   strip.show();
+   strip.show();  //load to hw
+   LED_showQueue();
 }
 
 void LED_setColor(cButton btn){
   strip.clear();
-  strip.fill(findColor(btn), 0, LED_COUNT);
+  strip.fill(findColor(btn), 5, LED_COUNT-5);
+  strip.show();
+  LED_showQueue();
+}
+
+void LED_showQueue(){
+  for(int i=0; i<4; i++) {
+    if (queue[i] != 0){
+      strip.setPixelColor(i, findColor(static_cast<cButton>( queue[i] )) );
+    } else {
+      strip.setPixelColor(i, 0);
+    }
+  }
+  strip.setPixelColor(4, 0); //led separator
   strip.show();
 }
 

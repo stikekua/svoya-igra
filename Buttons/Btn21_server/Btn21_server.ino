@@ -10,7 +10,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define LED_PIN 2
-#define LED_COUNT 5
+#define LED_COUNT 16
 bool ledon = false;
 
 IPAddress _apIP(192, 168, 5, 1);
@@ -32,7 +32,12 @@ char ButtonStateMsg[20];
 
 enum cButton { RED = 1, GREEN = 2, BLUE = 4, YELLOW = 8 };
 enum cCommand { CMD_NULL, CMD_SELECT, CMD_DESELECT, CMD_RELEASE };
-uint32_t buttonColors[] = {0, 0, 0, 0};
+uint32_t buttonColors[] = {
+  strip.Color(125, 0, 0), // red
+  strip.Color(0,  125, 0), // green
+  strip.Color(0,  0, 125), // blue
+  strip.Color(125, 125, 0)  // yellow
+};
 
 //memory queue
 int queue[4] = {0, 0, 0, 0};
@@ -99,14 +104,7 @@ void setup() {
 
   //LED
   ledInit();
-  buttonColors[0]= strip.Color(125, 0, 0); // red
-  buttonColors[1]= strip.Color(0,  125, 0); // green
-  buttonColors[2]= strip.Color(0,  0, 125); // blue
-  buttonColors[3]= strip.Color(125, 125, 0);  // yellow
-  Serial.println(buttonColors[0]);
-  Serial.println(buttonColors[1]);
-  Serial.println(buttonColors[2]);
-  Serial.println(buttonColors[3]);
+
 }
 
 void loop() {
@@ -117,15 +115,6 @@ void loop() {
 //    Serial.print("msgIn.pressed ");
 //    Serial.println(msgIn.pressed);
 //    Serial.print("msgIn.selected ");
-//    Serial.println(msgIn.selected);
-
-//    ledon = !ledon;
-//    if(ledon){
-//      LED_Off();
-//    }
-//    else{
-//      LED_On();
-//    }    
-    
+//    Serial.println(msgIn.selected);    
   }
 }

@@ -11,6 +11,7 @@ void EVH_next() {
     queueSelector = 3;
   } else if (queue[queueSelector] == 0) {
     Serial.println("Nobody else in the queue");
+    LED_Off();
   } else if (queueSelector < 3 && queue[queueSelector] != 0) {
     //deselect current
     EN_sendMsg(CMD_DESELECT, static_cast<cButton>(queue[queueSelector]));
@@ -59,6 +60,8 @@ void EVH_buttonPressed(int button) {
   //send actulal status
   makeWSMessage();
   webSocket.broadcastTXT(ButtonStateMsg, strlen(ButtonStateMsg));
+  //led
+  LED_showQueue();
 }
 
 void EVH_connected(){
