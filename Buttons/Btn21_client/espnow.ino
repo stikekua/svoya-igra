@@ -1,8 +1,9 @@
 
 // THE MAC Address of your receiver
-// master 8c:aa:b5:63:29:42
-//38:2B:78:05:13:D8
-uint8_t masterAddress[] = {0x38, 0x2B, 0x78, 0x05, 0x13, 0xD8};
+// master     8c:aa:b5:63:29:42
+// devboard   38:2B:78:05:13:D8
+// Solvinden server - BC:FF:4D:2A:BA:87
+uint8_t masterAddress[] = {0xBC, 0xFF, 0x4D, 0x2A, 0xBA, 0x87};
 
 void OnDataSent(uint8_t *mac_addr, uint8_t sendStatus);
 void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len);
