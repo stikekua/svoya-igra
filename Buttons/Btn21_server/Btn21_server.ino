@@ -7,11 +7,6 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <timer.h>
-#include <Adafruit_NeoPixel.h>
-
-#define LED_PIN 2
-#define LED_COUNT 32
-bool ledon = false;
 
 IPAddress _apIP(192, 168, 5, 1);
 String _ssidAP = "SvoyaIgraAP2";
@@ -22,8 +17,19 @@ ESP8266WebServer server(80);
 WebSocketsServer webSocket = WebSocketsServer(81);
 
 Timer printTimer(1000);
+Timer gameTimer(500);
+#define ROUND_TIME 32
 
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+#include <Adafruit_NeoPixel.h>
+#define LED_PIN    4
+#define LED_COUNT 32
+#define LED2_PIN   5
+#define LED2_COUNT 4
+
+Adafruit_NeoPixel mainStrip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel stateStrip(LED2_COUNT, LED2_PIN, NEO_GRB + NEO_KHZ800);
+
+bool ledon = false;
 
 // Web2Server
 const char SG_NEXT[] = "SGNext";
@@ -33,10 +39,10 @@ char ButtonStateMsg[20];
 enum cButton { RED = 1, GREEN = 2, BLUE = 4, YELLOW = 8 };
 enum cCommand { CMD_NULL, CMD_SELECT, CMD_DESELECT, CMD_RELEASE };
 uint32_t buttonColors[] = {
-  strip.Color(125, 0, 0), // red
-  strip.Color(0,  125, 0), // green
-  strip.Color(0,  0, 125), // blue
-  strip.Color(125, 125, 0)  // yellow
+  mainStrip.Color(125, 0, 0), // red
+  mainStrip.Color(0,  125, 0), // green
+  mainStrip.Color(0,  0, 125), // blue
+  mainStrip.Color(125, 125, 0)  // yellow
 };
 
 //game status
@@ -66,6 +72,7 @@ struct_message_out msgOut;
 
 void setup() {
   Serial.begin(115200);
+  delay(10);
 
   WiFi.persistent(false);
   WiFi.mode(WIFI_AP_STA);
@@ -116,17 +123,18 @@ void loop() {
   webSocket.loop();
   server.handleClient();
 
-  if (printTimer.ready()) {
-//    Serial.print("msgIn.pressed ");
-//    Serial.println(msgIn.pressed);
-//    Serial.print("msgIn.selected ");
-//    Serial.println(msgIn.selected);
-    
-    if(started){      
+  if (gameTimer.ready()) {
+    if (started && (duration < ROUND_TIME * 2)) {
       duration++;
-      LED_showTimer(duration);
-      if(duration > 15) duration = 15;
+      LED_showTimer();
     }
   }
-  
+
+  if (printTimer.ready()) {
+    //    Serial.print("msgIn.pressed ");
+    //    Serial.println(msgIn.pressed);
+    //    Serial.print("msgIn.selected ");
+    //    Serial.println(msgIn.selected);
+  }
+
 }
