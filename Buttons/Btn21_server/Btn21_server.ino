@@ -10,7 +10,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define LED_PIN 2
-#define LED_COUNT 16
+#define LED_COUNT 32
 bool ledon = false;
 
 IPAddress _apIP(192, 168, 5, 1);
@@ -21,7 +21,7 @@ MDNSResponder mdns;
 ESP8266WebServer server(80);
 WebSocketsServer webSocket = WebSocketsServer(81);
 
-Timer printTimer(2000);
+Timer printTimer(1000);
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -39,6 +39,9 @@ uint32_t buttonColors[] = {
   strip.Color(125, 125, 0)  // yellow
 };
 
+//game status
+bool started = false;
+uint8_t duration = 0;
 //memory queue
 int queue[4] = {0, 0, 0, 0};
 //queue selector
@@ -105,6 +108,8 @@ void setup() {
   //LED
   ledInit();
 
+  //reset
+  EVH_reset();
 }
 
 void loop() {
@@ -115,6 +120,13 @@ void loop() {
 //    Serial.print("msgIn.pressed ");
 //    Serial.println(msgIn.pressed);
 //    Serial.print("msgIn.selected ");
-//    Serial.println(msgIn.selected);    
+//    Serial.println(msgIn.selected);
+    
+    if(started){      
+      duration++;
+      LED_showTimer(duration);
+      if(duration > 15) duration = 15;
+    }
   }
+  
 }

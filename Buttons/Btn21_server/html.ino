@@ -150,8 +150,8 @@ function buttonclick(e) {
   </div>  
   <div class="container2">
     <p>
-      <button id="SGNext" type="button" onclick="buttonclick(this);">NEXT</button>
-      Select next player in the queue
+      <button id="SGNext" type="button" onclick="buttonclick(this);">START/NEXT</button>
+      Start game or Select next player in the queue
     </p>
     <p>
       <button id="SGReset" type="button" onclick="buttonclick(this);">RESET</button> 

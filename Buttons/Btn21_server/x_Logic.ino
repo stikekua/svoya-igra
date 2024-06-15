@@ -5,7 +5,12 @@
 //event handler for next button or web cmd
 void EVH_next() {
   Serial.println("next>>");
-
+    
+  if(!started){    
+    started = true;
+    return;
+  }
+  
   if (queueSelector >= 3) {
     Serial.println("End of the queue");
     queueSelector = 3;
@@ -21,6 +26,7 @@ void EVH_next() {
     if (queue[queueSelector] != 0){
       EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
       LED_setColor(static_cast<cButton>(queue[queueSelector]));
+      duration = 0;
     }
     else{
       LED_Off();
@@ -34,7 +40,9 @@ void EVH_next() {
 //event handler for reset button or web cmd
 void EVH_reset() {
   Serial.println("reset>>");
-
+  //reset
+  started = false;
+  duration = 0;
   //reset selector
   queueSelector = 0;
   //clear queue
@@ -50,12 +58,17 @@ void EVH_reset() {
 }
 
 void EVH_buttonPressed(int button) {
+  if(!started){
+    return;
+  }
+  
   // add button to queue
   add2Queue(button);
   // added button is first in queue
   if (queue[queueSelector] == button) {
     EN_sendMsg(CMD_SELECT, static_cast<cButton>(queue[queueSelector]));
     LED_setColor(static_cast<cButton>(queue[queueSelector]));
+    duration = 0;
   }
   //send actulal status
   makeWSMessage();
