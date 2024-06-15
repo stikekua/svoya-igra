@@ -18,3 +18,6 @@ void loop(){
 // green  e8:db:84:9a:8c:a1
 
 // 38:2B:78:05:13:D8
+
+// Solvinden server
+// BC:FF:4D:2A:BA:87
