@@ -29,7 +29,11 @@ Timer gameTimer(500);
 Adafruit_NeoPixel mainStrip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel stateStrip(LED2_COUNT, LED2_PIN, NEO_GRB + NEO_KHZ800);
 
-bool ledon = false;
+#include "GyverButton.h"
+#define BTN_PIN 12
+GButton btn(BTN_PIN, LOW_PULL, NORM_OPEN);
+
+int batteryValue;
 
 // Web2Server
 const char SG_NEXT[] = "SGNext";
@@ -74,6 +78,9 @@ void setup() {
   Serial.begin(115200);
   delay(10);
 
+  //LED
+  ledInit();
+  
   WiFi.persistent(false);
   WiFi.mode(WIFI_AP_STA);
   WiFi.disconnect();
@@ -85,6 +92,7 @@ void setup() {
   WiFi.printDiag(Serial);
 
   for (uint8_t t = 4; t > 0; t--) {
+    LED_stateLed(t-1);
     Serial.printf("[SETUP] BOOT WAIT %d...\r\n", t);
     Serial.flush();
     delay(1000);
@@ -112,8 +120,7 @@ void setup() {
     Serial.println("Error initializing ESP-NOW");
   }
 
-  //LED
-  ledInit();
+  LED_stateOff();
 
   //reset
   EVH_reset();
@@ -124,6 +131,9 @@ void loop() {
   server.handleClient();
 
   if (gameTimer.ready()) {
+    if(!started){
+      LED_stateWaiting(3);
+    }
     if (started && (duration < ROUND_TIME * 2)) {
       duration++;
       LED_showTimer();
@@ -135,6 +145,21 @@ void loop() {
     //    Serial.println(msgIn.pressed);
     //    Serial.print("msgIn.selected ");
     //    Serial.println(msgIn.selected);
+
+    //ADC
+    batteryValue = analogRead(A0); // 0..1023
+    Serial.print("batteryValue = ");
+    Serial.println(batteryValue);
+  }
+
+  btn.tick();
+  if (btn.isClick()) {
+    Serial.println("Click");
+    EVH_next();
+  }
+  if (btn.isHolded()) {
+    Serial.println("Holded");
+    EVH_reset();
   }
 
 }

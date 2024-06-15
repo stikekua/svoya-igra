@@ -6,10 +6,13 @@
 // yellow E8:DB:84:9A:92:BC
 
 //uint8_t masterAddress[] = {0x8C, 0xAA, 0xB5, 0x63, 0x29, 0x42};
+
+  //{0xE8, 0xDB, 0x84, 0x9A, 0x8C, 0xA1}, // green
+  
 uint8_t clientsCount = 4;
 uint8_t clientAddress[][6] = {
   {0xE8, 0xDB, 0x84, 0x96, 0xF4, 0xE1}, // red
-  {0xE8, 0xDB, 0x84, 0x9A, 0x8C, 0xA1}, // green
+  {0x38, 0x2B, 0x78, 0x05, 0x13, 0xD8},
   {0xE8, 0xDB, 0x84, 0x9A, 0x89, 0x8E}, // blue
   {0xE8, 0xDB, 0x84, 0x9A, 0x92, 0xBC}  // yellow
 };
@@ -58,7 +61,7 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   Serial.print("selected "); Serial.println(msgIn.selected ? "true" : "false");
   Serial.print("deselected "); Serial.println(msgIn.deselected ? "true" : "false");
 
-  if(msgIn.pressed){
+  if (msgIn.pressed) {
     EVH_buttonPressed(msgIn.id);
   }
 }
@@ -112,7 +115,7 @@ void EN_broadcastMsg(cCommand cmd) {
     }
   }
 }
-int findMacId(cButton btn){
+int findMacId(cButton btn) {
   switch (btn) {
     case RED:
       return 0;
