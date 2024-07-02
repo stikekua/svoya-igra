@@ -9,6 +9,8 @@ namespace SvoyaIgra.Dal.Dto
 
         public string Name { get; set; }
 
+        public string Lang { get; set; }
+
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TopicDifficulty Difficulty { get; set; }
 

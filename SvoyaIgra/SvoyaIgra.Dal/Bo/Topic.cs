@@ -8,6 +8,8 @@ namespace SvoyaIgra.Dal.Bo
 
         public string Name { get; set; }
 
+        public string Lang { get; set; }
+
         public TopicDifficulty Difficulty { get; set; }
 
         public IEnumerable<Question> Questions { get; set; }

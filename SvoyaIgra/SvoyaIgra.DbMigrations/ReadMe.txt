@@ -23,3 +23,4 @@ Examples
 Script-Migration -Context QBankDbMigrationContext -From 0 -To CreateTables -Output SvoyaIgra.DbMigrations/Scripts/Db/1_CreateTables.sql
 Script-Migration -Context QBankDbMigrationContext -From CreateTables -To AddInitialData -Output SvoyaIgra.DbMigrations/Scripts/Db/2_AddInitialData.sql
 Script-Migration -Context QBankDbMigrationContext -From AddInitialData -To AuthorReferenceChanged -Output SvoyaIgra.DbMigrations/Scripts/Db/3_AuthorReferenceChanged.sql
+Script-Migration -Context QBankDbMigrationContext -From AuthorReferenceChanged -To TopicLangAdded -Output SvoyaIgra.DbMigrations/Scripts/Db/4_TopicLangAdded.sql

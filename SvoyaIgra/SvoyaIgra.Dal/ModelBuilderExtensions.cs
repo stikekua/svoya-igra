@@ -12,7 +12,8 @@ namespace SvoyaIgra.Dal
             modelBuilder.Entity<Author>().Property(x => x.Name).IsRequired().HasMaxLength(DbConstants.StringLength);
 
             modelBuilder.Entity<Topic>().ToTable("Topic", DbConstants.SchemaQBank).HasKey(x => x.Id);
-            modelBuilder.Entity<Topic>().Property(x=>x.Name).IsRequired().HasMaxLength(DbConstants.StringLength);
+            modelBuilder.Entity<Topic>().Property(x => x.Name).IsRequired().HasMaxLength(DbConstants.StringLength);
+            modelBuilder.Entity<Topic>().Property(x => x.Lang).HasMaxLength(DbConstants.LangCodeLength);
 
             modelBuilder.Entity<Question>().ToTable("Question", DbConstants.SchemaQBank).HasKey(x => x.Id);
             modelBuilder.Entity<Question>().HasOne(q => q.Topic).WithMany(t => t.Questions).HasForeignKey(q => q.TopicId);

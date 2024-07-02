@@ -10,6 +10,7 @@ namespace SvoyaIgra.Dal.Dto
             {
                 Id = topic.Id,
                 Name = topic.Name,
+                Lang = topic.Lang,
                 Difficulty = topic.Difficulty
             };
         }

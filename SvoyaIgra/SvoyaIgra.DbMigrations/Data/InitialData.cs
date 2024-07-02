@@ -21,6 +21,7 @@ namespace SvoyaIgra.DbMigrations.Data
                 {
                     Id = 1,
                     Name = "Tema1",
+                    Lang = "ru",
                     Difficulty = TopicDifficulty.Round
                 }
             );

@@ -7,6 +7,7 @@
         public const int LongLongStringLength = 1000;
 
         public const int GuidLength = 36;
+        public const int LangCodeLength = 2;
 
         public const string SchemaQBank = "QBank";
         public const string SchemaGame = "Game";
