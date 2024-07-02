@@ -18,12 +18,16 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> CreateGameAsync()
+    public async Task<Guid> CreateGameAsync(string lang)
     {
         var game = new GameSession();
         game.CreatedAt = DateTime.Now;
 
-        //TODO save game parameters
+        var parameters = new ParametersConfig {
+            Lang = lang
+        };
+
+        game.ParametersConfig = ParametersConfigParser.ToString(parameters);
 
         _dbContext.Set<GameSession>().Add(game);
         await _dbContext.SaveChangesAsync();
@@ -44,6 +48,8 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         if (game == null) return topics; //game does not exist
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
+        var parametersConfig = ParametersConfigParser.ToObject(game.ParametersConfig);
+        var lang = parametersConfig != null ? parametersConfig.Lang : "ru";
 
         if (topicConfig?.RoundTopicIds != null && topicConfig?.RoundTopicIds.Count() == GameConstants.Round.TopicsCount) //topic once generated, return it
         {
@@ -57,7 +63,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         }
         else //new topic set  
         {
-            topics.AddRange(GetValidRoundTopics()
+            topics.AddRange(GetValidRoundTopics(lang)
                 .OrderBy(x => Guid.NewGuid()).Take(GameConstants.Round.TopicsCount)
                 .Select(t => t.ToDto())
             );
@@ -102,6 +108,8 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         if (game == null) return topics; //game does not exist
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
+        var parametersConfig = ParametersConfigParser.ToObject(game.ParametersConfig);
+        var lang = parametersConfig != null ? parametersConfig.Lang : "ru";
 
         if (topicConfig?.FinalTopicIds != null && topicConfig?.FinalTopicIds.Count() == GameConstants.Final.TopicsCount) //topic once generated, return it
         {
@@ -116,7 +124,7 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         else
         {
             topics.AddRange(_dbContext.Set<Topic>()
-                .Where(t => t.Difficulty == TopicDifficulty.Final)
+                .Where(t => t.Difficulty == TopicDifficulty.Final && t.Lang == lang)
                 .OrderBy(x => Guid.NewGuid()).Take(GameConstants.Final.TopicsCount)
                 .Select(t => t.ToDto())
             );
@@ -148,11 +156,14 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         if (game == null) return null; //game does not exist
 
         var topicConfig = TopicConfigParser.ToObject(game.TopicsConfig);
+        var parametersConfig = ParametersConfigParser.ToObject(game.ParametersConfig);
+        var lang = parametersConfig != null ? parametersConfig.Lang : "ru";
+
         if (topicConfig?.RoundTopicIds == null) return null; //topics not generated
 
         var topic = new TopicDto();
         topic = _dbContext.Set<Topic>()
-            .Where(t => !topicConfig.RoundTopicIds.Contains(t.Id) && t.Difficulty == TopicDifficulty.Round)
+            .Where(t => !topicConfig.RoundTopicIds.Contains(t.Id) && t.Difficulty == TopicDifficulty.Round && t.Lang == lang)
             .OrderBy(x => Guid.NewGuid()).Take(1)
             .First().ToDto();
 
@@ -168,10 +179,10 @@ public class GameService<TContext> : IGameService where TContext : DbContext
         return topic;
     }
 
-    private IEnumerable<Topic> GetValidRoundTopics()
+    private IEnumerable<Topic> GetValidRoundTopics(string lang)
     {
         var dbList = _dbContext.Set<Topic>()
-            .Where(t => t.Difficulty == TopicDifficulty.Round)
+            .Where(t => t.Difficulty == TopicDifficulty.Round && t.Lang == lang)
             .ToList()
             .GroupJoin(_dbContext.Set<Question>(),
                 topic => topic.Id,

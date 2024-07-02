@@ -44,13 +44,27 @@ public class TopicService<TContext> : ITopicService where TContext : DbContext
         var topic = new Topic
         {
             Name = name,
-            Difficulty = difficulty
+            Difficulty = difficulty,
+            Lang = "ru",
         };
         _dbContext.Set<Topic>().Add(topic);
         await _dbContext.SaveChangesAsync();
         return topic.ToDto();
     }
-    
+
+    public async Task<TopicDto?> CreateTopicAsync(string name, TopicDifficulty difficulty, string lang)
+    {
+        var topic = new Topic
+        {
+            Name = name,
+            Difficulty = difficulty,
+            Lang = lang,
+        };
+        _dbContext.Set<Topic>().Add(topic);
+        await _dbContext.SaveChangesAsync();
+        return topic.ToDto();
+    }
+
     public Task<TopicDto?> UpdateTopicAsync(int id, string name, TopicDifficulty difficulty)
     {
         throw new NotImplementedException();

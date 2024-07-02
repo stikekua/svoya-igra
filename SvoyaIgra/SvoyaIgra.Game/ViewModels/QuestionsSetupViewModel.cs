@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using SvoyaIgra.Game.Enums;
+using System.Runtime.ConstrainedExecution;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -72,6 +73,29 @@ namespace SvoyaIgra.Game.ViewModels
         #region Current question
 
         #region control elements
+
+        private string _currentLanguage;
+        public string CurrentLanguage
+        {
+            get { return _currentLanguage; }
+            set
+            {
+                if (_currentLanguage != value)
+                {
+                    _currentLanguage = value;
+                    OnPropertyChanged(nameof(CurrentLanguage));
+                }
+            }
+        }
+        public ObservableCollection<string> Languages
+        {
+            get
+            {
+                var languages = new ObservableCollection<string>() { "ru", "en" }; //TODO move to config
+                CurrentLanguage = languages.FirstOrDefault();
+                return languages;
+            }
+        }
 
         private int _currentRoundIndex = 0;
         public int CurrentRoundIndex
@@ -398,7 +422,7 @@ namespace SvoyaIgra.Game.ViewModels
         {
             try
             {
-                GameId = await _gameService.CreateGameAsync();
+                GameId = await _gameService.CreateGameAsync(CurrentLanguage);
             }
             catch (Exception e)
             {

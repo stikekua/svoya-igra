@@ -8,7 +8,7 @@ namespace SvoyaIgra.Dal.Services
         /// create a new game, returns gameId
         /// </summary>
         /// <returns></returns>
-        public Task<Guid> CreateGameAsync();
+        public Task<Guid> CreateGameAsync(string lang);
 
         /// <summary>
         /// returns last created gameId
