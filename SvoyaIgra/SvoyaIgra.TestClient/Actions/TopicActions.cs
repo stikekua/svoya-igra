@@ -1,5 +1,6 @@
 ﻿using SvoyaIgra.Dal.Bo;
 using SvoyaIgra.Dal.Services;
+using SvoyaIgra.Shared.Constants;
 using SvoyaIgra.Shared.Entities;
 
 namespace SvoyaIgra.TestClient.Actions;
@@ -74,18 +75,18 @@ public class TopicActions : ITopicActions
         Ui.Clear();
         Ui.Write("Topic -> List all topics");
         var topics = _topicService.GetAllTopics();
-        Ui.Write(FormatTopic("Name", "Difficulty"));
+        Ui.Write(FormatTopic("Name", "Difficulty", "Lang"));
         foreach (var topic in topics)
         {
-            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString(), topic.Lang));
         }
         Ui.Write();
         Ui.PressKey();
     }
 
-    private string FormatTopic(string name, string difficulty)
+    private string FormatTopic(string name, string difficulty, string lang)
     {
-        return $"{name,-20} {difficulty,-20}";
+        return $"{name,-20} {difficulty,-20} {lang,-20}";
     }
 
     private async Task ListTopicByIdAsync()
@@ -99,8 +100,8 @@ public class TopicActions : ITopicActions
             return;
         }
         Ui.Write();
-        Ui.Write(FormatTopic("Name", "Difficulty"));
-        Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+        Ui.Write(FormatTopic("Name", "Difficulty", "Lang"));
+        Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString(), topic.Lang));
         Ui.Write();
 
         var questions = await _questionService.GetQuestionsByTopicAsync(topicId);
@@ -131,17 +132,19 @@ public class TopicActions : ITopicActions
         Ui.Clear();
         Ui.Write("Topic -> Create topic");
         var name = Ui.Read("Name");
+        var lang = Ui.ReadString("Language", Language.SupportedLangs);
+
         var allowedValues = ((TopicDifficulty[])Enum.GetValues(typeof(TopicDifficulty))).Select(c => (int)c).ToArray();
         var difficulty = Ui.ReadInt("Difficulty", allowedValues);
 
-        var resp = await _topicService.CreateTopicAsync(name, (TopicDifficulty)difficulty);
+        var resp = await _topicService.CreateTopicAsync(name, (TopicDifficulty)difficulty, lang);
         if (resp == null)
         {
             return;
         }
         Ui.Write();
         Ui.Write("Topic successfully created");
-        Ui.Write($"Name: {resp.Name}\t\tDifficulty: {resp.Difficulty}");
+        Ui.Write($"Name: {resp.Name}\t\tDifficulty: {resp.Difficulty}\t\tLang: {resp.Lang}");
         Ui.PressKey();
     }
 
@@ -149,7 +152,8 @@ public class TopicActions : ITopicActions
     {
         Ui.Clear();
         Ui.Write("Topic -> Create game");
-        var gameId = await _gameService.CreateGameAsync();
+        var lang = Ui.ReadString("Language", Language.SupportedLangs);
+        var gameId = await _gameService.CreateGameAsync(lang);
         Ui.Write();
         Ui.Write("Game created:");
         Ui.Write(gameId.ToString());
@@ -164,11 +168,11 @@ public class TopicActions : ITopicActions
         var gameId = Ui.ReadGuid("Enter GameId");
         Ui.Write();
         var topics = await _gameService.GetTopicsAsync(gameId);
-        Ui.Write(FormatTopic("Name", "Difficulty"));
+        Ui.Write(FormatTopic("Name", "Difficulty", "Lang"));
         foreach (var topic in topics)
         {
             Ui.Write("------------------------------------------------------------------------");
-            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString(), topic.Lang));
             Ui.Write();
             Ui.Write("Questions of the topic:");
             Ui.Write(FormatQuestion("Type", "Difficulty", "Text"));
@@ -188,11 +192,11 @@ public class TopicActions : ITopicActions
         var gameId = Ui.ReadGuid("Enter GameId");
         Ui.Write();
         var topics = await _gameService.GetTopicsFinalAsync(gameId);
-        Ui.Write(FormatTopic("Name", "Difficulty"));
+        Ui.Write(FormatTopic("Name", "Difficulty", "Lang"));
         foreach (var topic in topics)
         {
             Ui.Write("------------------------------------------------------------------------");
-            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+            Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString(), topic.Lang));
             Ui.Write();
             Ui.Write("Questions of the topic:");
             Ui.Write(FormatQuestion("Type", "Difficulty", "Text"));
@@ -213,8 +217,8 @@ public class TopicActions : ITopicActions
         var gameId = Ui.ReadGuid("Enter GameId");
         Ui.Write();
         var topic = await _gameService.GetCatQuestionAsync(gameId);
-        Ui.Write(FormatTopic("Name", "Difficulty"));
-        Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString()));
+        Ui.Write(FormatTopic("Name", "Difficulty", "Lang"));
+        Ui.Write(FormatTopic(topic.Name, topic.Difficulty.ToString(), topic.Lang));
         Ui.Write("Questions of the topic:");
         Ui.Write(FormatQuestion("Type", "Difficulty", "Text"));
         foreach (var question in topic.Questions)

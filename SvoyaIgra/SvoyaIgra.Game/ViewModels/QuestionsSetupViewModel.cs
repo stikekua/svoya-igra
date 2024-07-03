@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using SvoyaIgra.Game.Enums;
 using System.Runtime.ConstrainedExecution;
+using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -91,7 +92,7 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                var languages = new ObservableCollection<string>() { "ru", "en" }; //TODO move to config
+                var languages = new ObservableCollection<string>(Language.SupportedLangs);
                 CurrentLanguage = languages.FirstOrDefault();
                 return languages;
             }
@@ -272,9 +273,9 @@ namespace SvoyaIgra.Game.ViewModels
 
     #endregion
 
-    #region Final question
+        #region Final question
 
-    private Question _finalQuestionSetup = new Question();
+        private Question _finalQuestionSetup = new Question();
         public Question FinalQuestionSetup
         {
             get { return _finalQuestionSetup; }
@@ -678,14 +679,6 @@ namespace SvoyaIgra.Game.ViewModels
         #endregion
 
         #endregion
-
-
-
-
-
-
-
-
-
+        
     }
 }
