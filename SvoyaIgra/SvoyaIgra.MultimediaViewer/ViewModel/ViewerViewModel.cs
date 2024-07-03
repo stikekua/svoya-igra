@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,8 +17,6 @@ namespace SvoyaIgra.MultimediaViewer.ViewModel;
 public partial class ViewerViewModel
 {
     private readonly IMultimediaService _multimediaService;
-
-    private MediaPlayer _mediaPlayer;
 
     [ObservableProperty] 
     private ImageSource _image;
@@ -41,13 +40,32 @@ public partial class ViewerViewModel
     [ObservableProperty]
     private string _file_path;
 
+    [ObservableProperty]
+    private MediaElement _mediaElementObject;
+
+    [ObservableProperty]
+    private Visibility _imageVisibility;
+
+    [ObservableProperty]
+    private Visibility _mediaVisibility;
+
+    [ObservableProperty]
+    private MediaType _mediaType;
+
     public ViewerViewModel(IMultimediaService multimediaService)
     {
         _multimediaService = multimediaService;
-        _mediaPlayer = new MediaPlayer();
+        _mediaElementObject = new MediaElement();
 
         Id = "29FDBD16-9DA1-4495-B67A-87BCF0942881";
         Multimedia_for = MultimediaForEnum.Question;
+        
+        MediaElementObject.LoadedBehavior = MediaState.Manual;
+        MediaElementObject.UnloadedBehavior = MediaState.Manual;
+        MediaElementObject.Stretch = Stretch.Uniform;
+
+        MediaVisibility = Visibility.Hidden;
+        ImageVisibility = Visibility.Collapsed;
     }
 
     [RelayCommand]
@@ -68,6 +86,8 @@ public partial class ViewerViewModel
     [RelayCommand(CanExecute = nameof(CanLoadPicture))]
     private void LoadPicture(object obj)
     {
+        StopMedia(null);
+
         if (Qfiles.Contains(Selected))
         {
             Multimedia_for = MultimediaForEnum.Question;
@@ -81,23 +101,51 @@ public partial class ViewerViewModel
 
         var mutimedia = _multimediaService.GetMultimediaPath(Id, Multimedia_for, Selected);
         File_path = mutimedia.path ?? "";
+        MediaType = mutimediaStream.mediaType;
 
         if (mutimediaStream.mediaType == MediaType.Image)
         {
             var ms = ConverToMemoryStream(mutimediaStream.stream);
             SetImageSource(ms);
+
+            MediaVisibility = Visibility.Hidden;
+            ImageVisibility = Visibility.Visible;
         }
         else if (mutimediaStream.mediaType == MediaType.Audio)
         {
-            var ms = ConverToMemoryStream(mutimediaStream.stream);
-            _mediaPlayer.Open(new Uri(@"C:\SvoyaIgra\MultimediaStore\29FDBD16-9DA1-4495-B67A-87BCF0942881\Answer\Sinitana - No Rules.mp3"));
-            _mediaPlayer.Play();
+            //var ms = ConverToMemoryStream(mutimediaStream.stream);
+            MediaElementObject.Source = new Uri(File_path);
+            
+            MediaVisibility = Visibility.Visible;
+            ImageVisibility = Visibility.Collapsed;
         }
         else if (mutimediaStream.mediaType == MediaType.Video)
         {
+            //var ms = ConverToMemoryStream(mutimediaStream.stream);
+            MediaElementObject.Source = new Uri(File_path);
             
+            MediaVisibility = Visibility.Visible;
+            ImageVisibility = Visibility.Collapsed;
         }
 
+    }
+
+    [RelayCommand]
+    private void PlayMedia(object obj)
+    {
+        MediaElementObject.Play();
+    }
+
+    [RelayCommand]
+    private void PauseMedia(object obj)
+    {
+        MediaElementObject.Pause();
+    }
+    
+    [RelayCommand]
+    private void StopMedia(object obj)
+    {
+        MediaElementObject.Stop();
     }
 
     public bool CanLoadPicture(object obj)

@@ -91,19 +91,61 @@
                 <Grid Grid.Column="1" 
                       Margin="5,0,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Image Grid.Row="0" 
-                       Margin="0,5"
-                       Stretch="Uniform" 
-                       Source="{Binding Image, Mode=OneWay}"/>
+                    <StackPanel Grid.Row="0">
+                        <StackPanel Orientation="Horizontal" Margin="0 5">
+                            <TextBlock Text="Path: "
+                                       Foreground="White"/>
+                            <TextBox Text="{Binding File_path}"
+                                     TextWrapping="Wrap"/>
+                        </StackPanel>
 
-                    <TextBox Grid.Row="1"
-                             Text="{Binding File_path}"
-                             TextWrapping="Wrap"
-                            />
+                        <StackPanel Orientation="Horizontal" Margin="0 5">
+                            <TextBlock Text="MediaType: "
+                                       Foreground="White"/>
+                            <TextBlock Text="{Binding MediaType}"
+                                       Foreground="White" FontWeight="Bold" />
+                        </StackPanel>
+                        
+                    </StackPanel>
+                    
+
+                    <StackPanel Grid.Row="1">
+
+                        <Image Margin="5"
+                               Stretch="Uniform" 
+                               Visibility="{Binding ImageVisibility}"
+                               Source="{Binding Image, Mode=OneWay}"/>
+
+                        <Grid Visibility="{Binding MediaVisibility}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="300"/>
+                                <RowDefinition Height="35"/>
+                            </Grid.RowDefinitions>
+
+                            <ContentControl Grid.Row="0" Margin="5"
+                                            Content="{Binding MediaElementObject}"/>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Height="35">
+                                <Button Content="Play"
+                                        Width="100" 
+                                        Command="{Binding PlayMediaCommand}"/>
+                                <Button Content="Pause"
+                                        Width="100" Margin="10 0 0 0"
+                                        Command="{Binding PauseMediaCommand}"/>
+                                <Button Content="Stop"
+                                        Width="100" Margin="10 0 0 0"
+                                        Command="{Binding StopMediaCommand}"/>
+                            </StackPanel>
+
+                        </Grid>
+                        
+                    </StackPanel>
+
+                    
                 </Grid>
 
             </Grid>
