@@ -49,6 +49,8 @@ public partial class EditorViewModel
         _multimediaService = multimediaService;
         _topicService = topicService;
         _questionService = questionService;
+
+        Multimedias = _multimediaService.GetMultimedias();
     }
 
     [RelayCommand]

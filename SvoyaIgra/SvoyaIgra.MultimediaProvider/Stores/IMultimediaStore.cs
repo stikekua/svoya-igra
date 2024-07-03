@@ -14,5 +14,7 @@ public interface IMultimediaStore
     IEnumerable<(MultimediaForEnum, string)> ListMultimedia(string multimediaId);
 
     string? GetFolderPath(string multimediaId);
+
+    string[] GetMultimedias();
 }
 

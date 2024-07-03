@@ -61,4 +61,9 @@ public class MultimediaService : IMultimediaService
     {
         return _multimediaStore.CreateMultimedia();
     }
+
+    public string[] GetMultimedias()
+    {
+        return _multimediaStore.GetMultimedias();
+    }
 }

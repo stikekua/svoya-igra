@@ -40,7 +40,6 @@
                         Padding="20,10"
                         Margin="0,0,0,10"/>
                 <ListView Grid.Row="1"
-                          FontSize="16"
                         ItemsSource="{Binding Multimedias}"
                         SelectedItem="{Binding Selected_multimedia}"/>
 

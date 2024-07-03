@@ -78,4 +78,9 @@ public class MultimediaStore: IMultimediaStore
         var path = Path.Combine(_multimediaStoreOptions.RootPath, multimediaId);
         return path;
     }
+
+    public string[] GetMultimedias()
+    {
+        return Directory.GetDirectories(_multimediaStoreOptions.RootPath).Select(d => new DirectoryInfo(d).Name).ToArray();
+    }
 }
