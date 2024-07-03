@@ -39,6 +39,18 @@ public class QuestionService<TContext> : IQuestionService where TContext : DbCon
         return question.ToDto();
     }
 
+    public async Task<QuestionDto?> SetQuestionMultimediaIdAsync(int id, string multimediaId)
+    {
+        var question = await _dbContext.Set<Question>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id);
+
+        question.MultimediaId = multimediaId;
+        _dbContext.Set<Question>().Update(question);
+        await _dbContext.SaveChangesAsync();
+        return question.ToDto();
+    }
+
     public Task<QuestionDto?> UpdateQuestionAsync(UpdateQuestionRequestDto request)
     {
         throw new NotImplementedException();
@@ -57,6 +69,7 @@ public class QuestionService<TContext> : IQuestionService where TContext : DbCon
 
         return questions.Select(q => q.ToDto());
     }
+
     public async Task<IEnumerable<QuestionDto>?> GetQuestionsByTopicAsync(int topicId)
     {
         var questions = _dbContext.Set<Question>()

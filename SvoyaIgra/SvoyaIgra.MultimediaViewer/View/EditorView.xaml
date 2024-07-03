@@ -59,6 +59,76 @@
                 </StackPanel>
                 
             </Grid>
+
+            <Grid Grid.Column="1">
+                <StackPanel Margin="5 0 0 0">
+                    <Button Content="Load Topics" 
+                            Padding="20,5"
+                            Margin="0 0 0 5"
+                            Command="{Binding LoadTopicsCommand}"/>
+
+                    <StackPanel Margin="0 0 0 5">
+                        <Label Content="Select topic" Foreground="White"/>
+                        <ComboBox SelectedItem="{Binding SelectedTopic}" 
+                                  SelectedIndex="{Binding SelectedTopicIndex}"
+                                  ItemsSource="{Binding Topics}"
+                                  DisplayMemberPath="Name"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                        <TextBlock Text="Lang: "
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedTopic.Lang}"
+                                   Foreground="White" FontWeight="Bold" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                        <TextBlock Text="Difficulty: "
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedTopic.Difficulty}"
+                                   Foreground="White" FontWeight="Bold" />
+                    </StackPanel>
+
+                    <Button Content="Load Questions" 
+                            Padding="20,5"
+                            Margin="0 0 0 5"
+                            Command="{Binding LoadQuestionsCommand}"/>
+
+                    <StackPanel Margin="0 0 0 5">
+                        <Label Content="Select question" Foreground="White"/>
+                        <ComboBox SelectedItem="{Binding SelectedQuestion, Mode=TwoWay}" 
+                                  ItemsSource="{Binding Questions}"
+                                  DisplayMemberPath="Text"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                        <TextBlock Text="Type: "
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedQuestion.Type}"
+                                   Foreground="White" FontWeight="Bold" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 5">
+                        <TextBlock Text="Text: "
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedQuestion.Text}"
+                                   Foreground="White" FontWeight="Bold" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 5">
+                        <TextBlock Text="MultimediaId: "
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedQuestion.MultimediaId}"
+                                   Foreground="White" FontWeight="Bold" />
+                    </StackPanel>
+
+                    <Button Content="Set Multimedia Id"
+                            Command="{Binding SetMultimediaIdCommand}"
+                            Margin="0 0 0 5"
+                            Padding="20,10"/>
+
+                </StackPanel>
+            </Grid>
             
         </Grid>
 

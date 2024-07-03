@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SvoyaIgra.MultimediaProvider.Services;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using SvoyaIgra.Dal.Dto;
+using SvoyaIgra.Dal.Services;
 
 namespace SvoyaIgra.MultimediaViewer.ViewModel;
 
@@ -13,18 +16,39 @@ namespace SvoyaIgra.MultimediaViewer.ViewModel;
 public partial class EditorViewModel
 {
     private readonly IMultimediaService _multimediaService;
+    private readonly ITopicService _topicService;
+    private readonly IQuestionService _questionService;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(OpenFolderCommand))]
     [NotifyCanExecuteChangedFor(nameof(CopyToClipboardCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SetMultimediaIdCommand))]
     private string _selected_multimedia;
 
     [ObservableProperty]
     private IEnumerable<string> _multimedias = new List<string>();
 
-    public EditorViewModel(IMultimediaService multimediaService)
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(LoadQuestionsCommand))]
+    private TopicDto _selectedTopic;
+    [ObservableProperty]
+    private int _selectedTopicIndex;
+
+    [ObservableProperty]
+    private IEnumerable<TopicDto> _topics;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SetMultimediaIdCommand))]
+    private QuestionDto _selectedQuestion;
+
+    [ObservableProperty]
+    private IEnumerable<QuestionDto> _questions;
+
+    public EditorViewModel(IMultimediaService multimediaService, ITopicService topicService, IQuestionService questionService)
     {
         _multimediaService = multimediaService;
+        _topicService = topicService;
+        _questionService = questionService;
     }
 
     [RelayCommand]
@@ -66,4 +90,46 @@ public partial class EditorViewModel
     {
         Clipboard.SetText(Selected_multimedia);
     }
+
+    [RelayCommand]
+    private void LoadTopics(object obj)
+    {
+        Topics = _topicService.GetAllTopics();
+        SelectedTopicIndex = 0;
+    }
+
+    public bool CanLoadQuestions(object obj)
+    {
+        return SelectedTopic != null;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanLoadQuestions))]
+    private async void LoadQuestions(object obj)
+    {
+        var qs = await _questionService.GetQuestionsByTopicAsync(SelectedTopic.Id) ?? new List<QuestionDto>();
+        Questions = qs.ToList();
+        SelectedQuestion = Questions.FirstOrDefault();
+    }
+
+    public bool CanSetMultimedia(object obj)
+    {
+        return !string.IsNullOrWhiteSpace(Selected_multimedia) && SelectedQuestion != null;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanSetMultimedia))]
+    private async void SetMultimediaId(object obj)
+    {
+        if (!string.IsNullOrWhiteSpace(SelectedQuestion.MultimediaId)) //not empty
+        {
+            if (MessageBox.Show("Question already has MultimediaId do you want to overwrite this assignment?",
+                    "Set Question MultimediaId",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.No)
+            {
+                return;
+            }
+        }
+        SelectedQuestion = await _questionService.SetQuestionMultimediaIdAsync(SelectedQuestion.Id, Selected_multimedia);
+    }
+    
 }
