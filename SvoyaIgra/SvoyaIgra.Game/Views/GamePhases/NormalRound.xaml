@@ -7,25 +7,20 @@
              xmlns:helpers="clr-namespace:SvoyaIgra.Game.ViewModels.Helpers"
              xmlns:local="clr-namespace:SvoyaIgra.Game.Views.GamePhases"
              mc:Ignorable="d" 
-             Height="1080"
-             Width="1920"
-             d:DesignHeight="1080" d:DesignWidth="1920"
-             
              d:Background="White">
     <UserControl.Resources>
         <Style TargetType="TextBlock" x:Key="TopicTextBlockStyle">
             <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
             <Setter Property="FontFamily" Value="{StaticResource PlayscreenFont}"/>
-            <Setter Property="FontWeight" Value="ExtraBold"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="40"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="40"/>
         </Style>
         <Style TargetType="TextBlock" x:Key="QuestionTextBlockStyle">
-            <Setter Property="Height" Value="155"/>
-            <Setter Property="Padding" Value="50"/>
             <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
-            <Setter Property="FontSize" Value="50"/>
+            <Setter Property="FontFamily" Value="{StaticResource PlayscreenFont}"/>
+            <Setter Property="FontSize" Value="48"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -121,25 +116,19 @@
                     </StackPanel>
                 </Border>
 
-
-
-
                 <DataGrid x:Name="mainDatagrid"
-
-                      
-                      Visibility="Collapsed"
-                      ItemsSource="{Binding Players,UpdateSourceTrigger=PropertyChanged}" 
-                      IsReadOnly="True"
-                      HorizontalAlignment="Center"
-                      AutoGenerateColumns="False" 
-                      
-                      Height="auto"
-                      CanUserAddRows="False"
-                      CanUserDeleteRows="False"
-                      CanUserResizeColumns="False"
-                      CanUserSortColumns="False"
-                      HeadersVisibility="None"
-                      HorizontalScrollBarVisibility="Hidden">
+                          Visibility="Collapsed"
+                          ItemsSource="{Binding Players,UpdateSourceTrigger=PropertyChanged}" 
+                          IsReadOnly="True"
+                          HorizontalAlignment="Center"
+                          AutoGenerateColumns="False"
+                          Height="auto"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          CanUserResizeColumns="False"
+                          CanUserSortColumns="False"
+                          HeadersVisibility="None"
+                          HorizontalScrollBarVisibility="Hidden">
                     <DataGrid.LayoutTransform>
                         <TransformGroup>
                             <RotateTransform Angle="-90"/>
@@ -165,9 +154,10 @@
 
             </StackPanel>
         </Viewbox>
+
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
-                  Margin="10,10,10,30"
+                  Margin="10 30"
                   CanUserAddRows="False"
                   HeadersVisibility="None"
                   AutoGenerateColumns="False"
@@ -177,48 +167,43 @@
                   RowBackground="Transparent"
                   BorderBrush="Transparent" 
                   VerticalScrollBarVisibility="Hidden"
-                  HorizontalGridLinesBrush="{StaticResource QuestionsFontColor}" VerticalGridLinesBrush="{StaticResource QuestionsFontColor}"
+                  HorizontalScrollBarVisibility="Hidden"
+                  HorizontalGridLinesBrush="{StaticResource QuestionsFontColor}" 
+                  VerticalGridLinesBrush="{StaticResource QuestionsFontColor}"
+                  VerticalAlignment="Bottom"
                   >
             <DataGrid.Resources>
                 <Style TargetType="DataGridCell">
-
                     <Style.Triggers>
                         <Trigger Property="DataGridCell.IsSelected" Value="True">
                             <Setter Property="Background" Value="Transparent" />
                         </Trigger>
-
                     </Style.Triggers>
                 </Style>
-
-
             </DataGrid.Resources>
             <DataGrid.Columns >
                 <DataGridTemplateColumn Width="2*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Viewbox Stretch="Uniform" Height="50" Width="500">
-                                <TextBlock Text="{Binding Name}" Style="{StaticResource TopicTextBlockStyle}" TextWrapping="WrapWithOverflow"  />
-                            </Viewbox>
-                            
+                                <TextBlock Text="{Binding Name}" Margin="20 50"
+                                           Style="{StaticResource TopicTextBlockStyle}" TextWrapping="WrapWithOverflow"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="1*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock   Style="{StaticResource QuestionTextBlockStyle}"
-                                            Text="{Binding Questions[0].Price}" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                            Visibility="{Binding Questions[0].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" >
-
-
-                            </TextBlock>
+                                <TextBlock Text="{Binding Questions[0].Price}"
+                                           Style="{StaticResource QuestionTextBlockStyle}"
+                                           Visibility="{Binding Questions[0].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="1*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Questions[1].Price}" Style="{StaticResource QuestionTextBlockStyle}"
+                                <TextBlock Text="{Binding Questions[1].Price}" 
+                                           Style="{StaticResource QuestionTextBlockStyle}"
                                            Visibility="{Binding Questions[1].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -226,7 +211,7 @@
                 <DataGridTemplateColumn Width="1*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Questions[2].Price}" 
+                                <TextBlock Text="{Binding Questions[2].Price}" 
                                            Style="{StaticResource QuestionTextBlockStyle}"
                                            Visibility="{Binding Questions[2].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
                         </DataTemplate>
@@ -235,7 +220,7 @@
                 <DataGridTemplateColumn Width="1*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Questions[3].Price}" 
+                                <TextBlock Text="{Binding Questions[3].Price}" 
                                            Style="{StaticResource QuestionTextBlockStyle}"
                                            Visibility="{Binding Questions[3].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }" />
                         </DataTemplate>
@@ -246,21 +231,16 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="Margin" Value="0,0,-1.2,0"/>
                         </Style>
-
                     </DataGridTemplateColumn.CellStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Questions[4].Price}" 
-                                   Style="{StaticResource QuestionTextBlockStyle}"
+                                <TextBlock Text="{Binding Questions[4].Price}" 
+                                           Style="{StaticResource QuestionTextBlockStyle}"
                                            Visibility="{Binding Questions[4].NotYetAsked,Converter={StaticResource visibilityHiddenConverter} }"  />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
-    
-        
-   
 </UserControl>
