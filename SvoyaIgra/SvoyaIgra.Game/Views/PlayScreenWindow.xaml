@@ -15,7 +15,8 @@
         Height="1080" Width="1920"
         Background="{StaticResource MainGameBackground}"
         WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}"
-        DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
+        DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
