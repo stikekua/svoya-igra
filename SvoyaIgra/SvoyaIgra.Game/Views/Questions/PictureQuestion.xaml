@@ -9,9 +9,7 @@
     <StackPanel VerticalAlignment="Center">
         <Viewbox>
             <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.ImageSourceQuestion}" 
-                   StretchDirection="UpOnly"
-                   Stretch="UniformToFill"/>
+                   Stretch="Uniform" Margin="20"/>
         </Viewbox>
-        
     </StackPanel>
 </UserControl>

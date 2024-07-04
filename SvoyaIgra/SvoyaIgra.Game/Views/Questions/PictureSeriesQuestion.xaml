@@ -3,11 +3,65 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SvoyaIgra.Game.Views.Questions"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel VerticalAlignment="Center">
-        <Label Content="I am picture series" FontSize="20"/>
-        <TextBlock Text="{Binding CurrentQuestion.QuestionText}" FontSize="30"/>
+        <Viewbox>
+            <StackPanel>
+                <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.CurrentInPictureSeries}" 
+                       Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.IsPictureSeries, Converter={StaticResource visibilityCollapsedConverter}}"
+                       Stretch="Uniform" Margin="30"/>
+
+                <Grid Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.IsPictureSeriesEnd, Converter={StaticResource visibilityCollapsedConverter}}">
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Opacity" Value="0.85"/>
+                            <Setter Property="Margin" Value="10 5"/>
+                            <Setter Property="Foreground" Value="{StaticResource QuestionsFontColor}"/>
+                            <Setter Property="FontFamily" Value="{StaticResource PlayscreenFont}"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="VerticalAlignment" Value="Bottom"/>
+                        </Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Stretch" Value="Uniform"/>
+                            <Setter Property="Margin" Value="1"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <Grid Grid.Column="0" Grid.Row="0">
+                        <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.PictureSeriesBitmaps[0]}" />
+                        <TextBlock Text="1"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1" Grid.Row="0">
+                        <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.PictureSeriesBitmaps[1]}" />
+                        <TextBlock Text="2"/>
+                    </Grid>
+
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.PictureSeriesBitmaps[2]}" />
+                        <TextBlock Text="3"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.PictureSeriesBitmaps[3]}" />
+                        <TextBlock Text="4"/>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </Viewbox>
+
     </StackPanel>
 </UserControl>

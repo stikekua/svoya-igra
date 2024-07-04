@@ -23,6 +23,8 @@ using Topic = SvoyaIgra.Game.Metadata.Topic;
 using Question = SvoyaIgra.Game.Metadata.Question;
 using System.Media;
 using log4net;
+using SvoyaIgra.Game.Views.Questions;
+using System.Drawing;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -358,27 +360,18 @@ namespace SvoyaIgra.Game.ViewModels
                     _currentQuestion = value;
                     OnPropertyChanged(nameof(CurrentQuestion));
                     OnPropertyChanged(nameof(IsPictureQuestion));
+                    OnPropertyChanged(nameof(IsPictureSeriesQuestion));
                     OnPropertyChanged(nameof(IsMusicQuestion));
                     OnPropertyChanged(nameof(IsVideoQuestion));
                 } 
             } 
         }
-        public bool IsQuestion
-        {
-            get { return GamePhase == (int)GamePhaseEnum.Question ? true : false; }
-        }
-        public bool IsPictureQuestion
-        {
-            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Picture ? true : false; }
-        }
-        public bool IsMusicQuestion
-        {
-            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Musical ? true : false; }
-        }
-        public bool IsVideoQuestion
-        {
-            get { return CurrentQuestion.QuestionType == QuestionTypeEnum.Video ? true : false; }
-        }
+        public bool IsQuestion => GamePhase == (int)GamePhaseEnum.Question;
+
+        public bool IsPictureQuestion => CurrentQuestion.QuestionType == QuestionTypeEnum.Picture;
+        public bool IsPictureSeriesQuestion => CurrentQuestion.QuestionType == QuestionTypeEnum.PictureSeries;
+        public bool IsMusicQuestion => CurrentQuestion.QuestionType == QuestionTypeEnum.Musical;
+        public bool IsVideoQuestion => CurrentQuestion.QuestionType == QuestionTypeEnum.Video;
 
 
         private Question _finalQuestion = new Question();
@@ -409,6 +402,42 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private ObservableCollection<BitmapImage> _pictureSeriesBitmaps;
+        public ObservableCollection<BitmapImage> PictureSeriesBitmaps
+        {
+            get { return _pictureSeriesBitmaps; }
+            set
+            {
+                if (_pictureSeriesBitmaps != value)
+                {
+                    _pictureSeriesBitmaps = value;
+                    OnPropertyChanged(nameof(PictureSeriesBitmaps));
+                    OnPropertyChanged(nameof(CurrentInPictureSeries));
+                }
+            }
+        }
+
+        private int _pictureSeriesIndex;
+
+        private BitmapImage? _currentInPictureSeries;
+        public BitmapImage? CurrentInPictureSeries
+        {
+            get { return _currentInPictureSeries; }
+            set
+            {
+                if (_currentInPictureSeries != value)
+                {
+                    _currentInPictureSeries = value;
+                    OnPropertyChanged(nameof(CurrentInPictureSeries));
+                    OnPropertyChanged(nameof(IsPictureSeries));
+                    OnPropertyChanged(nameof(IsPictureSeriesEnd));
+                }
+            }
+        }
+
+        public bool IsPictureSeries => CurrentInPictureSeries != null;
+        public bool IsPictureSeriesEnd => CurrentInPictureSeries == null;
+
         private MediaElement _musicQuestionMediaElement;
         public MediaElement MusicQuestionMediaElement
         {
@@ -437,11 +466,27 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
+        private UserControl _currentUc;
+        public UserControl CurrentUc
+        {
+            get { return _currentUc; }
+            set
+            {
+                if (_currentUc != value)
+                {
+                    _currentUc = value;
+                    OnPropertyChanged(nameof(CurrentUc));
+                }
+            }
+        }
+
         SoundPlayer FinalMusicPlayer { get; set; } = new SoundPlayer();
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
         public RelayCommand CloseQuestionCommand { get; set; }
         public RelayCommand ShowPictureInQustionCommand { get; set; }
+        public RelayCommand NextInPictureSeriesCommand { get; set; }
+        
         public RelayCommand PlayMediaInQustionCommand { get; set; }
         public RelayCommand StopMediaInQustionCommand { get; set; }
 
@@ -650,6 +695,7 @@ namespace SvoyaIgra.Game.ViewModels
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
             CloseQuestionCommand = new RelayCommand(CloseQuestionMethod);
             ShowPictureInQustionCommand = new RelayCommand(ShowPictureInQustionMethod);
+            NextInPictureSeriesCommand = new RelayCommand(NextInPictureSeriesMethod);
             ChangePlayerScoreCommand = new RelayCommand(ChangePlayerScoreMethod);
             SelectPlayerCommand = new RelayCommand(SelectPlayerMethod);
             PlayMediaInQustionCommand = new RelayCommand(PlayMediaInQustionMethod);
@@ -950,14 +996,29 @@ namespace SvoyaIgra.Game.ViewModels
                                 break;
                         }
 
+                        ImageSourceQuestion = null;
+
+
                         switch (CurrentQuestion.QuestionType)
                         {
-                            case QuestionTypeEnum.Picture:
-                                GetImageSource(CurrentQuestion.MediaLink);
+                            case QuestionTypeEnum.Text:
+                                CurrentUc = new TextQuestion();
                                 break;
-
+                            case QuestionTypeEnum.Picture:
+                                CurrentUc = new PictureQuestion();
+                                ShowPictureInQustionMethod(MultimediaForEnum.Question);
+                                break;
+                            case QuestionTypeEnum.PictureSeries:
+                                CurrentUc = new PictureSeriesQuestion();
+                                LoadPictureSeries();
+                                break;
+                            case QuestionTypeEnum.Musical:
+                                CurrentUc = new MusicalQuestion();
+                                break;
+                            case QuestionTypeEnum.Video: 
+                                CurrentUc = new VideoQuestion();
+                                break;
                             default:
-                                ImageSourceQuestion = null;
                                 break;
                         }
                         break;
@@ -983,8 +1044,8 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 GamePhase = Convert.ToInt32(obj);
                 CurrentQuestion.SpecialIntroWasNotPlayed = true;
-                VideoQuestionMediaElement.Source = null;
-                MusicQuestionMediaElement.Source = null;
+                //VideoQuestionMediaElement.Source = null;
+                //MusicQuestionMediaElement.Source = null;
                 OnPropertyChanged(nameof(CurrentQuestion));
             }
             catch (Exception e)
@@ -1045,80 +1106,71 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Image
 
-        void GetImageSource(string Id)
+        private BitmapImage GetBitmapImage(MemoryStream ms)
         {
+            var bitmap = new BitmapImage();
             try
             {
-                var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
-
-                //Qfiles = mutimediaCfg.QuestionFiles;
-                //Afiles = mutimediaCfg.AnswerFiles;
-
-
-                var mutimediaStream = _multimediaService.GetMultimedia(Id, 0, mutimediaCfg.QuestionFiles.ToList()[0]);
-
-                if (mutimediaStream.mediaType == MediaType.Image)
-                {
-                    var ms = ConverToMemoryStream(mutimediaStream.stream);
-                    SetImageSource(ms);
-                }
-                else if (mutimediaStream.mediaType == MediaType.Audio)
-                {
-                    //var ms = ConverToMemoryStream(mutimediaStream.stream);
-                    //_mediaPlayer.Open(new Uri(@"C:\SvoyaIgra\MultimediaStore\29FDBD16-9DA1-4495-B67A-87BCF0942881\Answer\Sinitana - No Rules.mp3"));
-                    //_mediaPlayer.Play();
-                }
-                else if (mutimediaStream.mediaType == MediaType.Video)
-                {
-
-                }
+                bitmap.BeginInit();
+                bitmap.StreamSource = ms;
+                bitmap.EndInit();
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Some problem in GetImageSource, message:{e.Message}");
+                MessageBox.Show($"Some problem in GetBitmapImage, message:{e.Message}");
             }
+            return bitmap;
         }
 
-        private MemoryStream ConverToMemoryStream(Stream stream)
+        private BitmapImage GetBitmapImage(string path)
         {
+            var bitmap = new BitmapImage();
             try
             {
-                MemoryStream ms = new MemoryStream();
-                stream.CopyTo(ms);
-                ms.Seek(0, SeekOrigin.Begin);
-                stream.Close();
-
-                return ms;
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(path, UriKind.Absolute);
+                bitmap.EndInit();
             }
             catch (Exception e)
             {
-                MessageBox.Show($"Some problem in ConverToMemoryStream, message:{e.Message}");
-                return null;
+                MessageBox.Show($"Some problem in GetBitmapImage, message:{e.Message}");
             }
+            return bitmap;
         }
-        private void SetImageSource(MemoryStream ms)
+
+        private void LoadPictureSeries()
         {
-            try
+            PictureSeriesBitmaps = new ObservableCollection<BitmapImage>();
+            string multimediaId = CurrentQuestion.MediaLink;
+            var mutimediaCfg = _multimediaService.GetMultimediaConfig(multimediaId);
+
+            foreach (var fileName in mutimediaCfg.QuestionFiles)
             {
-                var imgsrc = new BitmapImage();
-                imgsrc.BeginInit();
-                imgsrc.StreamSource = ms;
-                imgsrc.EndInit();
-                ImageSourceQuestion = imgsrc;
+                var mutimedia = _multimediaService.GetMultimediaPath(multimediaId, MultimediaForEnum.Question, fileName);
+                if (mutimedia.mediaType == MediaType.Image)
+                {
+                    var bitmap = GetBitmapImage(mutimedia.path);
+                    PictureSeriesBitmaps.Add(bitmap);
+                }
+
+                if (PictureSeriesBitmaps.Count == 4)
+                {
+                    break;
+                }
             }
-            catch (Exception e)
-            {
-                MessageBox.Show($"Some problem in SetImageSource, message:{e.Message}");
-            }
+
+            _pictureSeriesIndex = 0;
+            CurrentInPictureSeries = PictureSeriesBitmaps[_pictureSeriesIndex];
         }
+
         private void ShowPictureInQustionMethod(object obj)
         {
             try
             {
-                string Id = CurrentQuestion.MediaLink;
+                string multimediaId = CurrentQuestion.MediaLink;
                 MultimediaForEnum questionFor = (MultimediaForEnum)obj;
 
-                var mutimediaCfg = _multimediaService.GetMultimediaConfig(Id);
+                var mutimediaCfg = _multimediaService.GetMultimediaConfig(multimediaId);
 
                 string fileName = string.Empty;
                 if ((int)questionFor == (int)MultimediaForEnum.Question)
@@ -1130,19 +1182,29 @@ namespace SvoyaIgra.Game.ViewModels
                     fileName = mutimediaCfg.AnswerFiles.ToList()[0];
                 }
 
-                var mutimediaStream = _multimediaService.GetMultimedia(Id, questionFor, fileName);
-
-
-                if (mutimediaStream.mediaType == MediaType.Image)
+                var mutimedia = _multimediaService.GetMultimediaPath(multimediaId, questionFor, fileName);
+                
+                if (mutimedia.mediaType == MediaType.Image)
                 {
-                    var ms = ConverToMemoryStream(mutimediaStream.stream);
-                    SetImageSource(ms);
+                    ImageSourceQuestion = GetBitmapImage(mutimedia.path);
+                }
+                else
+                {
+                    ImageSourceQuestion = null;
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show($"Some problem in ShowPictureInQustionMethod, message:{e.Message}");
             }
+        }
+
+        private void NextInPictureSeriesMethod(object obj)
+        {
+            _pictureSeriesIndex++;
+            CurrentInPictureSeries = _pictureSeriesIndex < PictureSeriesBitmaps.Count
+                ? PictureSeriesBitmaps[_pictureSeriesIndex]
+                : null;
         }
 
         #endregion
@@ -1360,13 +1422,9 @@ namespace SvoyaIgra.Game.ViewModels
         {
             try
             {
-                if (MusicQuestionMediaElement != null && VideoQuestionMediaElement != null)
-                {
-                    MusicQuestionMediaElement.Stop();
-                    VideoQuestionMediaElement.Stop();
-                }
-
-                FinalMusicPlayer.Stop();
+                if (MusicQuestionMediaElement != null) MusicQuestionMediaElement.Stop();
+                if (VideoQuestionMediaElement != null) VideoQuestionMediaElement.Stop();
+                if (FinalMusicPlayer != null) FinalMusicPlayer.Stop();
             }
             catch (Exception e)
             {
@@ -1398,15 +1456,11 @@ namespace SvoyaIgra.Game.ViewModels
                 if (CurrentQuestion.QuestionType == QuestionTypeEnum.Musical)
                 {
                     MusicQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
-                    VideoQuestionMediaElement.Source = null;
-
                     MusicQuestionMediaElement.Play();
                 }
                 else if (CurrentQuestion.QuestionType == QuestionTypeEnum.Video)
                 {
                     VideoQuestionMediaElement.Source = new Uri(whatToPlay.path, UriKind.RelativeOrAbsolute);
-                    MusicQuestionMediaElement.Source = null;
-
                     VideoQuestionMediaElement.Play();
                 }
             }

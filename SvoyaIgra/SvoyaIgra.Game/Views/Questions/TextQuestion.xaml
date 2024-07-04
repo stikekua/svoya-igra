@@ -9,9 +9,9 @@
              d:Background="White">
     
         <TextBlock VerticalAlignment="Center" 
-                       HorizontalAlignment="Center" 
-                       Text="{Binding CurrentQuestion.QuestionText}" 
-                       Foreground="{StaticResource QuestionsFontColor}"
-                       TextWrapping="Wrap" MaxWidth="400" Margin="20"/>
+                   HorizontalAlignment="Center" 
+                   Text="{Binding CurrentQuestion.QuestionText}" 
+                   Foreground="{StaticResource QuestionsFontColor}"
+                   TextWrapping="Wrap" MaxWidth="400" Margin="20"/>
     
 </UserControl>
