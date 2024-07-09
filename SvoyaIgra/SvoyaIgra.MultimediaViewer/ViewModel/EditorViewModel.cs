@@ -35,6 +35,7 @@ public partial class EditorViewModel
     private int _selectedTopicIndex;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedTopicIndex))]
     private IEnumerable<TopicDto> _topics;
 
     [ObservableProperty]
@@ -42,6 +43,7 @@ public partial class EditorViewModel
     private QuestionDto _selectedQuestion;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedQuestion))]
     private IEnumerable<QuestionDto> _questions;
 
     public EditorViewModel(IMultimediaService multimediaService, ITopicService topicService, IQuestionService questionService)
