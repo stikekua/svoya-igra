@@ -26,7 +26,11 @@ namespace SvoyaIgra.Game.ViewModels
         public Guid GameId
         {
             get => _gameId;
-            set { _gameId = value; OnPropertyChanged(); }
+            set { 
+                _gameId = value; 
+                OnPropertyChanged();
+                GetRealQuestionsFromDbCommand.RaiseCanExecuteChanged();
+            }
         }
 
         #region All questions
@@ -52,15 +56,8 @@ namespace SvoyaIgra.Game.ViewModels
             get 
             {
                 int count = 0;
-                if (AllRoundsQuestions.Count>0)
-                {
-                    for (int i = 0; i < AllRoundsQuestions.Count; i++)
-                    {
-                        count = count+ AllRoundsQuestions[i].Count;
-                    }
-                }
-                return count;
-            }            
+                return AllRoundsQuestions.Count > 0 ? AllRoundsQuestions.Aggregate(count, (current, t) => current + t.Count) : 0;
+            }
         }
 
 
@@ -511,16 +508,24 @@ namespace SvoyaIgra.Game.ViewModels
 
                 //get final topics
                 var finaltopicsFromDB = await _gameService.GetTopicsFinalAsync(GameId);
-                //TODO 
+
                 FinalQuestions = new List<Question>();
-                finaltopicsFromDB.ToList().ForEach(q =>
+                FinalQuestionSetup = new Question();
+
+                if (finaltopicsFromDB.Count() == 0)
                 {
-                    var question = q.Questions!.ToList()[0];
-                    FinalQuestions.Add(new Question(question.Text, question.Answer, 0, QuestionTypeEnum.Text, true, q.Name));
-                });
-                //temp
-                FinalQuestionSetup = FinalQuestions[0];
-                //end temp
+                    MessageBox.Show($"Database does not contain topics for final round");
+                }
+                else
+                {
+                    finaltopicsFromDB.ToList().ForEach(q =>
+                    {
+                        var question = q.Questions!.ToList()[0];
+                        FinalQuestions.Add(new Question(question.Text, question.Answer, 0, QuestionTypeEnum.Text, true, q.Name));
+                    });
+                    FinalQuestionSetup = FinalQuestions[0];
+                }
+                
                 RefreshQuestionMethod(null);
             }
             catch (Exception e)
