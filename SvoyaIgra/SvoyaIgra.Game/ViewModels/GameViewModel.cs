@@ -4,7 +4,6 @@ using SvoyaIgra.Game.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using System.Windows.Controls;
@@ -18,13 +17,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SvoyaIgra.Game.Enums;
 using SvoyaIgra.Game.Helpers;
-using SvoyaIgra.Dal.Bo;
 using Topic = SvoyaIgra.Game.Metadata.Topic;
 using Question = SvoyaIgra.Game.Metadata.Question;
 using System.Media;
-using log4net;
 using SvoyaIgra.Game.Views.Questions;
-using System.Drawing;
 
 namespace SvoyaIgra.Game.ViewModels
 {
@@ -56,9 +52,7 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
-
         
-
         ObservableCollection<string> _wsLogOC = new ObservableCollection<string>();
         public ObservableCollection<string> WsLogOC
         {
@@ -73,18 +67,8 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
-        public int WsLogSelectedIndex
-        {
-            get
-            {
-                if (WsLogOC.Count>0)
-                {
-                    return WsLogOC.Count - 1;
-                }
-                return -1;
-            }
-        }
 
+        public int WsLogSelectedIndex =>  WsLogOC.Count > 0 ? WsLogOC.Count - 1 : -1;
 
         private string _buttonsConnectionStatus = BtnsConnectionStatus.Unknown;
         public string ButtonsConnectionStatus
@@ -164,8 +148,7 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
-
-
+        
         #endregion
 
         public RelayCommand SetReadyForAnswersCommand { get; set; }
@@ -174,23 +157,15 @@ namespace SvoyaIgra.Game.ViewModels
         #region Cockpit window control
 
         public RelayCommand CloseAppCommand { get; set; }
-
-
-
-
-
-
+        
         #endregion
 
         #region PlayScreen
 
-        PlayScreenWindow _playScreenWindow=null;
+        PlayScreenWindow _playScreenWindow;
         public PlayScreenWindow PlayScreenWindow 
         { 
-            get
-            {
-                return _playScreenWindow;
-            }
+            get { return _playScreenWindow; }
             set
             {
                 if (_playScreenWindow!=value)
@@ -215,28 +190,13 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
+        
+        public bool PlayScreenRunning => PlayScreenWindow != null;
 
-       
-
-
-
-
-        public bool PlayScreenRunning
-        {
-            get
-            {
-               if (PlayScreenWindow!=null) return true;
-               return false;
-            }
-        }
-
-        bool _playScreenLocked = false;
+        bool _playScreenLocked;
         public bool PlayScreenLocked
         {
-            get
-            {
-                return _playScreenLocked;
-            }
+            get { return _playScreenLocked; }
             set
             {
                 if (_playScreenLocked != value)
@@ -244,22 +204,14 @@ namespace SvoyaIgra.Game.ViewModels
                     _playScreenLocked = value;
                     OnPropertyChanged(nameof(PlayScreenLocked));
                     LockPresentScreenMethod(value);
-
                 }
             }
         }
-
-
-        #region RelayCommands
+        
         public RelayCommand OpenPresentScreenCommand { get; set; } 
         public RelayCommand ClosePresentScreenCommand { get; set; } 
         public RelayCommand ChangeGamePhaseCommand { get; set; }
-
-
-
-
-        #endregion
-
+        
         #endregion
 
         #region Game phase
@@ -277,23 +229,21 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _gamePhase = value;
                     OnPropertyChanged(nameof(GamePhase));
-                    OnPropertyChanged(nameof(isIntroOnScreen));
+                    OnPropertyChanged(nameof(IsIntroOnScreen));
                     OnPropertyChanged(nameof(IsQuestion));
                     
                     GamePhaseUpdate();
                 }
             }
         }
-        public bool isIntroOnScreen
+        public bool IsIntroOnScreen
         {
-            get
-            {
-                if     ((GamePhase == (int)GamePhaseEnum.GameIntro)         ||
-                        (GamePhase == (int)GamePhaseEnum.FirstRoundIntro)   ||
-                        (GamePhase == (int)GamePhaseEnum.SecondRoundIntro)  ||
-                        (GamePhase == (int)GamePhaseEnum.ThirdRoundIntro)   ||
-                        (GamePhase == (int)GamePhaseEnum.FinalRoundIntro))      return true;
-                return  false;
+            get {
+                return (GamePhase == (int)GamePhaseEnum.GameIntro)
+                       || (GamePhase == (int)GamePhaseEnum.FirstRoundIntro)
+                       || (GamePhase == (int)GamePhaseEnum.SecondRoundIntro)
+                       || (GamePhase == (int)GamePhaseEnum.ThirdRoundIntro)
+                       || (GamePhase == (int)GamePhaseEnum.FinalRoundIntro);
             }
         }
 
@@ -344,10 +294,7 @@ namespace SvoyaIgra.Game.ViewModels
             }
         }
 
-        public bool QuestionsArePrepared
-        {
-            get { return AllRoundsQuestions.Count > 0 ? true : false; }
-        }
+        public bool QuestionsArePrepared => AllRoundsQuestions.Count > 0;
 
         private Question _currentQuestion = new Question();
         public Question CurrentQuestion 
@@ -481,9 +428,11 @@ namespace SvoyaIgra.Game.ViewModels
         }
 
         SoundPlayer FinalMusicPlayer { get; set; } = new SoundPlayer();
+
         public RelayCommand OpenQuestionsSetupWindowCommand { get; set; }
         public RelayCommand OpenQuestionCommand { get; set; }
         public RelayCommand CloseQuestionCommand { get; set; }
+
         public RelayCommand ShowPictureInQustionCommand { get; set; }
         public RelayCommand NextInPictureSeriesCommand { get; set; }
         
@@ -499,13 +448,10 @@ namespace SvoyaIgra.Game.ViewModels
 
         #region Players
 
-    ObservableCollection<Player> _players = new ObservableCollection<Player>();
+        ObservableCollection<Player> _players = new ObservableCollection<Player>();
         public ObservableCollection<Player> Players
         {
-            get
-            {
-                return _players;
-            }
+            get { return _players; }
             set
             {
                 if (_players != value)
@@ -540,10 +486,7 @@ namespace SvoyaIgra.Game.ViewModels
         string _statisticsCsvPath = "";
         public string StatisticsCsvPath
         {
-            get
-            {
-                return _statisticsCsvPath;
-            }
+            get { return _statisticsCsvPath; }
             set
             {
                 if (_statisticsCsvPath != value)
@@ -557,10 +500,7 @@ namespace SvoyaIgra.Game.ViewModels
         bool _statisticsRecordingIsActive = false;
         public bool StatisticsRecordingIsActive
         {
-            get
-            {
-                return _statisticsRecordingIsActive;
-            }
+            get { return _statisticsRecordingIsActive; }
             set
             {
                 if (_statisticsRecordingIsActive != value)
@@ -581,10 +521,7 @@ namespace SvoyaIgra.Game.ViewModels
         string _scoreBoardText = "";
         public string ScoreBoardText
         {
-            get
-            {
-                return _scoreBoardText;
-            }
+            get { return _scoreBoardText; }
             set
             {
                 if (_scoreBoardText != value)
@@ -615,9 +552,11 @@ namespace SvoyaIgra.Game.ViewModels
         {
             get
             {
-                return (SelectedPlayerIndex != -1 && 
-                    ((GamePhase == (int)GamePhaseEnum.Question && PlayerSelectionMode==PlayerSelectionModeEnum.Auto) || PlayerSelectionMode == PlayerSelectionModeEnum.Manual)) 
-                    ? true : false;
+                return SelectedPlayerIndex != -1
+                       && (
+                           (GamePhase == (int)GamePhaseEnum.Question && PlayerSelectionMode == PlayerSelectionModeEnum.Auto)
+                           || PlayerSelectionMode == PlayerSelectionModeEnum.Manual
+                       );
             }
         }
 
@@ -673,8 +612,7 @@ namespace SvoyaIgra.Game.ViewModels
         public RelayCommand CloseSpecialIntroCommand { get; set; }
 
         #endregion
-
-
+        
         #endregion
 
         public GameViewModel(IMultimediaService multimediaService)
@@ -690,8 +628,7 @@ namespace SvoyaIgra.Game.ViewModels
 
             ChangeGamePhaseCommand = new RelayCommand(ChangeGamePhaseMethod);
             CloseSpecialIntroCommand = new RelayCommand(CloseSpecialIntroMethod);
-
-
+            
             OpenQuestionCommand = new RelayCommand(OpenQuestionMethod);
             CloseQuestionCommand = new RelayCommand(CloseQuestionMethod);
             ShowPictureInQustionCommand = new RelayCommand(ShowPictureInQustionMethod);
@@ -703,15 +640,13 @@ namespace SvoyaIgra.Game.ViewModels
             LoadMusicMediaInQustionCommand = new RelayCommand(LoadMusicMediaInQustionMethod);
             LoadVideoMediaInQustionCommand = new RelayCommand(LoadVideoMediaInQustionMethod);
             PlayFinalMusicCommand = new RelayCommand(PlayFinalMusicMethod);
-
-
+            
             MediaElementLoadedCommand = new RelayCommand(MediaElementLoadedMethod);
             SpecialtyVideoMediaElementLoadedCommand = new RelayCommand(SpecialtyVideoMediaElementLoadedMethod);
 
             StartRecordStatisticsCommand = new RelayCommand(StartRecordStatisticsMethod);
             RecordScoresCommand = new RelayCommand(RecordScoresMethod);
-
-
+            
             GetPlayers();
 
             #region Buttons control
@@ -842,73 +777,6 @@ namespace SvoyaIgra.Game.ViewModels
                 return false;
             }            
         }
-
-        //private int DecodeButtonMessage(string message)
-        //{
-        //    char[] separator = ";".ToCharArray();
-        //    string[] buttonsIndexes = message.Split(separator);
-        //    int qIndex = Convert.ToInt32(buttonsIndexes[0]);
-
-        //    List<int> queue = new List<int>()
-        //    {
-        //        Convert.ToInt32(buttonsIndexes[1]),
-        //        Convert.ToInt32(buttonsIndexes[2]),
-        //        Convert.ToInt32(buttonsIndexes[3]),
-        //        Convert.ToInt32(buttonsIndexes[4])
-        //    };
-        //    bool allZeros = queue.TrueForAll(x => x == 0);
-
-        //    for (int i = 0; i < queue.Count; i++)
-        //    {
-
-        //        if (queue[i] != 0)
-        //        {
-        //            switch (queue[i])
-        //            {
-        //                case (int)ButtonEnum.Red://1
-        //                    Players[(int)PlayerIndexEnum.Red]   .isInQueue = true;
-        //                    break;
-        //                case (int)ButtonEnum.Green://2
-        //                    Players[(int)PlayerIndexEnum.Green] .isInQueue = true;
-        //                    break;
-        //                case (int)ButtonEnum.Blue://4
-        //                    Players[(int)PlayerIndexEnum.Blue]  .isInQueue = true;
-        //                    break;
-        //                case (int)ButtonEnum.Yellow://8
-        //                    Players[(int)PlayerIndexEnum.Yellow].isInQueue = true;
-        //                    break;
-
-        //                default:
-        //                    break;
-        //            }
-
-        //        }
-        //    }
-
-        //    OnPropertyChanged(nameof(Players));
-
-        //    if (allZeros) return -1;
-        //    else
-        //    {
-        //        switch (queue[qIndex - 1])
-        //        {
-        //            case (int)ButtonEnum.Red://1
-        //                return (int)PlayerIndexEnum.Red;
-        //            case (int)ButtonEnum.Green://2
-        //                return (int)PlayerIndexEnum.Green;
-        //            case (int)ButtonEnum.Blue://4
-        //                return (int)PlayerIndexEnum.Blue;
-        //            case (int)ButtonEnum.Yellow://8
-        //                return (int)PlayerIndexEnum.Yellow;
-
-        //            default:
-        //                return -1;
-        //        }
-        //    }
-
-
-        //}
-
         #endregion
 
         #region Game phase
@@ -1044,8 +912,6 @@ namespace SvoyaIgra.Game.ViewModels
             {
                 GamePhase = Convert.ToInt32(obj);
                 CurrentQuestion.SpecialIntroWasNotPlayed = true;
-                //VideoQuestionMediaElement.Source = null;
-                //MusicQuestionMediaElement.Source = null;
                 OnPropertyChanged(nameof(CurrentQuestion));
             }
             catch (Exception e)
