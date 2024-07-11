@@ -8,6 +8,7 @@ namespace SvoyaIgra.Shared.Constants
 {
     public static class WsMessages
     {
+        public const string StartCommand = "SGStart";
         public const string NextCommand = "SGNext";
         public const string ResetCommand = "SGReset";
 

@@ -10,6 +10,9 @@ namespace SvoyaIgra.Btn.WSTestServer
 {
     public static class QueueOperator
     {
+        //queue selector
+        static bool started = false;
+
         //memory queue
         static int[] queue = { 0, 0, 0, 0 };
 
@@ -20,6 +23,9 @@ namespace SvoyaIgra.Btn.WSTestServer
         {
             switch (message)
             {
+                case WsMessages.StartCommand:
+                    EVH_start();
+                    break;
                 case WsMessages.NextCommand:
                     EVH_next();
                     break;
@@ -58,9 +64,24 @@ namespace SvoyaIgra.Btn.WSTestServer
         }
 
         //event handler for next button
+        private static void EVH_start()
+        {
+            Console.WriteLine("start>>");
+
+            Console.WriteLine(started ? "Game already started" : "Game started");
+            started = true;
+        }
+
+        //event handler for next button
         private static void EVH_next()
         {
             Console.WriteLine("next>>");
+
+            if (!started)
+            {
+                Console.WriteLine("Game has not started yet");
+                return;
+            }
 
             if (queueSelector < 3 && queue[queueSelector] != 0)
             {
@@ -90,10 +111,17 @@ namespace SvoyaIgra.Btn.WSTestServer
             {
                 queue[i] = 0;
             }
+            started = false;
         }
 
         private static void ButtonPressed(int button)
         {
+            if (!started)
+            {
+                Console.WriteLine("Game has not started yet");
+                return;
+            }
+
             // add button to queue
             Add2Queue(button);
         }

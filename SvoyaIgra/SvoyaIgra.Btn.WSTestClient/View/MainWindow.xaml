@@ -40,6 +40,7 @@
                     <Button Content="Disconnect" Command="{Binding Path=DisconnectCommand}" />
                 </StackPanel>
                 <StackPanel Grid.Row="1" >
+                    <Button Content="Start" Command="{Binding Path=StartCommand}" />
                     <Button Content="Next" Command="{Binding Path=NextCommand}" />
                     <Button Content="Reset" Command="{Binding Path=ResetCommand}" />
                 </StackPanel>                

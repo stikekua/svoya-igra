@@ -18,6 +18,7 @@ namespace SvoyaIgra.Btn.WSTestClient.ViewModel
 
         public DelegateCommand ConnectCommand { get; set; }
         public DelegateCommand DisconnectCommand { get; set; }
+        public DelegateCommand StartCommand { get; set; }
         public DelegateCommand NextCommand { get; set; }
         public DelegateCommand ResetCommand { get; set; }
 
@@ -50,6 +51,8 @@ namespace SvoyaIgra.Btn.WSTestClient.ViewModel
 
             ConnectCommand = new DelegateCommand(OnConnectButtonPressed);
             DisconnectCommand = new DelegateCommand(OnDisconnectButtonPressed);
+
+            StartCommand = new DelegateCommand(OnStartButtonPressed);
             NextCommand = new DelegateCommand(OnNextButtonPressed);
             ResetCommand = new DelegateCommand(OnResetButtonPressed);
 
@@ -80,6 +83,16 @@ namespace SvoyaIgra.Btn.WSTestClient.ViewModel
         private bool CanExecuteDisconnectButton(object obj)
         {
             return IsConnect;
+        }
+
+        private void OnStartButtonPressed(object obj)
+        {
+            _log.Info("OnStartButtonPressed");
+            if (_globalData.WebSocketClient.Send(WsMessages.StartCommand))
+            {
+                NotificationText += $"C: {WsMessages.StartCommand}\r\n";
+                addToLogList($"C: {WsMessages.StartCommand}");
+            }
         }
 
         private void OnNextButtonPressed(object obj)
