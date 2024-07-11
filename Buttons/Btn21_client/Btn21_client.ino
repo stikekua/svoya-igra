@@ -4,7 +4,7 @@
 #include <GyverButton.h>
 #include <timer.h>
 
-#define BTN_ID 8 // 1=R, 2=G, 4=B, 8=Y
+#define BTN_ID 4 // 1=R, 2=G, 4=B, 8=Y
 
 #define BTN_PIN 0
 #define LED_PIN 2
@@ -12,6 +12,11 @@
 #define LED_BLINK2_TIME 250
 
 GButton butn1(BTN_PIN); // (по умолч. HIGH_PULL и NORM_OPEN)
+
+#define BLOCK_TIME 1500
+unsigned long currentMillis;
+unsigned long blockTimerMillis;
+bool blocked = false;
 
 // Current LED status
 enum LED { OFF, ON, BLINK, BLINK_ERROR };
@@ -22,6 +27,7 @@ Timer blink2Timer(LED_BLINK2_TIME);
 
 //Structures to send data
 typedef struct struct_message_in {
+  bool enable;
   bool select;
   bool deselect;
   bool release;
@@ -29,6 +35,7 @@ typedef struct struct_message_in {
 typedef struct struct_message_out {
   int id;
   bool pressed;
+  bool falsestart;
   bool selected;
   bool deselected;
 } struct_message_out;
@@ -59,14 +66,29 @@ void setup() {
 
 void loop() {
   butn1.tick();
+  currentMillis = millis();
+  
+  if(blocked){
+    if (currentMillis - blockTimerMillis >= BLOCK_TIME)
+    {
+      blocked = false;
+    }
+  }  
 
   //Button pressed
   if (butn1.isPress()) {
+    if (!msgIn.enable && !blocked){
+      blocked = true;
+      blockTimerMillis = currentMillis;
+    }
+    
     //Set values to send
     msgOut.pressed = true;
+    msgOut.falsestart = !msgIn.enable || blocked;
     // Send message via ESP-NOW
     sendMsg();
-    if (!msgOut.selected) LEDMode = ON;
+    //Set led mode
+    if (msgIn.enable && !msgOut.selected) LEDMode = ON;
   }
 
   //Set led mode, according actual status

@@ -7,12 +7,12 @@
 
 //uint8_t masterAddress[] = {0x8C, 0xAA, 0xB5, 0x63, 0x29, 0x42};
 
-  //{0xE8, 0xDB, 0x84, 0x9A, 0x8C, 0xA1}, // green
+// {0x38, 0x2B, 0x78, 0x05, 0x13, 0xD8}
   
 uint8_t clientsCount = 4;
 uint8_t clientAddress[][6] = {
   {0xE8, 0xDB, 0x84, 0x96, 0xF4, 0xE1}, // red
-  {0x38, 0x2B, 0x78, 0x05, 0x13, 0xD8},
+  {0xE8, 0xDB, 0x84, 0x9A, 0x8C, 0xA1}, // green
   {0xE8, 0xDB, 0x84, 0x9A, 0x89, 0x8E}, // blue
   {0xE8, 0xDB, 0x84, 0x9A, 0x92, 0xBC}  // yellow
 };
@@ -58,10 +58,11 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   }
   Serial.println();
   Serial.print("pressed "); Serial.println(msgIn.pressed ? "true" : "false");
+  Serial.print("falsestart "); Serial.println(msgIn.falsestart ? "true" : "false");
   Serial.print("selected "); Serial.println(msgIn.selected ? "true" : "false");
   Serial.print("deselected "); Serial.println(msgIn.deselected ? "true" : "false");
 
-  if (msgIn.pressed) {
+  if (msgIn.pressed && !msgIn.falsestart) {
     EVH_buttonPressed(msgIn.id);
   }
 }
@@ -88,11 +89,13 @@ void EN_sendMsg(cCommand cmd, cButton btn) {
   //Set values to send
   switch (cmd) {
     case CMD_SELECT:
+      msgOut.enable = true;
       msgOut.select = true;
       msgOut.deselect = false;
       msgOut.release = false;
       break;
     case CMD_DESELECT:
+      msgOut.enable = true;
       msgOut.select = false;
       msgOut.deselect = true;
       msgOut.release = false;
@@ -103,16 +106,24 @@ void EN_sendMsg(cCommand cmd, cButton btn) {
 }
 
 void EN_broadcastMsg(cCommand cmd) {
-  if (cmd == CMD_RELEASE) {
-    //Set values to send
-    msgOut.select = false;
-    msgOut.deselect = false;
-    msgOut.release = true;
+  switch (cmd) {
+    case CMD_ENABLE:
+      msgOut.enable = true;
+      msgOut.select = false;
+      msgOut.deselect = false;
+      msgOut.release = false;
+      break;
+    case CMD_RELEASE:
+      msgOut.enable = false;
+      msgOut.select = false;
+      msgOut.deselect = false;
+      msgOut.release = true;
+      break;
+  }
 
-    for (int i = 0; i < clientsCount; i++) {
-      // Send message via ESP-NOW
-      esp_now_send(clientAddress[i], (uint8_t *) &msgOut, sizeof(msgOut));
-    }
+  for (int i = 0; i < clientsCount; i++) {
+    // Send message via ESP-NOW
+    esp_now_send(clientAddress[i], (uint8_t *) &msgOut, sizeof(msgOut));
   }
 }
 int findMacId(cButton btn) {

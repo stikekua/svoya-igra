@@ -38,15 +38,16 @@ int batteryValue;
 // Web2Server
 const char SG_NEXT[] = "SGNext";
 const char SG_RESET[] = "SGReset";
+const char SG_START[] = "SGStart";
 char ButtonStateMsg[20];
 
 enum cButton { RED = 1, GREEN = 2, BLUE = 4, YELLOW = 8 };
-enum cCommand { CMD_NULL, CMD_SELECT, CMD_DESELECT, CMD_RELEASE };
+enum cCommand { CMD_NULL, CMD_SELECT, CMD_DESELECT, CMD_RELEASE, CMD_ENABLE };
 uint32_t buttonColors[] = {
   mainStrip.Color(125, 0, 0), // red
   mainStrip.Color(0,  125, 0), // green
   mainStrip.Color(0,  0, 125), // blue
-  mainStrip.Color(125, 125, 0)  // yellow
+  mainStrip.Color(150, 125, 0)  // yellow
 };
 
 //game status
@@ -61,10 +62,12 @@ int queueSelector = 0;
 typedef struct struct_message_in {
   int id;
   bool pressed;
+  bool falsestart;
   bool selected;
   bool deselected;
 } struct_message_in;
 typedef struct struct_message_out {
+  bool enable;
   bool select;
   bool deselect;
   bool release;
@@ -155,7 +158,11 @@ void loop() {
   btn.tick();
   if (btn.isClick()) {
     Serial.println("Click");
-    EVH_next();
+    if(!started){
+      EVH_start();
+    } else {
+      EVH_next();
+    }
   }
   if (btn.isHolded()) {
     Serial.println("Holded");

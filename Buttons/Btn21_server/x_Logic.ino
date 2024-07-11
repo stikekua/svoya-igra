@@ -2,13 +2,22 @@
 // ********************* EVENT HANDLERS ******************************
 // *******************************************************************
 
+//event handler for start
+void EVH_start(){
+   Serial.println("start>>");
+  if (!started) {
+    started = true;
+    LED_showQueue();
+    //enable buttons
+    EN_broadcastMsg(CMD_ENABLE);
+  }
+}
+
 //event handler for next button or web cmd
 void EVH_next() {
   Serial.println("next>>");
 
   if (!started) {
-    started = true;
-    LED_showQueue();
     return;
   }
 

@@ -47,6 +47,9 @@ void OnDataRecv(uint8_t * mac, uint8_t *incomingData, uint8_t len) {
   memcpy(&msgIn, incomingData, sizeof(msgIn));
   Serial.print("Bytes received: ");
   Serial.println(len);
+  if (msgIn.enable) {
+    Serial.println("enable");
+  }
   if (msgIn.select) {
     Serial.println("select");
     msgOut.selected = true;

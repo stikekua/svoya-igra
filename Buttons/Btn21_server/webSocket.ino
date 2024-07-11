@@ -25,6 +25,10 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length
         Serial.println("SG_NEXT");
         EVH_next();
       }
+      else if (strcmp(SG_START, (const char *)payload) == 0) {
+        Serial.println("SG_START");
+        EVH_start();
+      }
       else if (strcmp(SG_RESET, (const char *)payload) == 0) {
         Serial.println("SG_RESET");
         EVH_reset();
