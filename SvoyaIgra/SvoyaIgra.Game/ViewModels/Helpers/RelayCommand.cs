@@ -54,6 +54,11 @@ namespace SvoyaIgra.Game.ViewModels.Helpers
             remove { CommandManager.RequerySuggested -= value; }
         }
 
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
+
         public void Execute(object parameters)
         {
             _execute(parameters);

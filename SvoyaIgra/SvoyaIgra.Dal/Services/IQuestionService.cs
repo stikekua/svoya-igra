@@ -12,4 +12,6 @@ public interface IQuestionService
     
     public Task<IEnumerable<QuestionDto>?> GetQuestionsByAuthorAsync(int authorId);
     public Task<IEnumerable<QuestionDto>?> GetQuestionsByTopicAsync(int topicId);
+
+    public Task<QuestionDto?> SetQuestionMultimediaIdAsync(int id, string multimediaId);
 }

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Dto\" />
-    <Folder Include="Import\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
@@ -21,6 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Import\dataRu.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Import\data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

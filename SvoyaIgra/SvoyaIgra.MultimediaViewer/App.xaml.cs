@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SvoyaIgra.MultimediaViewer.Data;
 using SvoyaIgra.MultimediaViewer.ViewModel;
 
 namespace SvoyaIgra.MultimediaViewer
@@ -26,8 +29,16 @@ namespace SvoyaIgra.MultimediaViewer
                 .AddJsonFile("appsettings.json", false, true);
             _config = builder.Build();
 
+            var connectionString = _config.GetConnectionString("SvoyaIgraDbContext");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {                
+                Debug.WriteLine("Missing connection string for SvoyaIgraDbContext in appsettings.json");
+            }
+
             host = Host.CreateDefaultBuilder().ConfigureServices((hostContext, services) =>
             {
+                services.AddDbContext<SvoyaIgraDbContext>(options => options.UseSqlServer(connectionString));
+
                 services.ConfigureAppOptions(_config);
                 services.AddDiRegistration(_config);
 

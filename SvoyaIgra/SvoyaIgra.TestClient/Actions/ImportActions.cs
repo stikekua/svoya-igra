@@ -2,6 +2,7 @@
 using SvoyaIgra.Dal.Dto;
 using SvoyaIgra.Dal.Services;
 using SvoyaIgra.ImportCSV.Services;
+using SvoyaIgra.Shared.Constants;
 
 namespace SvoyaIgra.TestClient.Actions;
 
@@ -62,7 +63,7 @@ public class ImportActions:IImportActions
         Ui.Write("File successfully parsed");
         Ui.Write();
         var authorName = Ui.Read("Author name");
-
+        var lang = Ui.ReadString("Language", Language.SupportedLangs);
 
         var author = await _authorService.GetAuthorAsync(authorName);
         if (author == null)
@@ -80,7 +81,7 @@ public class ImportActions:IImportActions
                 continue;
             }
 
-            t = await _topicService.CreateTopicAsync(topic.Name, topic.Difficulty);
+            t = await _topicService.CreateTopicAsync(topic.Name, topic.Difficulty, lang);
             Ui.Write($"Topic \"{t.Name}\" created.");
 
             if (topic.Questions == null || !topic.Questions.Any()) continue;

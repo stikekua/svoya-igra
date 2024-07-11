@@ -747,15 +747,8 @@
                             </Grid>
                         </GroupBox>
                         <GroupBox Header="Speciality stuff" Grid.Row="1">
-                            <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <GroupBox Header="Picture" IsEnabled="{Binding IsPictureQuestion}">
+                            <StackPanel Orientation="Horizontal">
+                                <GroupBox Header="Picture" IsEnabled="{Binding IsPictureQuestion}">
                                 <GroupBox.Resources>
                                     <Style TargetType="GroupBox">
                                         <Style.Triggers>
@@ -777,7 +770,25 @@
 
                                 </StackPanel> 
                             </GroupBox>
-                            <GroupBox Header="Music" Grid.Column="1" IsEnabled="{Binding IsMusicQuestion}">
+                            <GroupBox Header="Picture Series" IsEnabled="{Binding IsPictureSeriesQuestion}">
+                                <GroupBox.Resources>
+                                    <Style TargetType="GroupBox">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Opacity" Value="1"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </GroupBox.Resources>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Next Picture" 
+                                            Command="{Binding NextInPictureSeriesCommand}"/>
+                                </StackPanel> 
+                            </GroupBox>
+                            <GroupBox Header="Music" IsEnabled="{Binding IsMusicQuestion}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
@@ -788,7 +799,7 @@
                                 </StackPanel>
                                 
                             </GroupBox>
-                            <GroupBox Header="Video" Grid.Column="2" IsEnabled="{Binding IsVideoQuestion}">
+                            <GroupBox Header="Video" IsEnabled="{Binding IsVideoQuestion}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
                                                  CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
@@ -799,7 +810,7 @@
                                 </StackPanel>
 
                             </GroupBox>
-                            <GroupBox Header="Final round music" Grid.Column="3" IsEnabled="{Binding ElementName=FinalRoundRadioButton, Path=IsChecked}">
+                            <GroupBox Header="Final round music" IsEnabled="{Binding ElementName=FinalRoundRadioButton, Path=IsChecked}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play" Command="{Binding PlayFinalMusicCommand}"
                                                   MinWidth="30"/>
@@ -817,7 +828,7 @@
 
                             </GroupBox>
 
-                        </Grid>     
+                        </StackPanel>     
                             
                         </GroupBox>
                 </Grid>

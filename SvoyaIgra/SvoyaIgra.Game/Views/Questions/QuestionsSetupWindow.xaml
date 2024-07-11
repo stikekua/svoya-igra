@@ -47,15 +47,15 @@
                             <StackPanel Orientation="Horizontal">
 
                                 <Button Content="Create game"
-                Command="{Binding CreateGameCommand}"
-                Margin="5" Padding="5"></Button>
+                                        Command="{Binding CreateGameCommand}"
+                                        Margin="5" Padding="5"></Button>
                                 <Button Content="Get last game"
-                Command="{Binding GetLastGameCommand}"
-                Margin="5" Padding="5"></Button>
+                                        Command="{Binding GetLastGameCommand}"
+                                        Margin="5" Padding="5"></Button>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Game Id" FontWeight="Bold"/>
-                                <TextBlock Text="{Binding GameId}" VerticalAlignment="Center" Width="200px"/>
+                                <TextBlock Text="{Binding GameId}" VerticalAlignment="Center" Width="250px"/>
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>

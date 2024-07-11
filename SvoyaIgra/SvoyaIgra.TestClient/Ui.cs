@@ -14,10 +14,12 @@ namespace SvoyaIgra.TestClient
         }
         public static void Write()
         {
+            Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine();
         }
         public static void Write(string text)
         {
+            Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine(text);
         }
         public static void WriteError(string text)
@@ -54,6 +56,7 @@ namespace SvoyaIgra.TestClient
         public static string Read(string text)
         {
             Console.Write($"{text}: ");
+            Console.InputEncoding = Encoding.UTF8;
             return Console.ReadLine();
         }
 
@@ -100,11 +103,12 @@ namespace SvoyaIgra.TestClient
             do
             {
                 Console.Write($"{text}: ");
+                Console.InputEncoding = Encoding.UTF8;
                 var str = Console.ReadLine();
                 if (allowedValues.Contains(str)) 
                     return str;
                 else 
-                    WriteWarning($"Invalid file name. Try again.");
+                    WriteWarning($"Invalid input. Allowed values: {string.Join(", ", allowedValues)}");
             } while (true);
         }
 

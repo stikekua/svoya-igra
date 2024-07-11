@@ -15,22 +15,21 @@
         Height="1080" Width="1920"
         Background="{StaticResource MainGameBackground}"
         WindowState="{Binding PlayScreenWindowState, UpdateSourceTrigger=PropertyChanged}"
-        DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}">
+        DataContext="{Binding Source={StaticResource Locator}, Path=GameViewModel}"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
         <helpers:VisibilityParameterConverter x:Key="visibilityParameterConverter"/>
         <helpers:VisibilityHiddenConverter x:Key="visibilityHiddenConverter"/>
     </Window.Resources>
-    <Grid>
-        <DockPanel Grid.Row="0" x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <DockPanel x:Name="MainScreenPart" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <gf:PreGame                     Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.PreGame}}"/>
             <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.FirstRound}}"/>
             <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.SecondRound}}"/>
             <gf:NormalRound                 Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.ThirdRound}}"/>
             <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.FinalRound}}"/>
             <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
-            <gf:IntroPhase                  Visibility="{Binding isIntroOnScreen, Converter={StaticResource visibilityCollapsedConverter}}"/>
+            <gf:IntroPhase                  Visibility="{Binding IsIntroOnScreen, Converter={StaticResource visibilityCollapsedConverter}}"/>
         </DockPanel>       
-    </Grid>
 </Window>

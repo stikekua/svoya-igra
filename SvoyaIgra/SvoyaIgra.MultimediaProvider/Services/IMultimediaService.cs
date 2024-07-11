@@ -12,4 +12,6 @@ public interface IMultimediaService
     string CreateMultimedia();
 
     Task SaveMultimedia(string multimediaId, MultimediaForEnum multimediaFor, string fileName, Stream fileStream);
+
+    string[] GetMultimedias();
 }
