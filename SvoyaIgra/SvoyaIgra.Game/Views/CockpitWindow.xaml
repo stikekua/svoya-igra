@@ -196,145 +196,132 @@
                     </StackPanel>
                 </GroupBox>
         <Grid Grid.Row="2" x:Name="PlayerControl">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                <Label Content="How to select player: " FontSize="20"/>
-                <!--<ComboBox VerticalAlignment="Center" HorizontalAlignment="Center"
-                      MinWidth="100" FontSize="20"
-                      SelectedIndex="{Binding AutoPlayerSelectionIndex, Mode=TwoWay}">
-                    <ComboBoxItem Content="Auto (Buttons)" IsSelected="True" />
-                    <ComboBoxItem Content="Manual (here in cockpit)" />
-                </ComboBox>-->
-                <ComboBox VerticalAlignment="Center" 
-                          HorizontalAlignment="Center"
-                          MinWidth="100" FontSize="20"
-                          ItemsSource="{Binding Source={StaticResource PlayerSelectionModeEnum}}"
-                          SelectedValue="{Binding PlayerSelectionMode,Mode=TwoWay}"/>
-                
-            </StackPanel>
-            <Grid Grid.Row="1" VerticalAlignment="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Column="0" Orientation="Horizontal"  VerticalAlignment="Top" HorizontalAlignment="Center">
-                        <StackPanel.Resources>
-                            <Style TargetType="StackPanel">
-                                <Setter Property="IsEnabled" Value="False"/>
-                                <Style.Triggers>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <Label Content="Player selection mode: " FontSize="16"/>
+                    <ComboBox VerticalAlignment="Center" 
+                              HorizontalAlignment="Center"
+                              MinWidth="100" FontSize="16"
+                              ItemsSource="{Binding Source={StaticResource PlayerSelectionModeEnum}}"
+                              SelectedValue="{Binding PlayerSelectionMode,Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 30">
+                    <StackPanel.Resources>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PlayerSelectionMode, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static enums:PlayerSelectionModeEnum.Manual}">
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="MinWidth" Value="50"/>
+                            <Setter Property="MaxWidth" Value="200"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <ToggleButton Margin="5" Background="{Binding Players[0].ColorCode}" 
+                          IsChecked="{Binding Players[0].isSelected, Mode=OneWay}"
+                          Command="{Binding SelectPlayerCommand}"
+                          CommandParameter="0">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[0].Name}"/>
+                            <TextBlock Text="{Binding Players[0].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
 
-                                    <DataTrigger Binding="{Binding PlayerSelectionMode, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static enums:PlayerSelectionModeEnum.Manual}">
-                                        <Setter Property="IsEnabled" Value="True"/>
-                                    </DataTrigger>
+                    <ToggleButton Margin="5" Background="{Binding Players[1].ColorCode}" 
+                          IsChecked="{Binding Players[1].isSelected, Mode=OneWay}" 
+                          Command="{Binding SelectPlayerCommand}"
+                          CommandParameter="1">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[1].Name}"/>
+                            <TextBlock Text="{Binding Players[1].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton Margin="5" Background="{Binding Players[2].ColorCode}" 
+                          IsChecked="{Binding Players[2].isSelected, Mode=OneWay}" 
+                          Command="{Binding SelectPlayerCommand}"
+                          CommandParameter="2">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[2].Name}"/>
+                            <TextBlock Text="{Binding Players[2].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton Margin="5" Background="{Binding Players[3].ColorCode}" 
+                          IsChecked="{Binding Players[3].isSelected, Mode=OneWay}" 
+                          Command="{Binding SelectPlayerCommand}"
+                          CommandParameter="3">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Players[3].Name}"/>
+                            <TextBlock Text="{Binding Players[3].Score}"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <ToggleButton x:Name="ToggleButtonEditPlayersNames" Height="30" HorizontalAlignment="Center">
+                        <ToggleButton.Resources>
+                            <Style TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content" Value="Edit Player's names"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="Accept Player's names"/>
+                                    </Trigger>
                                 </Style.Triggers>
                             </Style>
-                            <Style TargetType="ToggleButton">
-                                <Setter Property="MinWidth" Value="50"/>
-                                <Setter Property="MaxWidth" Value="200"/>
-                            </Style>
-                        </StackPanel.Resources>
-                        <ToggleButton Margin="5" Background="{Binding Players[0].ColorCode}" 
-                              IsChecked="{Binding Players[0].isSelected, Mode=OneWay}"
-                              Command="{Binding SelectPlayerCommand}"
-                              CommandParameter="0">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Players[0].Name}"/>
-                                <TextBlock Text="{Binding Players[0].Score}"/>
-                            </StackPanel>
-                        </ToggleButton>
-
-                        <ToggleButton Margin="5" Background="{Binding Players[1].ColorCode}" 
-                              IsChecked="{Binding Players[1].isSelected, Mode=OneWay}" 
-                              Command="{Binding SelectPlayerCommand}"
-                              CommandParameter="1">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Players[1].Name}"/>
-                                <TextBlock Text="{Binding Players[1].Score}"/>
-                            </StackPanel>
-                        </ToggleButton>
-
-                        <ToggleButton Margin="5" Background="{Binding Players[2].ColorCode}" 
-                              IsChecked="{Binding Players[2].isSelected, Mode=OneWay}" 
-                              Command="{Binding SelectPlayerCommand}"
-                              CommandParameter="2">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Players[2].Name}"/>
-                                <TextBlock Text="{Binding Players[2].Score}"/>
-                            </StackPanel>
-                        </ToggleButton>
-
-                        <ToggleButton Margin="5" Background="{Binding Players[3].ColorCode}" 
-                              IsChecked="{Binding Players[3].isSelected, Mode=OneWay}" 
-                              Command="{Binding SelectPlayerCommand}"
-                              CommandParameter="3">
-                            <StackPanel>
-                                <TextBlock Text="{Binding Players[3].Name}"/>
-                                <TextBlock Text="{Binding Players[3].Score}"/>
-                            </StackPanel>
-                        </ToggleButton>
-
-                    </StackPanel>
-                    <Grid Grid.Row="1">
+                        </ToggleButton.Resources>
+                    </ToggleButton>
+                    <Grid x:Name="EditPlayerNames" Grid.Row="1"
+                          Visibility="{Binding ElementName=ToggleButtonEditPlayersNames, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Grid.Resources>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="2*"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <ToggleButton x:Name="ToggleButtonEditPlayersNames" Height="30" HorizontalAlignment="Center">
-                            <ToggleButton.Resources>
-                                <Style TargetType="ToggleButton">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsChecked" Value="False">
-                                            <Setter Property="Content" Value="Edit Player's names"/>
-                                        </Trigger>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter Property="Content" Value="Accept Player's names"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Resources>
-                        </ToggleButton>
-                        <Grid x:Name="EditPlayerNames" Grid.Row="1"
-                              Visibility="{Binding ElementName=ToggleButtonEditPlayersNames, Path=IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Grid.Resources>
-                            </Grid.Resources>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Grid.Column="0">
-                                <Label Content="Red" HorizontalAlignment="Center"/>
-                                <TextBox Text="{Binding Players[0].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
-                            </StackPanel >
-                            <StackPanel Grid.Row="0" Grid.Column="1">
-                                <Label Content="Green" HorizontalAlignment="Center"/>
-                                <TextBox Text="{Binding Players[1].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="0">
-                                <Label Content="Blue" HorizontalAlignment="Center"/>
-                                <TextBox Text="{Binding Players[2].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="1">
-                                <Label Content="Yellow" HorizontalAlignment="Center"/>
-                                <TextBox Text="{Binding Players[3].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
-                            </StackPanel>
-                        </Grid>
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <Label Content="Red" HorizontalAlignment="Center"/>
+                            <TextBox Text="{Binding Players[0].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
+                        </StackPanel >
+                        <StackPanel Grid.Row="0" Grid.Column="1">
+                            <Label Content="Green" HorizontalAlignment="Center"/>
+                            <TextBox Text="{Binding Players[1].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <Label Content="Blue" HorizontalAlignment="Center"/>
+                            <TextBox Text="{Binding Players[2].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <Label Content="Yellow" HorizontalAlignment="Center"/>
+                            <TextBox Text="{Binding Players[3].Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="100"/>
+                        </StackPanel>
                     </Grid>
                 </Grid>
-                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center"  >
-                    <StackPanel Orientation="Horizontal">
+            </Grid>
+            <GroupBox Grid.Column="1" Header="Buttons">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                         <StackPanel.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Margin" Value="5"/>
@@ -348,66 +335,83 @@
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Resources>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <GroupBox Header="Connetion">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Content="Button Server address"/>
-                                    <TextBox Text="{Binding ButtonServerAddress}" Width="100"/>
+                            <GroupBox Grid.Column="0" Header="Connection">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Button Server address"/>
+                                        <TextBox Text="{Binding ButtonServerAddress}" Width="150" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Connect" Command="{Binding ConnectButtonsServerCommand}"/>
+                                        <Button Content="Disconnect" Command="{Binding DisconnectButtonsServerCommand}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Connection Status:"/>
+                                        <TextBlock Text="{Binding ButtonsConnectionStatus}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Connect" Command="{Binding ConnectButtonsServerCommand}"/>
-                                    <Button Content="Disconnect" Command="{Binding DisconnectButtonsServerCommand}"/>
+                            </GroupBox>
+
+                            <GroupBox Grid.Column="1" Header="Logs">
+                                <StackPanel>
+                                    <ListView ItemsSource="{Binding WsLogOC}" Height="75" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontSize="12"/>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListView>
+                                    <Button Content="Clear log" 
+                                            HorizontalAlignment="Center"
+                                            MinWidth="150"
+                                            Command="{Binding ClearWsLogCommand}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Content="Connection Status:"/>
-                                    <TextBlock Text="{Binding ButtonsConnectionStatus}"
-                                               VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </StackPanel>
+                            </GroupBox>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Button message: "/>
+                            <TextBox Text="{Binding ButtonsMessageText, UpdateSourceTrigger=LostFocus}"
+                                     MinWidth="200" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Selected Player: "/>
+
+                            <TextBlock Text="{Binding SelectedPlayerIndex}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <GroupBox Header="Control">
+                            <Grid Height="70">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="Ready to collect answers" Command="{Binding SetReadyForAnswersCommand}"/>
+                                <Button Grid.Column="1" Content="Next" Command="{Binding RequestNextPlayerCommand}"/>
+                                <Button Grid.Column="2" Content="Reset" Command="{Binding ResetButtonsStateCommand}"/>
+                            </Grid>
                         </GroupBox>
 
-                        <Button Content="Next" Command="{Binding RequestNextPlayerCommand}"/>
-                        <Button Content="Reset" Command="{Binding ResetButtonsStateCommand}"/>
-                        <Button Content="Ready to collect answers" Command="{Binding SetReadyForAnswersCommand}"/>
-
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Button message: "/>
-                        <TextBox Text="{Binding ButtonsMessageText, UpdateSourceTrigger=LostFocus}"
-                                 MinWidth="200" VerticalAlignment="Center"/>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Selected Player: "/>
-
-                        <TextBlock Text="{Binding SelectedPlayerIndex}"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel>
-                        <ListView ItemsSource="{Binding WsLogOC}" Height="75" SelectedIndex="{Binding WsLogSelectedIndex, Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" FontSize="12"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListView>
-                        <Button Content="Clear log" 
-                                HorizontalAlignment="Center"
-                                MinWidth="150"
-                                Command="{Binding ClearWsLogCommand}"/>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-        
-
-    </Grid>
+                </GroupBox>
+        </Grid>
         <Grid Grid.Row="3" Name="QuestionsControl">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Viewbox   Width="auto" VerticalAlignment="Top">
+            <Viewbox Width="auto" VerticalAlignment="Top">
                 <DataGrid Grid.Column="0" 
                           ItemsSource="{Binding CurrentRoundQuestions, UpdateSourceTrigger=PropertyChanged}"
                           CanUserAddRows="False"
@@ -428,8 +432,6 @@
                                 <DataTrigger Binding="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.ThirdRound}}" Value="True">
                                     <Setter Property="IsEnabled" Value="True"></Setter>
                                 </DataTrigger>
-
-
                             </Style.Triggers>
                         </Style>
                     </DataGrid.Resources>
@@ -458,6 +460,18 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
+                                        <Button.ToolTip>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Question Type: "/>
+                                                    <TextBlock Text="{Binding Questions[0].QuestionType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Speciality Type: "/>
+                                                    <TextBlock Text="{Binding Questions[0].SpecialityType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button.ToolTip>
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -484,6 +498,18 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
+                                        <Button.ToolTip>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Question Type: "/>
+                                                    <TextBlock Text="{Binding Questions[1].QuestionType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Speciality Type: "/>
+                                                    <TextBlock Text="{Binding Questions[1].SpecialityType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button.ToolTip>
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -512,6 +538,18 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
+                                        <Button.ToolTip>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Question Type: "/>
+                                                    <TextBlock Text="{Binding Questions[2].QuestionType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Speciality Type: "/>
+                                                    <TextBlock Text="{Binding Questions[2].SpecialityType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button.ToolTip>
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -539,6 +577,18 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
+                                        <Button.ToolTip>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Question Type: "/>
+                                                    <TextBlock Text="{Binding Questions[3].QuestionType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Speciality Type: "/>
+                                                    <TextBlock Text="{Binding Questions[3].SpecialityType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button.ToolTip>
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -566,11 +616,22 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
+                                        <Button.ToolTip>
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Question Type: "/>
+                                                    <TextBlock Text="{Binding Questions[4].QuestionType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Content="Speciality Type: "/>
+                                                    <TextBlock Text="{Binding Questions[4].SpecialityType}" VerticalAlignment="Center" FontWeight="Bold"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button.ToolTip>
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
                     </DataGrid.Columns>
                 </DataGrid>
             </Viewbox>
@@ -579,9 +640,9 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="Current question"
-                          MinHeight="100"
-                          BorderThickness="2">
+                <GroupBox Grid.Row="0" 
+                          Header="Current question"
+                          MinHeight="100">
                     <Grid x:Name="CurrentQuestionInfo" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"></RowDefinition>
@@ -609,22 +670,27 @@
 
                             </StackPanel.Resources>
 
-                            <StackPanel Grid.Row="1" Orientation="Horizontal"  Margin="0">
+                            <StackPanel Orientation="Horizontal"  Margin="0">
                                 <Label Content="Topic: " Margin="0"/>
                                 <TextBlock Text="{Binding CurrentQuestion.TopicName}"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                            <StackPanel Orientation="Horizontal">
                                 <Label Content="Price: " />
                                 <TextBlock Text="{Binding CurrentQuestion.Price}"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Row="4" Orientation="Horizontal">
-                                <Label Content="Speciality Type: "  />
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Type: "/>
+                                <TextBlock Text="{Binding CurrentQuestion.QuestionType}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Speciality Type: "/>
                                 <TextBlock Text="{Binding CurrentQuestion.SpecialityType}"/>
                             </StackPanel>
                             
-                            <StackPanel Grid.Row="5" Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
                                     <Style TargetType="StackPanel">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -635,14 +701,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </StackPanel.Resources>
-                                        <Label Content="SpecialityCatPrice: "  />
-                                <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}">
-                                    
-                                </TextBlock>
+                                <Label Content="SpecialityCatPrice: "  />
+                                <TextBlock Text="{Binding CurrentQuestion.SpecialityCatPrice}"/>
                             </StackPanel>
-
                         </StackPanel>
-                       
 
                         <Grid Grid.Row="1" Name="CurrentQuestionText">
                             <Grid.RowDefinitions>
@@ -661,17 +723,13 @@
                             </Grid.Resources>
                             <Label Grid.Row="0" Content="Text: " FontWeight="Bold" />
                             <Border Grid.Row="1"  >
-                                <TextBlock  Text="{Binding CurrentQuestion.QuestionText}" MinHeight="50" TextWrapping="WrapWithOverflow"/>
+                                <TextBlock Text="{Binding CurrentQuestion.QuestionText}" MinHeight="50" TextWrapping="WrapWithOverflow"/>
                             </Border>
                             <Label Grid.Row="2" Content="Answer: " FontWeight="Bold" />
                             <Border Grid.Row="3">
                                 <TextBlock Text="{Binding CurrentQuestion.QuestionAnswer}" MinHeight="20" TextWrapping="WrapWithOverflow"/>
                             </Border>
-
                         </Grid>
-
-
-
                     </Grid>
                 </GroupBox>                
                 <Grid x:Name="QuestionsActiveControl" Grid.Row="1">
@@ -700,8 +758,8 @@
                                                 FontSize="20" FontWeight="Bold"/>
                                     </StackPanel>
                                     <CheckBox Content="AutoClose on + answer" 
-                                  IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"
-                                  Margin="0 10"/>
+                                              IsChecked="{Binding AutoCloseuestionOnPositiveAnswer, Mode=TwoWay}"
+                                              Margin="0 10"/>
 
                                 </StackPanel>
                                 <Grid Grid.Column="1" VerticalAlignment="Center">
@@ -717,36 +775,45 @@
                                             MinWidth="150" MinHeight="50"
                                             Margin="10" Padding="10"
                                             IsEnabled="{Binding GamePhase, Converter={StaticResource boolParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
-                                    <Button Content="CloseIntro" Grid.Column="1"
-                                            Command="{Binding CloseSpecialIntroCommand}"
-                                            Margin="10" Padding="10"
-                                            MinWidth="150" MinHeight="50">
-                                        <Button.Resources>
-                                            <Style TargetType="Button">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                                <Style.Triggers>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding CurrentQuestion.IsSpecial}" Value="True"/>
-                                                            <Condition Binding="{Binding CurrentQuestion.SpecialIntroWasNotPlayed}" Value="True"/>
-                                                            <Condition Binding="{Binding IsQuestion}" Value="True"/>
-                                                        </MultiDataTrigger.Conditions>
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter Property="IsEnabled" Value="True"/>
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Resources>
-
-                                    </Button>
-
-                                </Grid>
+                                    
+                                        <Button Content="CloseIntro" Grid.Column="1"
+                                                Command="{Binding CloseSpecialIntroCommand}"
+                                                Margin="10" Padding="10"
+                                                MinWidth="150" MinHeight="50">
+                                            <Button.Resources>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Style.Triggers>
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding CurrentQuestion.IsSpecial}" Value="True"/>
+                                                                <Condition Binding="{Binding CurrentQuestion.SpecialIntroWasNotPlayed}" Value="True"/>
+                                                                <Condition Binding="{Binding IsQuestion}" Value="True"/>
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="IsEnabled" Value="True"/>
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Resources>
+                                        </Button>
+                                    </Grid>
 
                                 </Grid>
                             </Grid>
                         </GroupBox>
-                        <GroupBox Header="Speciality stuff" Grid.Row="1">
+                        <GroupBox Header="Speciality stuff control" Grid.Row="1">
+
+                            <GroupBox.Resources>
+                                <Style TargetType="Button">
+                                    <Setter Property="Margin" Value="5,0,0,0"/>
+                                    <Setter Property="Padding" Value="10"/>
+                                    <Setter Property="MinWidth" Value="70"/>
+                                </Style>
+
+                            </GroupBox.Resources>
+
                             <StackPanel Orientation="Horizontal">
                                 <GroupBox Header="Picture" IsEnabled="{Binding IsPictureQuestion}">
                                 <GroupBox.Resources>
@@ -791,39 +858,31 @@
                             <GroupBox Header="Music" IsEnabled="{Binding IsMusicQuestion}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
-                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
-                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" Margin="5,0,0,0"/>
+                                            CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" />
                                     <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
-                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
-                                            Margin="5,0,0,0"/>
+                                            CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"/>
                                 </StackPanel>
-                                
                             </GroupBox>
                             <GroupBox Header="Video" IsEnabled="{Binding IsVideoQuestion}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Play Question" Command="{Binding PlayMediaInQustionCommand}"
-                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
-                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}" Margin="5,0,0,0"/>
+                                            CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Question}"/>
+                                    <Button Content="Stop" Command="{Binding StopMediaInQustionCommand}"/>
                                     <Button Content="Play Answer" Command="{Binding PlayMediaInQustionCommand}"
-                                                 CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"
-                                            Margin="5,0,0,0"/>
+                                            CommandParameter="{x:Static sharedEntities:MultimediaForEnum.Answer}"/>
                                 </StackPanel>
-
                             </GroupBox>
                             <GroupBox Header="Final round music" IsEnabled="{Binding ElementName=FinalRoundRadioButton, Path=IsChecked}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Play" Command="{Binding PlayFinalMusicCommand}"
-                                                  MinWidth="30"/>
+                                    <Button Content="Play" 
+                                            Command="{Binding PlayFinalMusicCommand}"/>
                                     <Button Content="Stop" 
                                             Command="{Binding StopMediaInQustionCommand}" 
-                                            CommandParameter="Play"
-                                            MinWidth="30" Margin="5,0,0,0"/>
-
+                                            CommandParameter="Play"/>
                                     <Button Content="Record final results" 
                                             Command="{Binding RecordScoresCommand}" 
-                                            CommandParameter="Play"
-                                            MinWidth="50" Margin="15,0,0,0"/>
-
+                                            CommandParameter="Play"/>
                                 </StackPanel>
 
                             </GroupBox>

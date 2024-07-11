@@ -669,7 +669,21 @@ namespace SvoyaIgra.Game.ViewModels
         private void SetReadyForAnswersMethod(object obj)
         {
             if (GamePhase==(int)GamePhaseEnum.Question) ReadyToCollectAnswers = true;
+
+            try
+            {
+                if (WebSocketClient.Send(WsMessages.StartCommand))
+                {
+                    AddToLogList($"C: {WsMessages.StartCommand}");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Some problem in StartButtonsMethod, message:{e.Message}");
+            }
+            //_log.Info("OnStartButtonPressed");
         }
+
         private void ResetButtonsStateMethod(object obj)
         {
             try
@@ -689,6 +703,7 @@ namespace SvoyaIgra.Game.ViewModels
             //_log.Info("OnResetButtonPressed");
    
         }
+
         private void RequestNextPlayerMethod(object obj)
         {
             try
@@ -705,6 +720,7 @@ namespace SvoyaIgra.Game.ViewModels
             //_log.Info("OnNextButtonPressed");
 
         }
+
         private bool ConnectButtonsServer_CanExecute(object obj)
         {
             try
