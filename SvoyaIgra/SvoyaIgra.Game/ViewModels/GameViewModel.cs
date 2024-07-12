@@ -472,10 +472,14 @@ namespace SvoyaIgra.Game.ViewModels
                 {
                     _selectedPlayerIndex = value;
                     OnPropertyChanged(nameof(SelectedPlayerIndex));
+                    OnPropertyChanged(nameof(SelectedPlayer));
                     OnPropertyChanged(nameof(IsAvailableForScoreChange));
                 }
             }
         }
+
+        public Player SelectedPlayer =>
+            SelectedPlayerIndex != -1 ? Players[SelectedPlayerIndex] : new Player("None", "#a2a2a2");
 
         public RelayCommand SelectPlayerCommand { get; set; }
 

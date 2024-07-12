@@ -385,9 +385,14 @@
 
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Selected Player: "/>
+                            <Border BorderThickness="1" BorderBrush="Black" Width="18" VerticalAlignment="Center">
+                                <TextBlock Background="{Binding SelectedPlayer.ColorCode}"/>
+                            </Border>
+                            <TextBlock Text="{Binding SelectedPlayer.Name}"
+                                       Margin="5 0 0 0" VerticalAlignment="Center"/>
 
-                            <TextBlock Text="{Binding SelectedPlayerIndex}"
-                                       VerticalAlignment="Center"/>
+                            <!--<TextBlock Text="{Binding SelectedPlayerIndex, StringFormat={}[{0}]}"
+                                       Margin="5 0 0 0" VerticalAlignment="Center"/>-->
                         </StackPanel>
 
                         <GroupBox Header="Control">
