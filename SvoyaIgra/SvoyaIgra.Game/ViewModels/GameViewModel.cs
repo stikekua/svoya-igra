@@ -577,6 +577,21 @@ namespace SvoyaIgra.Game.ViewModels
                 }
             }
         }
+
+        bool _autoNextPLayerOnNegativeAnswer = true;
+        public bool AutoNextPLayerOnNegativeAnswer
+        {
+            get { return _autoNextPLayerOnNegativeAnswer; }
+            set
+            {
+                if (_autoNextPLayerOnNegativeAnswer != value)
+                {
+                    _autoNextPLayerOnNegativeAnswer = value;
+                    OnPropertyChanged(nameof(AutoNextPLayerOnNegativeAnswer));
+                }
+            }
+        }
+
         public RelayCommand ChangePlayerScoreCommand { get; set; }
 
         #endregion
@@ -855,6 +870,7 @@ namespace SvoyaIgra.Game.ViewModels
 
                     case (int)GamePhaseEnum.FinalRound:
                         AutoCloseuestionOnPositiveAnswer = false;
+                        AutoNextPLayerOnNegativeAnswer = false;
                         PlayerSelectionMode = PlayerSelectionModeEnum.Manual;                   
                         GamePhase = (int)GamePhaseEnum.Question;
                         break;
@@ -1136,7 +1152,7 @@ namespace SvoyaIgra.Game.ViewModels
                         case "-":
                             Players[SelectedPlayerIndex].Score -= ScoreToChange;
                             OnPropertyChanged(nameof(Players));
-                            if (PlayerSelectionMode==PlayerSelectionModeEnum.Auto)
+                            if (PlayerSelectionMode==PlayerSelectionModeEnum.Auto && AutoNextPLayerOnNegativeAnswer)
                             {
                                 RequestNextPlayerMethod(null);
                             }
