@@ -145,56 +145,59 @@
         <GroupBox Grid.Row="1"  x:Name="GamePhases"
                   Header="Game Phases" 
                   VerticalAlignment="Center" >
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding PlayScreenRunning}">
+            <StackPanel Orientation="Horizontal" IsEnabled="{Binding PlayScreenRunning}">
                 <StackPanel.Resources>
                     <Style TargetType="RadioButton">
                         <Setter Property="Margin" Value="13,0,0,0"/>
                     </Style>
                 </StackPanel.Resources>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="PreGame" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.PreGame}"
-                                 IsChecked="True"/>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="Game Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.GameIntro}"
-                                 />
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="1st round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}" 
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.FirstRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="1st round" 
-                                 Command="{Binding ChangeGamePhaseCommand}" 
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.FirstRound}"/>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="2nd round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.SecondRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="2nd round" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.SecondRound}"/>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="3rd round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" 
-                                     Content="3rd round" 
-                                 Command="{Binding ChangeGamePhaseCommand}" 
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRound}"/>
-                        <RadioButton GroupName="GamePhase" 
-                                 Content="Final round Intro" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.FinalRoundIntro}"/>
-                        <RadioButton GroupName="GamePhase" x:Name="FinalRoundRadioButton"
-                                 Content="Final round" 
-                                 Command="{Binding ChangeGamePhaseCommand}"
-                                 CommandParameter="{x:Static enums:GamePhaseEnum.FinalRound}"/>
-                    </StackPanel>
-                </GroupBox>
+                <RadioButton GroupName="GamePhase" 
+                             Content="PreGame" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.PreGame}"
+                             IsChecked="True"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="Game Intro" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.GameIntro}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="1st round Intro" 
+                             Command="{Binding ChangeGamePhaseCommand}" 
+                             CommandParameter="{x:Static enums:GamePhaseEnum.FirstRoundIntro}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="1st round" 
+                             Command="{Binding ChangeGamePhaseCommand}" 
+                             CommandParameter="{x:Static enums:GamePhaseEnum.FirstRound}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="2nd round Intro" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.SecondRoundIntro}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="2nd round" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.SecondRound}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="3rd round Intro" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRoundIntro}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="3rd round" 
+                             Command="{Binding ChangeGamePhaseCommand}" 
+                             CommandParameter="{x:Static enums:GamePhaseEnum.ThirdRound}"/>
+                <RadioButton GroupName="GamePhase" 
+                             Content="Final round Intro" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.FinalRoundIntro}"/>
+                <RadioButton GroupName="GamePhase" x:Name="FinalRoundRadioButton"
+                             Content="Final round" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.FinalRound}"/>
+                <RadioButton GroupName="GamePhase"
+                             Content="Results" 
+                             Command="{Binding ChangeGamePhaseCommand}"
+                             CommandParameter="{x:Static enums:GamePhaseEnum.Results}"/>
+            </StackPanel>
+        </GroupBox>
         <Grid Grid.Row="2" x:Name="PlayerControl">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>

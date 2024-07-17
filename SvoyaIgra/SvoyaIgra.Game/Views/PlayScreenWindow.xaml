@@ -31,5 +31,6 @@
             <gf:FinalRound                  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.FinalRound}}"/>
             <questions:QuestionPlaceHolder  Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Question}}"/>
             <gf:IntroPhase                  Visibility="{Binding IsIntroOnScreen, Converter={StaticResource visibilityCollapsedConverter}}"/>
+            <gf:Results                     Visibility="{Binding GamePhase, Converter={StaticResource visibilityParameterConverter}, ConverterParameter={x:Static enums:GamePhaseEnum.Results}}"/>
         </DockPanel>       
 </Window>

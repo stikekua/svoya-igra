@@ -9,4 +9,6 @@
     <helpers:SpecialityIntroConverter           x:Key="specialityIntroConverter"/>
     <helpers:QuestionTypeBorderBrushConverter   x:Key="questionTypeBorderBrushConverter"/>
 
+    <helpers:ScoreRelativeConverter   x:Key="scoreRelativeConverter"/>
+
 </ResourceDictionary>
