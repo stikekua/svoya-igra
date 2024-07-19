@@ -186,7 +186,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                                 <TextBlock Text="{Binding Name}" Margin="20 50"
-                                           Style="{StaticResource TopicTextBlockStyle}" TextWrapping="WrapWithOverflow"  />
+                                           Style="{StaticResource TopicTextBlockStyle}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
