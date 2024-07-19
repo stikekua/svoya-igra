@@ -14,7 +14,7 @@ void ledInit() {
   stateStrip.show();
   stateStrip.setBrightness(50);
 
-  stateStrip.setPixelColor(3, dColor);
+  stateStrip.setPixelColor(0, dColor);
   stateStrip.show();
 }
 
@@ -49,14 +49,15 @@ void LED_setColor(cButton btn) {
 
 void LED_showQueue() {
   for (int i = 0; i < 4; i++) {
+    int iled = i;
     if (queue[i] != 0) {
       uint32_t color = findColor(static_cast<cButton>( queue[i] ));
-      stateStrip.setPixelColor((4 - i - 1), color);
+      stateStrip.setPixelColor(iled, color);
     } else {
       if (started) {
-        stateStrip.setPixelColor((4 - i - 1), miniColor);
+        stateStrip.setPixelColor(iled, miniColor);
       } else {
-        stateStrip.setPixelColor((4 - i - 1), 0);
+        stateStrip.setPixelColor(iled, 0);
       }
     }
   }

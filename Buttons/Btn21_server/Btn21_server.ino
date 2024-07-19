@@ -95,7 +95,7 @@ void setup() {
   WiFi.printDiag(Serial);
 
   for (uint8_t t = 4; t > 0; t--) {
-    LED_stateLed(t-1);
+    LED_stateLed(map(t,4,1,0,3));
     Serial.printf("[SETUP] BOOT WAIT %d...\r\n", t);
     Serial.flush();
     delay(1000);
@@ -135,7 +135,7 @@ void loop() {
 
   if (gameTimer.ready()) {
     if(!started){
-      LED_stateWaiting(3);
+      LED_stateWaiting(0);
     }
     if (started && (duration < ROUND_TIME * 2)) {
       duration++;
