@@ -4,6 +4,7 @@
 
 void exec_Led(LED ledmode) {
   static bool LEDStatus;
+  static bool LEDBuildin;  
 
   switch (ledmode) {
     case OFF  : {
@@ -30,5 +31,17 @@ void exec_Led(LED ledmode) {
         }
         break;
       }
+    case BLINK_PAIRING : {
+        if (blinkPairingTimer.ready()) {
+          LEDBuildin = !LEDBuildin;
+          digitalWrite(BUILTIN_LED, LEDBuildin);
+        }
+        break;
+      }
   }
+}
+
+void led_off(){
+  digitalWrite(BUILTIN_LED, true);
+  digitalWrite(LED_PIN, false);
 }
