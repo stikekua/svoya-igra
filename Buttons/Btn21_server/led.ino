@@ -101,14 +101,7 @@ void LED_showTimer() {
 }
 
 uint32_t findColor(cButton btn) {
-  switch (btn) {
-    case RED:
-      return buttonColors[0];
-    case GREEN:
-      return buttonColors[1];
-    case BLUE:
-      return buttonColors[2];
-    case YELLOW:
-      return buttonColors[3];
-  }
+  uint32_t idx = buttonId2Index(btn);
+  return buttonColors[idx];
+
 }

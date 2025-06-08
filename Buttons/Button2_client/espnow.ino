@@ -75,6 +75,8 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len) {
         ESP.restart();
       }
       break;
+    default:
+      Serial.print("Unknown messageType "); Serial.println(type);
   }
 }
 

@@ -7,6 +7,15 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <timer.h>
+#include <EEPROM.h>
+
+#define BUTTON_CLIENT_COUNT 4
+
+#define CHANNEL 1
+uint8_t myMac[6];
+#define EEPROM_MAC_START  4
+uint8_t clientAddress[BUTTON_CLIENT_COUNT][6];
+bool permitPairing = false;
 
 IPAddress _apIP(192, 168, 5, 1);
 String _ssidAP = "SvoyaIgraAP2";
@@ -58,34 +67,55 @@ int queue[4] = {0, 0, 0, 0};
 //queue selector
 int queueSelector = 0;
 
+enum MessageType { PAIRING = 17,
+                   DATA = 1};
+MessageType messageType;
+
 //Structures to send data
 typedef struct struct_message_in {
-  int id;
+  uint8_t msgType;
+  uint8_t id;
   bool pressed;
   bool falsestart;
   bool selected;
   bool deselected;
 } struct_message_in;
 typedef struct struct_message_out {
+  uint8_t msgType;
+  uint8_t id;
   bool enable;
   bool select;
   bool deselect;
   bool release;
 } struct_message_out;
+typedef struct struct_pairing {
+  uint8_t msgType;
+  uint8_t id;
+  uint8_t macAddr[6];
+  uint8_t channel;
+} struct_pairing;
 
 // Create a structure objects
 struct_message_in msgIn;
 struct_message_out msgOut;
+struct_pairing pairing;
 
 void setup() {
   Serial.begin(115200);
   delay(10);
+
+  EEPROM.begin(64);  // возвращает void на ESP8266
+  Serial.println("EEPROM initialized");
 
   //LED
   ledInit();
   
   WiFi.persistent(false);
   WiFi.mode(WIFI_AP_STA);
+  Serial.println();
+  Serial.print("My MAC Address:  ");
+  Serial.println(WiFi.macAddress());
+  WiFi.macAddress(myMac);
   WiFi.disconnect();
   delay(1000);
 
@@ -117,10 +147,25 @@ void setup() {
 
   // Init webSocket server
   webSocketInit();
-
+  
   // Init ESP-NOW
-  if (!espnowInit()) {
+  if (!espnow_init()) {
     Serial.println("Error initializing ESP-NOW");
+  }
+
+  // Read Button clients mac and add it
+  for (int i = 0; i < BUTTON_CLIENT_COUNT; i++) {
+    uint8_t eAddress = EEPROM_MAC_START + i * 6;
+    uint8_t tMac[6];
+    getMACFromEEPROM(tMac, eAddress);
+    Serial.print("MAC from EEPROM ");
+    printMAC(tMac);
+    Serial.println();
+
+    if(!isMACEmpty(tMac)){      
+      memcpy(&clientAddress[i], tMac, sizeof(clientAddress[i] ));
+      espnow_register(clientAddress[i]);
+    }    
   }
 
   LED_stateOff();
